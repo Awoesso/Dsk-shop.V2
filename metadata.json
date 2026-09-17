@@ -1,0 +1,7 @@
+{
+  "name": "DSK-Shop",
+  "description": "Production-grade e-commerce application with dynamic product catalog, smart search, faceted filtering, cart management, and seamless checkout.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
