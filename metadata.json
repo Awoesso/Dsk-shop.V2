@@ -1,6 +1,6 @@
 {
   "name": "DSK-Shop",
-  "description": "Production-grade e-commerce application with dynamic product catalog, smart search, faceted filtering, cart management, and seamless checkout.",
+  "description": "Boutique en ligne premium d'équipements technologiques et lifestyle à Lomé, Togo : audio haute-fidélité, informatique, maison connectée, panier en temps réel et commande sécurisée.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

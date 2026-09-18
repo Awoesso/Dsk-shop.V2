@@ -14,7 +14,10 @@ export const CartItem: React.FC<CartItemProps> = ({ item, compact = false }) => 
   const { updateCartQuantity, removeFromCart, openProduct, setIsCartOpen } = useShop();
   const { product, quantity, selectedVariant } = item;
 
-  const itemPrice = (product.price + (selectedVariant?.priceModifier || 0)) * quantity;
+  const unitPrice = Math.max(0, product.price + (selectedVariant?.priceModifier || 0));
+  const itemPrice = unitPrice * quantity;
+  const maxStock = product.stockCount > 0 ? product.stockCount : 99;
+  const isMaxStock = quantity >= maxStock;
 
   const handleProductClick = () => {
     setIsCartOpen(false);
@@ -50,15 +53,15 @@ export const CartItem: React.FC<CartItemProps> = ({ item, compact = false }) => 
             </h4>
             {selectedVariant && (
               <p className="text-[11px] text-[#647064] mt-0.5">
-                Option: <span className="font-semibold text-[#172017] font-primary">{selectedVariant.name}</span>
+                Variante : <span className="font-semibold text-[#172017] font-primary">{selectedVariant.name}</span>
               </p>
             )}
           </div>
 
           <button
             onClick={() => removeFromCart(product.id, selectedVariant?.id)}
-            className="text-[#647064] hover:text-rose-600 p-1 transition-colors"
-            title="Remove item"
+            className="text-[#647064] hover:text-rose-600 p-1 transition-colors cursor-pointer"
+            title="Supprimer l'article"
           >
             <Trash2 size={15} />
           </button>
@@ -69,16 +72,21 @@ export const CartItem: React.FC<CartItemProps> = ({ item, compact = false }) => 
           <div className="flex items-center border border-[#DDE8DE] rounded-lg bg-[#FAFCFA] overflow-hidden shadow-2xs">
             <button
               onClick={() => updateCartQuantity(product.id, quantity - 1, selectedVariant?.id)}
-              className="p-1 sm:px-2 text-[#647064] hover:bg-[#F0FDF4] hover:text-[#166534] transition-colors"
-              title="Decrease quantity"
+              className="p-1 sm:px-2 text-[#647064] hover:bg-[#F0FDF4] hover:text-[#166534] transition-colors cursor-pointer"
+              title={quantity === 1 ? "Retirer l'article" : "Diminuer la quantité"}
             >
-              <Minus size={12} />
+              {quantity === 1 ? <Trash2 size={12} className="text-rose-500" /> : <Minus size={12} />}
             </button>
-            <span className="px-2.5 text-xs font-bold text-[#172017]">{quantity}</span>
+            <span className="px-2.5 text-xs font-bold text-[#172017] min-w-[24px] text-center">{quantity}</span>
             <button
               onClick={() => updateCartQuantity(product.id, quantity + 1, selectedVariant?.id)}
-              className="p-1 sm:px-2 text-[#647064] hover:bg-[#F0FDF4] hover:text-[#166534] transition-colors"
-              title="Increase quantity"
+              disabled={isMaxStock}
+              className={`p-1 sm:px-2 text-[#647064] transition-colors ${
+                isMaxStock
+                  ? 'opacity-40 cursor-not-allowed bg-neutral-100'
+                  : 'hover:bg-[#F0FDF4] hover:text-[#166534] cursor-pointer'
+              }`}
+              title={isMaxStock ? `Stock max disponible (${maxStock})` : "Augmenter la quantité"}
             >
               <Plus size={12} />
             </button>
@@ -90,7 +98,7 @@ export const CartItem: React.FC<CartItemProps> = ({ item, compact = false }) => 
             </span>
             {quantity > 1 && (
               <p className="text-[10px] text-[#647064] font-secondary">
-                {formatPrice(product.price)} l'unité
+                {formatPrice(unitPrice)} / unité
               </p>
             )}
           </div>

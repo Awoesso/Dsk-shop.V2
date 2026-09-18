@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { Product, CartItem, ProductVariant, FilterState, ActivePage, Order, ShippingAddress, PaymentMethod, ToastMessage, ProductReview } from '../types';
 import { PRODUCTS, CATEGORIES } from '../data/products';
+import { USD_TO_FCFA_RATE } from '../utils/currency';
 
 interface ShopContextType {
   products: Product[];
@@ -20,8 +21,12 @@ interface ShopContextType {
   cartItemCount: number;
   freeShippingThreshold: number;
   freeShippingRemaining: number;
+  isFreeShipping: boolean;
   isLoading: boolean;
   setIsLoading: (loading: boolean) => void;
+  isInitialLoading: boolean;
+  isPageLoading: boolean;
+  pageLoading: ActivePage | null;
   refreshCatalog: () => void;
   
   // Navigation
@@ -46,6 +51,7 @@ interface ShopContextType {
   
   // Checkout & Orders
   applyPromoCode: (code: string) => boolean;
+  removePromoCode: () => void;
   createOrder: (shipping: ShippingAddress, payment: PaymentMethod) => Order;
   
   // Review submission
@@ -71,17 +77,30 @@ const ShopContext = createContext<ShopContextType | undefined>(undefined);
 const FREE_SHIPPING_THRESHOLD = 99;
 const STANDARD_SHIPPING_FLAT = 12;
 
+const isSessionAlreadyInitialized = (): boolean => {
+  try {
+    return sessionStorage.getItem('dsk_session_initialized') === 'true';
+  } catch {
+    return false;
+  }
+};
+
 export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [products, setProducts] = useState<Product[]>(PRODUCTS);
   const [activePage, setActivePage] = useState<ActivePage>('home');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [filterState, setFilterState] = useState<FilterState>(initialFilterState);
-  const [promoDiscount, setPromoDiscount] = useState<{ code: string; percent: number } | null>(null);
+  const [promoDiscount, setPromoDiscount] = useState<{ code: string; percent: number } | null>(() => {
+    try {
+      const saved = localStorage.getItem('dsk_promo');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
   const [lastOrder, setLastOrder] = useState<Order | null>(null);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const loadingTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Toast system
   const showToast = useCallback((
@@ -101,12 +120,36 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
-  // Initial load simulation for initial mount to show skeleton loaders
+  // Initial Full-Screen Loader state (only for the very first visit of this browser session)
+  const [isInitialLoading, setIsInitialLoading] = useState<boolean>(() => {
+    return !isSessionAlreadyInitialized();
+  });
+
+  // Page Skeleton Loading state (used exclusively for subsequent route transitions)
+  const [isPageLoading, setIsPageLoading] = useState<boolean>(false);
+  const [pageLoading, setPageLoading] = useState<ActivePage | null>(null);
+  const [cachedPages, setCachedPages] = useState<Set<string>>(() => new Set(['home']));
+  const [cachedProductIds, setCachedProductIds] = useState<Set<string>>(() => new Set());
+
+  // Backward compatibility flag
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const loadingTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Initial app load simulation for first session visit
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 450);
-    return () => clearTimeout(timer);
+    if (!isSessionAlreadyInitialized()) {
+      const timer = setTimeout(() => {
+        try {
+          sessionStorage.setItem('dsk_session_initialized', 'true');
+        } catch {
+          // ignore
+        }
+        setIsInitialLoading(false);
+      }, 850);
+      return () => clearTimeout(timer);
+    } else {
+      setIsInitialLoading(false);
+    }
   }, []);
 
   const triggerLoading = useCallback((duration = 380) => {
@@ -118,9 +161,17 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const refreshCatalog = useCallback(() => {
-    triggerLoading(600);
-    showToast('Refreshing product catalog...', 'info');
-  }, [triggerLoading, showToast]);
+    setIsPageLoading(true);
+    setPageLoading('shop');
+    setIsLoading(true);
+    showToast('Actualisation du catalogue...', 'info');
+    if (loadingTimerRef.current) clearTimeout(loadingTimerRef.current);
+    loadingTimerRef.current = setTimeout(() => {
+      setIsPageLoading(false);
+      setPageLoading(null);
+      setIsLoading(false);
+    }, 450);
+  }, [showToast]);
 
   // Local storage for cart
   const [cart, setCart] = useState<CartItem[]>(() => {
@@ -158,7 +209,19 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [wishlist]);
 
-  // Navigation
+  useEffect(() => {
+    try {
+      if (promoDiscount) {
+        localStorage.setItem('dsk_promo', JSON.stringify(promoDiscount));
+      } else {
+        localStorage.removeItem('dsk_promo');
+      }
+    } catch {
+      // ignore
+    }
+  }, [promoDiscount]);
+
+  // Navigation with elegant page skeleton transition
   const navigateTo = useCallback((
     page: ActivePage,
     options?: { product?: Product; category?: string; search?: string }
@@ -172,48 +235,92 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (options?.search !== undefined) {
       setFilterState((prev) => ({ ...prev, searchQuery: options.search! }));
     }
-    if (page === 'shop' || page === 'home') {
-      triggerLoading(350);
-    }
-    setActivePage(page);
+
+    // Scroll to top immediately
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [triggerLoading]);
+
+    // Activate Skeleton for the targeted page during transition
+    setActivePage(page);
+    setIsPageLoading(true);
+    setPageLoading(page);
+    setIsLoading(true);
+
+    if (loadingTimerRef.current) clearTimeout(loadingTimerRef.current);
+    loadingTimerRef.current = setTimeout(() => {
+      setIsPageLoading(false);
+      setPageLoading(null);
+      setIsLoading(false);
+      setCachedPages((prev) => new Set(prev).add(page));
+    }, 280);
+  }, []);
 
   const openProduct = useCallback((product: Product) => {
     setSelectedProduct(product);
-    setActivePage('product');
-    triggerLoading(300);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [triggerLoading]);
+
+    setActivePage('product');
+    setIsPageLoading(true);
+    setPageLoading('product');
+    setIsLoading(true);
+
+    if (loadingTimerRef.current) clearTimeout(loadingTimerRef.current);
+    loadingTimerRef.current = setTimeout(() => {
+      setIsPageLoading(false);
+      setPageLoading(null);
+      setIsLoading(false);
+      setCachedProductIds((prev) => new Set(prev).add(product.id));
+      setCachedPages((prev) => new Set(prev).add('product'));
+    }, 280);
+  }, []);
 
   // Cart Management
   const addToCart = useCallback((product: Product, quantity = 1, variant?: ProductVariant) => {
+    const maxStock = product.stockCount > 0 ? product.stockCount : 99;
+    let reachedLimit = false;
+
     setCart((prev) => {
       const existingIndex = prev.findIndex(
-        (item) => item.product.id === product.id && item.selectedVariant?.id === variant?.id
+        (item) => item.product.id === product.id && (item.selectedVariant?.id ?? null) === (variant?.id ?? null)
       );
 
       if (existingIndex > -1) {
+        const currentQty = prev[existingIndex].quantity;
+        const newQty = currentQty + quantity;
+        if (newQty > maxStock) {
+          reachedLimit = true;
+          if (currentQty >= maxStock) {
+            return prev;
+          }
+        }
         const updated = [...prev];
-        const newQty = updated[existingIndex].quantity + quantity;
-        updated[existingIndex] = { ...updated[existingIndex], quantity: newQty };
+        updated[existingIndex] = { ...updated[existingIndex], quantity: Math.min(newQty, maxStock) };
         return updated;
       }
-      return [...prev, { product, quantity, selectedVariant: variant }];
+
+      if (quantity > maxStock) {
+        reachedLimit = true;
+      }
+      return [...prev, { product, quantity: Math.min(quantity, maxStock), selectedVariant: variant }];
     });
 
-    showToast(`Added "${product.name.slice(0, 24)}..." to your cart!`, 'success', 'View Cart', () => {
-      setIsCartOpen(true);
-    });
+    if (reachedLimit) {
+      showToast(`Stock maximum atteint (${maxStock} unités) pour cet article`, 'warning');
+    } else {
+      showToast(`« ${product.name.slice(0, 24)}... » ajouté au panier !`, 'success', 'Voir Panier', () => {
+        setIsCartOpen(true);
+      });
+    }
   }, [showToast]);
 
   const removeFromCart = useCallback((productId: string, variantId?: string) => {
     setCart((prev) =>
-      prev.filter(
-        (item) => !(item.product.id === productId && (!variantId || item.selectedVariant?.id === variantId))
-      )
+      prev.filter((item) => {
+        const matchesProduct = item.product.id === productId;
+        const matchesVariant = (item.selectedVariant?.id ?? null) === (variantId ?? null);
+        return !(matchesProduct && matchesVariant);
+      })
     );
-    showToast('Item removed from cart', 'info');
+    showToast('Article retiré du panier', 'info');
   }, [showToast]);
 
   const updateCartQuantity = useCallback((productId: string, quantity: number, variantId?: string) => {
@@ -223,8 +330,12 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
     setCart((prev) =>
       prev.map((item) => {
-        if (item.product.id === productId && (!variantId || item.selectedVariant?.id === variantId)) {
-          return { ...item, quantity };
+        const matchesProduct = item.product.id === productId;
+        const matchesVariant = (item.selectedVariant?.id ?? null) === (variantId ?? null);
+        if (matchesProduct && matchesVariant) {
+          const maxStock = item.product.stockCount > 0 ? item.product.stockCount : 99;
+          const validQty = Math.min(Math.max(1, quantity), maxStock);
+          return { ...item, quantity: validQty };
         }
         return item;
       })
@@ -233,18 +344,19 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const clearCart = useCallback(() => {
     setCart([]);
-  }, []);
+    showToast('Le panier a été vidé', 'info');
+  }, [showToast]);
 
   // Wishlist
   const toggleWishlist = useCallback((productId: string) => {
     setWishlist((prev) => {
       const exists = prev.includes(productId);
       if (exists) {
-        showToast('Removed from wishlist', 'info');
+        showToast('Retiré des favoris', 'info');
         return prev.filter((id) => id !== productId);
       } else {
         const prod = products.find((p) => p.id === productId);
-        showToast(`Saved ${prod ? prod.name.slice(0, 20) : 'item'} to wishlist!`, 'success');
+        showToast(`« ${prod ? prod.name.slice(0, 20) : 'Article'} » ajouté aux favoris !`, 'success');
         return [...prev, productId];
       }
     });
@@ -265,11 +377,12 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     triggerLoading(350);
   }, [triggerLoading]);
 
-  // Calculations
+  // Calculations:
+  // 1. cartSubtotal: Sum of (unit price with variant modifier) * quantity
   const cartSubtotal = useMemo(() => {
     return cart.reduce((acc, item) => {
-      const modifier = item.selectedVariant?.priceModifier || 0;
-      return acc + (item.product.price + modifier) * item.quantity;
+      const unitPrice = Math.max(0, item.product.price + (item.selectedVariant?.priceModifier || 0));
+      return acc + unitPrice * item.quantity;
     }, 0);
   }, [cart]);
 
@@ -277,23 +390,37 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return cart.reduce((acc, item) => acc + item.quantity, 0);
   }, [cart]);
 
-  const shippingCost = useMemo(() => {
-    if (cart.length === 0) return 0;
-    return cartSubtotal >= FREE_SHIPPING_THRESHOLD ? 0 : STANDARD_SHIPPING_FLAT;
+  const isFreeShipping = useMemo(() => {
+    return cart.length > 0 && cartSubtotal >= FREE_SHIPPING_THRESHOLD;
   }, [cart.length, cartSubtotal]);
 
+  const freeShippingRemaining = useMemo(() => {
+    if (cart.length === 0) return FREE_SHIPPING_THRESHOLD;
+    return Math.max(0, FREE_SHIPPING_THRESHOLD - cartSubtotal);
+  }, [cart.length, cartSubtotal]);
+
+  const shippingCost = useMemo(() => {
+    if (cart.length === 0) return 0;
+    return isFreeShipping ? 0 : STANDARD_SHIPPING_FLAT;
+  }, [cart.length, isFreeShipping]);
+
+  // Exact FCFA parity for discount and total:
+  // Subtotal FCFA - Discount FCFA + Shipping FCFA = Total FCFA (Exact to the single FCFA)
   const discountAmount = useMemo(() => {
-    if (!promoDiscount) return 0;
-    return (cartSubtotal * promoDiscount.percent) / 100;
-  }, [cartSubtotal, promoDiscount]);
+    if (!promoDiscount || cart.length === 0 || cartSubtotal === 0) return 0;
+    const subtotalFCFA = Math.round(cartSubtotal * USD_TO_FCFA_RATE);
+    const discountFCFA = Math.round((subtotalFCFA * promoDiscount.percent) / 100);
+    return discountFCFA / USD_TO_FCFA_RATE;
+  }, [cart.length, cartSubtotal, promoDiscount]);
 
   const cartTotal = useMemo(() => {
-    return Math.max(0, cartSubtotal - discountAmount + shippingCost);
-  }, [cartSubtotal, discountAmount, shippingCost]);
-
-  const freeShippingRemaining = useMemo(() => {
-    return Math.max(0, FREE_SHIPPING_THRESHOLD - cartSubtotal);
-  }, [cartSubtotal]);
+    if (cart.length === 0) return 0;
+    const subtotalFCFA = Math.round(cartSubtotal * USD_TO_FCFA_RATE);
+    const discountFCFA = promoDiscount ? Math.round((subtotalFCFA * promoDiscount.percent) / 100) : 0;
+    const shippingFCFA = isFreeShipping ? 0 : Math.round(STANDARD_SHIPPING_FLAT * USD_TO_FCFA_RATE);
+    const totalFCFA = Math.max(0, subtotalFCFA - discountFCFA + shippingFCFA);
+    return totalFCFA / USD_TO_FCFA_RATE;
+  }, [cart.length, cartSubtotal, promoDiscount, isFreeShipping]);
 
   // Filtered Products Logic
   const filteredProducts = useMemo(() => {
@@ -356,22 +483,42 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Promo Code
   const applyPromoCode = useCallback((code: string): boolean => {
     const cleanCode = code.trim().toUpperCase();
+    if (!cleanCode) return false;
+
     if (cleanCode === 'DSK15' || cleanCode === 'SAVE15') {
       setPromoDiscount({ code: cleanCode, percent: 15 });
-      showToast('15% discount applied!', 'success');
+      showToast('Code promo DSK15 appliqué : 15% de réduction !', 'success');
       return true;
-    } else if (cleanCode === 'WELCOME10') {
+    } else if (cleanCode === 'WELCOME10' || cleanCode === 'BIENVENUE10') {
       setPromoDiscount({ code: cleanCode, percent: 10 });
-      showToast('10% welcome discount applied!', 'success');
+      showToast('Code de bienvenue appliqué : 10% de réduction !', 'success');
       return true;
     } else if (cleanCode === 'VIP25') {
       setPromoDiscount({ code: cleanCode, percent: 25 });
-      showToast('25% VIP discount applied!', 'success');
+      showToast('Code VIP Privilège appliqué : 25% de réduction !', 'success');
+      return true;
+    } else if (cleanCode === 'DSK20' || cleanCode === 'PROMO20') {
+      setPromoDiscount({ code: cleanCode, percent: 20 });
+      showToast('Code promo spécial appliqué : 20% de réduction !', 'success');
+      return true;
+    } else if (cleanCode === 'LOME5' || cleanCode === 'DSK5') {
+      setPromoDiscount({ code: cleanCode, percent: 5 });
+      showToast('Code fidélité appliqué : 5% de réduction !', 'success');
       return true;
     } else {
-      showToast('Invalid promo code. Try "DSK15" or "WELCOME10"', 'warning');
+      showToast('Code promo invalide. Essayez « DSK15 », « BIENVENUE10 » ou « VIP25 »', 'warning');
       return false;
     }
+  }, [showToast]);
+
+  const removePromoCode = useCallback(() => {
+    setPromoDiscount(null);
+    try {
+      localStorage.removeItem('dsk_promo');
+    } catch {
+      // ignore
+    }
+    showToast('Code promo retiré', 'info');
   }, [showToast]);
 
   // Checkout & Order Creation
@@ -384,7 +531,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const newOrder: Order = {
       id: Math.random().toString(36).substring(2, 11),
       orderNumber,
-      date: now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      date: now.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }),
       items: [...cart],
       subtotal: cartSubtotal,
       shipping: shippingCost,
@@ -393,15 +540,20 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       shippingAddress: shipping,
       paymentMethod: payment,
       status: 'confirmed',
-      estimatedDelivery: deliveryDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      estimatedDelivery: deliveryDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }),
     };
 
     setLastOrder(newOrder);
     setCart([]);
     setPromoDiscount(null);
+    try {
+      localStorage.removeItem('dsk_promo');
+    } catch {
+      // ignore
+    }
     setActivePage('order-success');
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    showToast(`Order #${orderNumber} placed successfully!`, 'success');
+    showToast(`Commande #${orderNumber} confirmée avec succès !`, 'success');
     return newOrder;
   }, [cart, cartSubtotal, shippingCost, discountAmount, cartTotal, showToast]);
 
@@ -410,7 +562,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const newRev: ProductReview = {
       ...reviewData,
       id: Math.random().toString(36).substring(2, 9),
-      date: 'Just now',
+      date: 'À l’instant',
     };
 
     setProducts((prev) =>
@@ -432,7 +584,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       })
     );
 
-    showToast('Thank you! Your review has been submitted.', 'success');
+    showToast('Merci ! Votre avis a été publié avec succès.', 'success');
   }, [showToast]);
 
   return (
@@ -455,8 +607,12 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
         cartItemCount,
         freeShippingThreshold: FREE_SHIPPING_THRESHOLD,
         freeShippingRemaining,
+        isFreeShipping,
         isLoading,
         setIsLoading,
+        isInitialLoading,
+        isPageLoading,
+        pageLoading,
         refreshCatalog,
         navigateTo,
         openProduct,
@@ -471,6 +627,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
         resetFilters,
         filteredProducts,
         applyPromoCode,
+        removePromoCode,
         createOrder,
         addReview,
         showToast,

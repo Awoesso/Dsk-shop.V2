@@ -11,29 +11,29 @@ export const MobileNavigation: React.FC = () => {
         {/* Home */}
         <button
           onClick={() => navigateTo('home')}
-          className={`flex flex-col items-center justify-center py-2 px-3 rounded-xl min-w-[64px] min-h-[44px] transition-colors ${
+          className={`flex flex-col items-center justify-center py-2 px-3 rounded-xl min-w-[64px] min-h-[44px] transition-colors cursor-pointer ${
             activePage === 'home' ? 'text-[#166534] font-bold' : 'text-[#647064] hover:text-[#172017]'
           }`}
         >
           <Home size={20} className={activePage === 'home' ? 'stroke-[2.5] text-[#166534]' : ''} />
-          <span className="text-[10px] mt-1 font-medium">Home</span>
+          <span className="text-[10px] mt-1 font-medium">Accueil</span>
         </button>
 
         {/* Shop / Browse */}
         <button
           onClick={() => navigateTo('shop')}
-          className={`flex flex-col items-center justify-center py-2 px-3 rounded-xl min-w-[64px] min-h-[44px] transition-colors ${
+          className={`flex flex-col items-center justify-center py-2 px-3 rounded-xl min-w-[64px] min-h-[44px] transition-colors cursor-pointer ${
             activePage === 'shop' ? 'text-[#166534] font-bold' : 'text-[#647064] hover:text-[#172017]'
           }`}
         >
           <Compass size={20} className={activePage === 'shop' ? 'stroke-[2.5] text-[#166534]' : ''} />
-          <span className="text-[10px] mt-1 font-medium">Catalog</span>
+          <span className="text-[10px] mt-1 font-medium">Boutique</span>
         </button>
 
         {/* Wishlist */}
         <button
           onClick={() => navigateTo('wishlist')}
-          className={`relative flex flex-col items-center justify-center py-2 px-3 rounded-xl min-w-[64px] min-h-[44px] transition-colors ${
+          className={`relative flex flex-col items-center justify-center py-2 px-3 rounded-xl min-w-[64px] min-h-[44px] transition-colors cursor-pointer ${
             activePage === 'wishlist' ? 'text-[#166534] font-bold' : 'text-[#647064] hover:text-[#172017]'
           }`}
         >
@@ -45,13 +45,13 @@ export const MobileNavigation: React.FC = () => {
               </span>
             )}
           </div>
-          <span className="text-[10px] mt-1 font-medium">Wishlist</span>
+          <span className="text-[10px] mt-1 font-medium">Favoris</span>
         </button>
 
         {/* Cart */}
         <button
           onClick={() => setIsCartOpen(true)}
-          className="relative flex flex-col items-center justify-center py-2 px-3 rounded-xl min-w-[64px] min-h-[44px] text-[#647064] hover:text-[#166534] transition-colors"
+          className="relative flex flex-col items-center justify-center py-2 px-3 rounded-xl min-w-[64px] min-h-[44px] text-[#647064] hover:text-[#166534] transition-colors cursor-pointer"
         >
           <div className="relative">
             <ShoppingBag size={20} />
@@ -61,7 +61,7 @@ export const MobileNavigation: React.FC = () => {
               </span>
             )}
           </div>
-          <span className="text-[10px] mt-1 font-medium">Cart</span>
+          <span className="text-[10px] mt-1 font-medium">Panier</span>
         </button>
       </nav>
     </div>
