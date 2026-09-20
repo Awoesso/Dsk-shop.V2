@@ -1,54 +1,17 @@
-import { Category, Product } from '../types';
-
-export const CATEGORIES: Category[] = [
-  {
-    id: 'all',
-    name: 'Tous les Produits',
-    slug: 'all',
-    iconName: 'LayoutGrid',
-    itemCount: 16,
-    description: 'Explorez la collection complète DSK : équipements technologiques de pointe et accessoires lifestyle premium.',
-    image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=80',
-  },
-  {
-    id: 'audio',
-    name: 'Audio & Son',
-    slug: 'audio',
-    iconName: 'Headphones',
-    itemCount: 4,
-    description: 'Acoustique de qualité studio, réduction active du bruit et liberté sans fil haute fidélité.',
-    image: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=800&auto=format&fit=crop&q=80',
-  },
-  {
-    id: 'computing',
-    name: 'Informatique & Bureau',
-    slug: 'computing',
-    iconName: 'Laptop',
-    itemCount: 4,
-    description: 'Périphériques haute performance, ergonomie avancée et accessoires de bureau sur mesure.',
-    image: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=800&auto=format&fit=crop&q=80',
-  },
-  {
-    id: 'smart-home',
-    name: 'Maison Connectée & Tech',
-    slug: 'smart-home',
-    iconName: 'Home',
-    itemCount: 4,
-    description: 'Éclairage d’ambiance intelligent, capteurs de bien-être et confort connecté.',
-    image: 'https://images.unsplash.com/photo-1558002038-1055907df827?w=800&auto=format&fit=crop&q=80',
-  },
-  {
-    id: 'lifestyle',
-    name: 'Accessoires & Lifestyle',
-    slug: 'lifestyle',
-    iconName: 'Briefcase',
-    itemCount: 4,
-    description: 'Sacs étanches, outils en titane et objets essentiels pour votre quotidien actif.',
-    image: 'https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?w=800&auto=format&fit=crop&q=80',
-  },
-];
+import { Product } from '../types';
+export {
+  CATEGORIES,
+  PRODUCT_CATEGORIES,
+  CATEGORY_MAP,
+  DEFAULT_CATEGORY_ICONS,
+  DEFAULT_CATEGORY_IMAGES,
+  normalizeCategory,
+} from '../constants/categories';
 
 export const PRODUCTS: Product[] = [
+  // -------------------------------------------------------------
+  // 1. Electronics
+  // -------------------------------------------------------------
   {
     id: 'dsk-headphone-pro',
     name: 'Casque Sans Fil AeroWave Pro ANC',
@@ -59,8 +22,8 @@ export const PRODUCTS: Product[] = [
     discountPercent: 14,
     rating: 4.9,
     reviewCount: 142,
-    category: 'audio',
-    subcategory: 'Casques Audio',
+    category: 'Electronics',
+    subcategory: 'Audio & Casques',
     inStock: true,
     stockCount: 18,
     isFeatured: true,
@@ -102,14 +65,6 @@ export const PRODUCTS: Product[] = [
         comment: 'La réduction de bruit est bluffante en ville et dans les transports à Lomé. Scène sonore détaillée et basses très précises.',
         verifiedPurchase: true,
       },
-      {
-        id: 'r-2',
-        author: 'Elena Rostova',
-        rating: 5,
-        date: 'Il y a 1 semaine',
-        comment: 'L’autonomie est incroyable. Utilisé toute la semaine au travail sans avoir besoin de brancher le câble une seule fois.',
-        verifiedPurchase: true,
-      },
     ],
   },
   {
@@ -122,8 +77,8 @@ export const PRODUCTS: Product[] = [
     discountPercent: 16,
     rating: 4.8,
     reviewCount: 98,
-    category: 'computing',
-    subcategory: 'Claviers',
+    category: 'Electronics',
+    subcategory: 'Claviers & Périphériques',
     inStock: true,
     stockCount: 24,
     isFeatured: true,
@@ -144,15 +99,10 @@ export const PRODUCTS: Product[] = [
       'Switches': 'KeyCraft Linéaires fluides (activation 45g)',
       'Batterie': '4000 mAh (jusqu’à 200 h sans rétroéclairage)',
       'Châssis': 'Aluminium 6063 usiné CNC et anodisé',
-      'Compatibilité': 'macOS, Windows, Linux, iOS, Android',
     },
     images: [
       'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=1000&auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=1000&auto=format&fit=crop&q=80',
-    ],
-    variants: [
-      { id: 'v-linear', name: 'Switches Linéaires 45g (Rouge)', type: 'style', value: 'Red Linear', inStock: true },
-      { id: 'v-tactile', name: 'Switches Tactiles 55g (Marron)', type: 'style', value: 'Brown Tactile', inStock: true },
     ],
     reviews: [
       {
@@ -175,7 +125,7 @@ export const PRODUCTS: Product[] = [
     discountPercent: 17,
     rating: 4.7,
     reviewCount: 215,
-    category: 'computing',
+    category: 'Electronics',
     subcategory: 'Souris',
     inStock: true,
     stockCount: 35,
@@ -187,33 +137,16 @@ export const PRODUCTS: Product[] = [
       'Capteur Darkfield haute précision 8 000 DPI fonctionnant même sur verre transparent',
       'Molette MagSpeed : défilement précis ligne par ligne ou jusqu’à 1 000 lignes/seconde',
       'Molette latérale pour défilement horizontal fluide dans les feuilles de calcul et timelines',
-      'Technologie multi-appareils pour copier-coller du texte et fichiers entre 3 PC',
       'Jusqu’à 70 jours d’autonomie sur une seule recharge USB-C',
     ],
     specs: {
       'Sensibilité': '200 à 8 000 DPI par incréments de 50 DPI',
       'Boutons': '7 boutons personnalisables',
-      'Capteur': 'Optique Laser Darkfield',
-      'Batterie': 'Rechargeable Li-Po (500 mAh)',
       'Poids': '141 g',
     },
     images: [
       'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=1000&auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=1000&auto=format&fit=crop&q=80',
-    ],
-    variants: [
-      { id: 'v-graphite', name: 'Noir Graphite', type: 'color', value: '#27272a', inStock: true },
-      { id: 'v-pale-grey', name: 'Gris Perle', type: 'color', value: '#f1f5f9', inStock: true },
-    ],
-    reviews: [
-      {
-        id: 'r-4',
-        author: 'Sarah Jenkins',
-        rating: 5,
-        date: 'Il y a 2 semaines',
-        comment: 'A résolu toutes mes douleurs au poignet après de longues journées de travail sur ordinateur. La molette latérale est géniale.',
-        verifiedPurchase: true,
-      },
     ],
   },
   {
@@ -226,7 +159,7 @@ export const PRODUCTS: Product[] = [
     discountPercent: 10,
     rating: 4.8,
     reviewCount: 76,
-    category: 'audio',
+    category: 'Electronics',
     subcategory: 'Écouteurs',
     inStock: true,
     stockCount: 15,
@@ -236,133 +169,16 @@ export const PRODUCTS: Product[] = [
       'Écouteurs intra-auriculaires ultra-légers avec suivi dynamique de la tête pour un son spatial immersif à 360°. Résistance à l’eau IPX5 idéale pour le sport et les intempéries.',
     features: [
       'Audio spatialisé 360° avec suivi gyroscopique de la tête en temps réel',
-      'Mode transparence adaptatif pour percevoir l’environnement sans retirer les oreillettes',
+      'Mode transparence adaptatif pour percevoir l’environnement',
       'Boîtier compatible recharge sans fil Qi et MagSafe',
-      'Microphones avec filtre anti-vent pour des appels d’une clarté cristalline',
-      '8 heures d’écoute continue, 32 heures au total avec le boîtier de poche',
     ],
     specs: {
       'Étanchéité': 'IPX5 résistant à la sueur et aux éclaboussures',
       'Codecs': 'AAC, SBC, aptX Adaptatif',
-      'Recharge boîtier': 'Sans fil Qi, MagSafe et USB-C',
-      'Poids écouteur': '4,8 g chacun',
     },
     images: [
       'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=1000&auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?w=1000&auto=format&fit=crop&q=80',
-    ],
-    variants: [
-      { id: 'v-matte-white', name: 'Blanc Pur', type: 'color', value: '#ffffff', inStock: true },
-      { id: 'v-matte-black', name: 'Noir Mat', type: 'color', value: '#18181b', inStock: true },
-    ],
-    reviews: [
-      {
-        id: 'r-5',
-        author: 'Thierry Ross',
-        rating: 5,
-        date: 'Il y a 5 jours',
-        comment: 'Tiennent parfaitement dans les oreilles pendant le footing. L’immersion sonore devant une vidéo est impressionnante.',
-        verifiedPurchase: true,
-      },
-    ],
-  },
-  {
-    id: 'dsk-ambient-lamp',
-    name: 'Lampe de Bureau Minimaliste Lumina Bar',
-    slug: 'lumina-bar-minimalist-desk-lamp',
-    brand: 'LuminaLife',
-    price: 89,
-    originalPrice: 109,
-    discountPercent: 18,
-    rating: 4.9,
-    reviewCount: 164,
-    category: 'smart-home',
-    subcategory: 'Éclairage',
-    inStock: true,
-    stockCount: 40,
-    isFeatured: true,
-    tags: ['Anti-Reflet', 'Gradation Auto', 'Température Ajustable', 'Aluminium'],
-    description:
-      'Conception optique asymétrique illuminant le plan de travail sans aucun reflet sur l’écran d’ordinateur, prévenant la fatigue oculaire. Télécommande circulaire sans fil incluse.',
-    features: [
-      'Faisceau optique asymétrique breveté : éclaire le bureau sans réflexion sur l’écran',
-      'Capteur de luminosité ambiante ajustant automatiquement l’intensité au fil de la journée',
-      'Molette de commande sans fil pour régler la luminosité et la température (2700K - 6500K)',
-      'Contrepoids stable compatible avec écrans plats et incurvés de 0,5 à 4,5 cm d’épaisseur',
-      'IRC > 95 pour une restitution fidèle des couleurs des graphistes et créateurs',
-    ],
-    specs: {
-      'Température de couleur': '2700K à 6500K progressive',
-      'Indice IRC': 'Ra > 95',
-      'Alimentation': 'USB Type-C (5V / 1,5A)',
-      'Matériau': 'Alliage d’aluminium sablé mat',
-      'Longueur barre': '450 mm',
-    },
-    images: [
-      'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=1000&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=1000&auto=format&fit=crop&q=80',
-    ],
-    reviews: [
-      {
-        id: 'r-6',
-        author: 'Rebecca Miller',
-        rating: 5,
-        date: 'Il y a 1 semaine',
-        comment: 'Libère un espace précieux sur le bureau tout en éclairant superbement les notes et le clavier.',
-        verifiedPurchase: true,
-      },
-    ],
-  },
-  {
-    id: 'dsk-backpack-carry',
-    name: 'Sac à Dos Urbain Étanche TerraShield 24L',
-    slug: 'terrashield-weatherproof-commuter-backpack',
-    brand: 'TerraCarry',
-    price: 145,
-    originalPrice: 175,
-    discountPercent: 17,
-    rating: 4.8,
-    reviewCount: 88,
-    category: 'lifestyle',
-    subcategory: 'Bagagerie',
-    inStock: true,
-    stockCount: 12,
-    isFeatured: true,
-    tags: ['Imperméable', 'Cordura 840D', 'PC 16 Pouces', 'Fermetures YKK'],
-    description:
-      'Fabriqué en nylon balistique Cordura imperméable avec fermetures magnétiques Fidlock. Compartiment suspendu doublé polaire pour ordinateur portable et poche passeport discrète.',
-    features: [
-      'Extérieur en Cordura 840D balistique et zips étanches YKK AquaGuard',
-      'Compartiment suspendu protégeant les ordinateurs portables jusqu’à 16 pouces contre les chutes',
-      'Ouverture valise à 180° facilitant le rangement et les contrôles en aéroport',
-      'Panneau dorsal ergonomique en mousse EVA thermoformée respirante',
-      'Sangle dorsale pour glisser le sac sur la poignée télescopique d’une valise',
-    ],
-    specs: {
-      'Capacité': '24 Litres',
-      'Dimensions': '48 cm x 30 cm x 18 cm',
-      'Poids': '1,08 kg',
-      'Compartiment PC': 'Compatible MacBook Pro 16" / PC 15,6"',
-      'Finitions': 'Boucles magnétiques Fidlock & attaches Duraflex',
-    },
-    images: [
-      'https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?w=1000&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=1000&auto=format&fit=crop&q=80',
-    ],
-    variants: [
-      { id: 'v-obsidian', name: 'Noir Obsidienne', type: 'color', value: '#0f172a', inStock: true },
-      { id: 'v-stone', name: 'Gris Minéral', type: 'color', value: '#64748b', inStock: true },
-      { id: 'v-sage', name: 'Vert Forêt', type: 'color', value: '#15803d', inStock: false },
-    ],
-    reviews: [
-      {
-        id: 'r-7',
-        author: 'Christophe Palmer',
-        rating: 5,
-        date: 'Il y a 3 semaines',
-        comment: 'Pris sous une grosse averse tropicale à Lomé, tout mon matériel informatique est resté rigoureusement sec.',
-        verifiedPurchase: true,
-      },
     ],
   },
   {
@@ -375,7 +191,7 @@ export const PRODUCTS: Product[] = [
     discountPercent: 12,
     rating: 4.7,
     reviewCount: 62,
-    category: 'audio',
+    category: 'Electronics',
     subcategory: 'Enceintes',
     inStock: true,
     stockCount: 14,
@@ -385,76 +201,14 @@ export const PRODUCTS: Product[] = [
     features: [
       'Deux radiateurs passifs opposés délivrant des basses amples sans vibration parasite',
       'Calibration acoustique d’ambiance en temps réel via microphones intégrés',
-      'Compatible Apple AirPlay 2, Spotify Connect, Tidal Connect et Bluetooth 5.2',
-      'Panneau tactile en verre capacitif avec capteurs de proximité rétroéclairés',
     ],
     specs: {
       'Amplification': 'Amplificateur numérique Classe D de 65W RMS',
       'Connectivité': 'Wi-Fi 6 (802.11ax), Bluetooth 5.2, Entrée optique',
-      'Dimensions': '190 mm de haut x 135 mm de diamètre',
-      'Poids': '2,1 kg',
     },
     images: [
       'https://images.unsplash.com/photo-1545454675-3531b543be5d?w=1000&auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1543512214-318c7553f230?w=1000&auto=format&fit=crop&q=80',
-    ],
-    reviews: [
-      {
-        id: 'r-8',
-        author: 'Julien Thorne',
-        rating: 5,
-        date: 'Il y a 4 jours',
-        comment: 'Rendu sonore impressionnant par rapport à sa taille. La calibration dans le salon apporte une clarté remarquable.',
-        verifiedPurchase: true,
-      },
-    ],
-  },
-  {
-    id: 'dsk-desk-mat',
-    name: 'Tapis de Bureau Laine Mérinos & Cuir Pleine Fleur',
-    slug: 'artisan-wool-felt-leather-desk-pad',
-    brand: 'DeskCraft',
-    price: 49,
-    originalPrice: 65,
-    discountPercent: 24,
-    rating: 4.9,
-    reviewCount: 310,
-    category: 'computing',
-    subcategory: 'Accessoires Bureau',
-    inStock: true,
-    stockCount: 50,
-    isBestSeller: true,
-    tags: ['Laine Mérinos', 'Antidérapant', 'Cuir Véritable', 'Résistant à l’Eau'],
-    description:
-      'Feutre naturel de laine Mérinos haute densité associé à un empiècement en cuir tanné végétal italien. Protège le bureau tout en offrant une glisse de souris ultra-douce.',
-    features: [
-      'Feutre en pure laine Mérinos résistant naturellement aux taches et petites éclaboussures',
-      'Guide-câble magnétique intégré pour garder les chargeurs ordonnés sur le bureau',
-      'Base en silicone antidérapante alvéolée assurant une tenue parfaite sur bois, verre et métal',
-      'Dimensions généreuses de 90 cm x 40 cm pour accueillir clavier, souris et carnet',
-    ],
-    specs: {
-      'Dimensions': '90 cm x 40 cm x 4 mm',
-      'Composition': 'Feutre de pure laine Mérinos, Cuir de sellerie italien, Base silicone',
-      'Entretien': 'Nettoyage ponctuel avec un chiffon humide et savon doux',
-    },
-    images: [
-      'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=1000&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1593062096033-9a26b09da705?w=1000&auto=format&fit=crop&q=80',
-    ],
-    variants: [
-      { id: 'v-anthracite', name: 'Gris Anthracite', type: 'color', value: '#334155', inStock: true },
-      { id: 'v-heather', name: 'Gris Chiné Clair', type: 'color', value: '#cbd5e1', inStock: true },
-    ],
-    reviews: [
-      {
-        id: 'r-9',
-        author: 'Liam O’Connor',
-        rating: 5,
-        date: 'Il y a 1 mois',
-        comment: 'Transforme instantanément un bureau froid en un espace élégant et chaleureux. La souris glisse comme sur de la soie.',
-        verifiedPurchase: true,
-      },
     ],
   },
   {
@@ -467,84 +221,221 @@ export const PRODUCTS: Product[] = [
     discountPercent: 12,
     rating: 4.8,
     reviewCount: 140,
-    category: 'computing',
-    subcategory: 'Recharge',
+    category: 'Electronics',
+    subcategory: 'Recharge & Alimentation',
     inStock: true,
     stockCount: 22,
     tags: ['GaN III', '100W PD', '4 Ports', 'Ultra Compact'],
     description:
-      'Propulsé par les semi-conducteurs au nitrure de gallium nouvelle génération. Fournit jusqu’à 100W Power Delivery pour recharger PC portable, smartphone et tablette en même temps sans surchauffe.',
+      'Propulsé par les semi-conducteurs au nitrure de gallium nouvelle génération. Fournit jusqu’à 100W Power Delivery pour recharger PC portable, smartphone et tablette sans surchauffe.',
     features: [
       'Puce GaN III 35% plus froide et 40% plus compacte que les chargeurs classiques',
-      '3 ports USB-C et 1 port USB-A avec répartition intelligente et dynamique de la puissance',
-      'Recharge un MacBook Pro 16" de 0 à 50% en seulement 32 minutes',
-      'Protection thermique multi-points surveillant la température en continu',
+      '3 ports USB-C et 1 port USB-A avec répartition intelligente de la puissance',
     ],
     specs: {
       'Puissance totale': '100W Max',
       'Ports': '3x USB-C PD 3.0 / PPS, 1x USB-A QC 3.0',
-      'Dimensions': '65 mm x 65 mm x 32 mm',
-      'Poids': '198 g',
     },
     images: [
       'https://images.unsplash.com/photo-1622445262464-84b1456045b6?w=1000&auto=format&fit=crop&q=80',
     ],
-    reviews: [
-      {
-        id: 'r-10',
-        author: 'Chloé Simmons',
-        rating: 5,
-        date: 'Il y a 2 semaines',
-        comment: 'Remplace tous mes chargeurs de voyage par un seul petit bloc. Alimente mon PC portable et mon téléphone sans chauffer.',
-        verifiedPurchase: true,
-      },
+  },
+
+  // -------------------------------------------------------------
+  // 2. Fashion
+  // -------------------------------------------------------------
+  {
+    id: 'dsk-backpack-carry',
+    name: 'Sac à Dos Urbain Étanche TerraShield 24L',
+    slug: 'terrashield-weatherproof-commuter-backpack',
+    brand: 'TerraCarry',
+    price: 145,
+    originalPrice: 175,
+    discountPercent: 17,
+    rating: 4.8,
+    reviewCount: 88,
+    category: 'Fashion',
+    subcategory: 'Bagagerie & Sacs',
+    inStock: true,
+    stockCount: 12,
+    isFeatured: true,
+    tags: ['Imperméable', 'Cordura 840D', 'PC 16 Pouces', 'Fermetures YKK'],
+    description:
+      'Fabriqué en nylon balistique Cordura imperméable avec fermetures magnétiques Fidlock. Compartiment suspendu doublé polaire pour ordinateur portable et poche passeport discrète.',
+    features: [
+      'Extérieur en Cordura 840D balistique et zips étanches YKK AquaGuard',
+      'Compartiment suspendu protégeant les ordinateurs portables jusqu’à 16 pouces contre les chutes',
+    ],
+    specs: {
+      'Capacité': '24 Litres',
+      'Dimensions': '48 cm x 30 cm x 18 cm',
+    },
+    images: [
+      'https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?w=1000&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=1000&auto=format&fit=crop&q=80',
     ],
   },
   {
-    id: 'dsk-thermal-bottle',
-    name: 'Bouteille Isotherme en Titane HydroVacuum 750ml',
-    slug: 'hydrovacuum-titanium-thermal-flask-750ml',
+    id: 'dsk-fashion-jacket',
+    name: 'Veste Coupe-Vent Technique Respirante UrbanTech',
+    slug: 'urbantech-breathable-windbreaker-jacket',
     brand: 'TerraCarry',
-    price: 55,
-    originalPrice: 65,
-    discountPercent: 15,
+    price: 129,
+    originalPrice: 159,
+    discountPercent: 18,
     rating: 4.9,
-    reviewCount: 112,
-    category: 'lifestyle',
-    subcategory: 'Gourdes & Hydratation',
+    reviewCount: 54,
+    category: 'Fashion',
+    subcategory: 'Vêtements',
     inStock: true,
-    stockCount: 30,
-    tags: ['Titane Grade 1', 'Froid 24h', 'Chaud 12h', 'Anti-Fuite'],
+    stockCount: 16,
+    isNew: true,
+    tags: ['Coupe-vent', 'Imperméable', 'Respirant', 'Style Minimaliste'],
     description:
-      'Gourde ultra-légère en titane pur médical Grade 1. L’isolation sous vide à double paroi garde les boissons glacées pendant 24 heures ou fumantes pendant 12 heures sans aucun goût résiduel.',
+      'Conçue pour affronter la pluie et le vent avec élégance. Membrane respirante triple couche avec coutures thermo-soudées et capuche ergonomique rétractable.',
     features: [
-      'Forgée en titane médical pur Grade 1 : zéro corrosion, aucune altération du goût de l’eau',
-      'Double paroi sous vide maintenant le froid pendant 24 h et le chaud pendant 12 h',
-      'Bouchon vissant étanche avec joint silicone alimentaire et boucle mousqueton titane',
-      'Pèse seulement 185 grammes, deux fois plus légère qu’une gourde en acier inox',
+      'Tissu technique ripstop résistant aux déchirures et déperlant DWR sans PFC',
+      'Poches intérieures zippées pour smartphone et papiers d’identité',
     ],
     specs: {
-      'Contenance': '750 ml',
-      'Poids': '185 g',
-      'Matériau': 'Titane pur Grade 1 (Corps et Bouchon)',
-      'Hauteur': '24,5 cm',
+      'Matière': '100% Polyester recyclé déperlant 10K/10K',
+      'Tailles': 'S, M, L, XL',
     },
     images: [
-      'https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=1000&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1544441893-675973e31985?w=1000&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=1000&auto=format&fit=crop&q=80',
     ],
-    variants: [
-      { id: 'v-raw-ti', name: 'Titane Brut Mat', type: 'color', value: '#94a3b8', inStock: true },
-      { id: 'v-anodized-blue', name: 'Bleu Cobalt Anodisé', type: 'color', value: '#2563eb', inStock: true },
+  },
+  {
+    id: 'dsk-fashion-sneakers',
+    name: 'Sneakers Minimalistes Cuir Pleine Fleur Lomé',
+    slug: 'minimalist-leather-sneakers-lome',
+    brand: 'AtelierLomé',
+    price: 110,
+    originalPrice: 135,
+    discountPercent: 18,
+    rating: 4.8,
+    reviewCount: 67,
+    category: 'Fashion',
+    subcategory: 'Chaussures',
+    inStock: true,
+    stockCount: 20,
+    tags: ['Cuir Véritable', 'Fait Main', 'Semelle Confort', 'Durable'],
+    description:
+      'Sneakers basses intemporelles en cuir blanc lisse avec semelle en caoutchouc naturel cousue. Confort exceptionnel pour la marche urbaine quotidienne.',
+    features: [
+      'Cuir pleine fleur tanné naturellement sans métaux lourds',
+      'Semelle intérieure anatomique amortissante en liège et latex',
     ],
-    reviews: [
-      {
-        id: 'r-11',
-        author: 'Aaron Klein',
-        rating: 5,
-        date: 'Il y a 2 mois',
-        comment: 'Fini le goût métallique des gourdes classiques. L’eau reste bien fraîche même en pleine chaleur.',
-        verifiedPurchase: true,
-      },
+    specs: {
+      'Composition': 'Cuir de veau premium, semelle caoutchouc naturel',
+      'Origine': 'Fabriqué artisanalement',
+    },
+    images: [
+      'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=1000&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=1000&auto=format&fit=crop&q=80',
+    ],
+  },
+
+  // -------------------------------------------------------------
+  // 3. Books
+  // -------------------------------------------------------------
+  {
+    id: 'dsk-book-design',
+    name: 'Le Grand Manuel du Design Graphique & Typographie Moderne',
+    slug: 'le-grand-manuel-du-design-graphique-typographie',
+    brand: 'Éditions DSK',
+    price: 39,
+    originalPrice: 45,
+    discountPercent: 13,
+    rating: 4.9,
+    reviewCount: 42,
+    category: 'Books',
+    subcategory: 'Design & Art',
+    inStock: true,
+    stockCount: 25,
+    isFeatured: true,
+    tags: ['Livre Relié', 'Design System', 'Typographie', 'Papier d’Art'],
+    description:
+      'Une référence incontournable pour designers, développeurs et créatifs. Décrypte les règles fondamentales du grid layout, des harmonies de couleurs et du branding moderne.',
+    features: [
+      'Ouvrage relié grand format 24x30 cm avec couverture toilée et dorure à chaud',
+      '320 pages illustrées sur papier couché d’art 150g respectueux de l’environnement',
+      'Études de cas réelles de marques internationales et grilles de composition',
+    ],
+    specs: {
+      'Pages': '320 pages quadri',
+      'Langue': 'Français',
+      'Éditeur': 'Éditions DSK Studio',
+    },
+    images: [
+      'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=1000&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=1000&auto=format&fit=crop&q=80',
+    ],
+  },
+  {
+    id: 'dsk-book-tech-africa',
+    name: 'Bâtir son Projet Tech en Afrique de l’Ouest',
+    slug: 'batir-son-projet-tech-afrique-ouest',
+    brand: 'Éditions DSK',
+    price: 29,
+    originalPrice: 35,
+    discountPercent: 17,
+    rating: 4.8,
+    reviewCount: 31,
+    category: 'Books',
+    subcategory: 'Business & Tech',
+    inStock: true,
+    stockCount: 18,
+    tags: ['Entrepreneuriat', 'Fintech', 'Afrique', 'Stratégie'],
+    description:
+      'Guide pratique pour concevoir, financer et déployer une plateforme technologique à succès en Afrique de l’Ouest. Retours d’expériences d’experts à Lomé, Cotonou, Abidjan et Dakar.',
+    features: [
+      'Conseils concrets sur l’intégration des paiements mobiles (T-Money, Moov, Wave)',
+      'Stratégies de logistique du dernier kilomètre et gestion de trésorerie',
+    ],
+    specs: {
+      'Pages': '248 pages',
+      'Langue': 'Français',
+    },
+    images: [
+      'https://images.unsplash.com/photo-1532012164546-f432f2e3777a?w=1000&auto=format&fit=crop&q=80',
+    ],
+  },
+
+  // -------------------------------------------------------------
+  // 4. Home
+  // -------------------------------------------------------------
+  {
+    id: 'dsk-ambient-lamp',
+    name: 'Lampe de Bureau Minimaliste Lumina Bar',
+    slug: 'lumina-bar-minimalist-desk-lamp',
+    brand: 'LuminaLife',
+    price: 89,
+    originalPrice: 109,
+    discountPercent: 18,
+    rating: 4.9,
+    reviewCount: 164,
+    category: 'Home',
+    subcategory: 'Éclairage & Luminaires',
+    inStock: true,
+    stockCount: 40,
+    isFeatured: true,
+    tags: ['Anti-Reflet', 'Gradation Auto', 'Température Ajustable', 'Aluminium'],
+    description:
+      'Conception optique asymétrique illuminant le plan de travail sans aucun reflet sur l’écran d’ordinateur, prévenant la fatigue oculaire. Télécommande circulaire sans fil incluse.',
+    features: [
+      'Faisceau optique asymétrique breveté : éclaire le bureau sans réflexion sur l’écran',
+      'Capteur de luminosité ambiante ajustant automatiquement l’intensité',
+    ],
+    specs: {
+      'Température de couleur': '2700K à 6500K progressive',
+      'Indice IRC': 'Ra > 95',
+      'Alimentation': 'USB Type-C (5V / 1,5A)',
+    },
+    images: [
+      'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=1000&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=1000&auto=format&fit=crop&q=80',
     ],
   },
   {
@@ -557,37 +448,249 @@ export const PRODUCTS: Product[] = [
     discountPercent: 17,
     rating: 4.6,
     reviewCount: 45,
-    category: 'smart-home',
+    category: 'Home',
     subcategory: 'Climat & Air',
     inStock: true,
     stockCount: 19,
     tags: ['Écran E-Ink', 'Capteur CO2', 'Compatible Matter', 'Humidité'],
     description:
-      'Écran E-Ink haute lisibilité affichant en temps réel la température, le taux d’humidité relative, les composés organiques volatils (COV) et le taux de CO2. Compatible Apple Home, Alexa et Matter.',
+      'Écran E-Ink haute lisibilité affichant en temps réel la température, le taux d’humidité relative, les composés organiques volatils (COV) et le taux de CO2.',
     features: [
       'Écran papier électronique E-Ink 4,2 pouces parfaitement lisible même en plein soleil',
-      'Capteurs suisses Sensirion mesurant le CO2, les particules fines, l’humidité et la température',
-      'Protocole Matter permettant une intégration facile avec Apple HomeKit, Alexa et Google Home',
-      'Jusqu’à 12 mois d’autonomie sur 2 piles AA classiques',
+      'Capteurs suisses Sensirion mesurant le CO2, les particules fines et l’humidité',
     ],
     specs: {
-      'Affichage': 'Écran E-Ink 4,2 pouces, résolution 400x300',
-      'Connectivité': 'Matter over Thread, Bluetooth LE',
-      'Alimentation': '2 piles AA Lithium (fournies)',
-      'Dimensions': '10 cm x 10 cm x 2,2 cm',
+      'Affichage': 'Écran E-Ink 4,2 pouces',
+      'Alimentation': '2 piles AA Lithium',
     },
     images: [
       'https://images.unsplash.com/photo-1558002038-1055907df827?w=1000&auto=format&fit=crop&q=80',
     ],
-    reviews: [
-      {
-        id: 'r-12',
-        author: 'Danielle Wu',
-        rating: 5,
-        date: 'Il y a 3 semaines',
-        comment: 'A permis d’identifier que notre bureau manquait d’aération avec un taux de CO2 qui montait l’après-midi. Indispensable.',
-        verifiedPurchase: true,
-      },
+  },
+  {
+    id: 'dsk-aroma-diffuser',
+    name: 'Diffuseur Ultrasonique en Céramique AromaSculpt',
+    slug: 'aromasculpt-ultrasonic-ceramic-diffuser',
+    brand: 'LuminaLife',
+    price: 59,
+    originalPrice: 75,
+    discountPercent: 21,
+    rating: 4.8,
+    reviewCount: 52,
+    category: 'Home',
+    subcategory: 'Décoration & Senteurs',
+    inStock: true,
+    stockCount: 22,
+    tags: ['Céramique Blanche', 'Brume Silencieuse', 'Arrêt Auto', 'Ambiance Zen'],
+    description:
+      'Taillé dans une cloche en céramique mate texturée. Diffuse une brume ultrafine d’huiles essentielles pour purifier l’atmosphère de votre maison dans un silence total.',
+    features: [
+      'Nébulisation ultrasonique sans chaleur préservant toutes les vertus des huiles',
+      'Éclairage d’ambiance à LED blanc chaud simulant une flamme de bougie apaisante',
+    ],
+    specs: {
+      'Capacité réservoir': '180 ml (jusqu’à 8 heures de diffusion)',
+      'Dimensions': '12 cm x 12 cm x 18 cm',
+    },
+    images: [
+      'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=1000&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1547887537-6158d64c35b3?w=1000&auto=format&fit=crop&q=80',
+    ],
+  },
+
+  // -------------------------------------------------------------
+  // 5. Beauty
+  // -------------------------------------------------------------
+  {
+    id: 'dsk-beauty-serum',
+    name: 'Coffret Sérum Botanique Éclat & Huile Pure de Moringa',
+    slug: 'coffret-serum-botanique-moringa-lome',
+    brand: 'KariBio',
+    price: 45,
+    originalPrice: 55,
+    discountPercent: 18,
+    rating: 4.9,
+    reviewCount: 38,
+    category: 'Beauty',
+    subcategory: 'Soins Visage & Corps',
+    inStock: true,
+    stockCount: 26,
+    isFeatured: true,
+    tags: ['100% Bio', 'Moringa du Togo', 'Vitamine C', 'Hydratation Profonde'],
+    description:
+      'Élixir nourrissant formulé à base d’huile de graines de Moringa pressée à froid au Togo, combinée à l’acide hyaluronique et à la vitamine C pure pour un teint radieux.',
+    features: [
+      'Ingrédients 100% naturels issus du commerce équitable certifié',
+      'Pénètre rapidement sans fini gras, convenant à tous types de peau',
+    ],
+    specs: {
+      'Contenance': 'Flacon pipette en verre ambré 50 ml',
+      'Certification': 'Cosmétique Naturelle Certifiée',
+    },
+    images: [
+      'https://images.unsplash.com/photo-1608248597359-2144d01b17a1?w=1000&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=1000&auto=format&fit=crop&q=80',
+    ],
+  },
+  {
+    id: 'dsk-beauty-shave-kit',
+    name: 'Kit de Rasage Traditionnel en Acier Inoxydable & Blaireau',
+    slug: 'kit-rasage-traditionnel-acier-inoxydable',
+    brand: 'BarberTech',
+    price: 52,
+    originalPrice: 65,
+    discountPercent: 20,
+    rating: 4.8,
+    reviewCount: 44,
+    category: 'Beauty',
+    subcategory: 'Rasage & Barbe',
+    inStock: true,
+    stockCount: 15,
+    tags: ['Rasoir de Sécurité', 'Zéro Déchet', 'Poils Naturels', 'Acier Massif'],
+    description:
+      'Rasoir de sûreté double tranchant usiné en acier inoxydable chirurgical, accompagné d’un blaireau de précision et d’un bol à savon en céramique noire satinée.',
+    features: [
+      'Rasage de près sans irritation ni poils incarnés',
+      'Poignée ergonomique moletée antidérapante même avec les mains mouillées',
+    ],
+    specs: {
+      'Matériau': 'Acier inoxydable 316L',
+      'Inclus': 'Rasoir, blaireau, support et pack de 10 lames de platine',
+    },
+    images: [
+      'https://images.unsplash.com/photo-1590439471364-192aa70c0b53?w=1000&auto=format&fit=crop&q=80',
+    ],
+  },
+
+  // -------------------------------------------------------------
+  // 6. Sports
+  // -------------------------------------------------------------
+  {
+    id: 'dsk-thermal-bottle',
+    name: 'Bouteille Isotherme en Titane HydroVacuum 750ml',
+    slug: 'hydrovacuum-titanium-thermal-flask-750ml',
+    brand: 'TerraCarry',
+    price: 55,
+    originalPrice: 65,
+    discountPercent: 15,
+    rating: 4.9,
+    reviewCount: 112,
+    category: 'Sports',
+    subcategory: 'Hydratation & Fitness',
+    inStock: true,
+    stockCount: 30,
+    isFeatured: true,
+    tags: ['Titane Grade 1', 'Froid 24h', 'Chaud 12h', 'Anti-Fuite'],
+    description:
+      'Gourde ultra-légère en titane pur médical Grade 1. L’isolation sous vide à double paroi garde les boissons glacées pendant 24 heures sans altérer le goût.',
+    features: [
+      'Forgée en titane médical pur Grade 1 : zéro corrosion, aucune altération du goût',
+      'Double paroi sous vide maintenant le froid pendant 24 h et le chaud pendant 12 h',
+      'Pèse seulement 185 grammes, deux fois plus légère qu’une gourde inox classique',
+    ],
+    specs: {
+      'Contenance': '750 ml',
+      'Poids': '185 g',
+    },
+    images: [
+      'https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=1000&auto=format&fit=crop&q=80',
+    ],
+  },
+  {
+    id: 'dsk-sports-smartwatch',
+    name: 'Montre GPS Multisport Outdoor ApexTrail 500',
+    slug: 'montre-gps-multisport-outdoor-apextrail-500',
+    brand: 'ApexPro',
+    price: 249,
+    originalPrice: 289,
+    discountPercent: 14,
+    rating: 4.8,
+    reviewCount: 73,
+    category: 'Sports',
+    subcategory: 'Horlogerie Sportive',
+    inStock: true,
+    stockCount: 14,
+    isNew: true,
+    tags: ['GPS Double Fréquence', 'Cardiofréquencemètre', 'Étanche 100m', 'Autonomie 14j'],
+    description:
+      'Boîtier en polymère renforcé de fibres avec lunette en titane et verre saphir inrayable. Suivi précis de la fréquence cardiaque, de la saturation en oxygène (SpO2) et altimètre barométrique.',
+    features: [
+      'Autonomie exceptionnelle de 14 jours en mode montre connectée et 40 heures en GPS continu',
+      'Plus de 60 profils sportifs intégrés : course à pied, cyclisme, natation, HIIT, trail',
+    ],
+    specs: {
+      'Verre': 'Cristal de saphir inrayable',
+      'Étanchéité': '10 ATM (100 mètres)',
+      'Poids': '53 g',
+    },
+    images: [
+      'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=1000&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=1000&auto=format&fit=crop&q=80',
+    ],
+  },
+  {
+    id: 'dsk-sports-mat',
+    name: 'Tapis de Yoga & Entraînement en Caoutchouc Naturel FlexPro',
+    slug: 'tapis-yoga-caoutchouc-naturel-flexpro',
+    brand: 'FlexFit',
+    price: 48,
+    originalPrice: 60,
+    discountPercent: 20,
+    rating: 4.7,
+    reviewCount: 59,
+    category: 'Sports',
+    subcategory: 'Accessoires Fitness',
+    inStock: true,
+    stockCount: 20,
+    tags: ['Antidérapant', 'Caoutchouc Végétal', 'Épaisseur 5mm', 'Sans Odeur'],
+    description:
+      'Adhérence maximale même en cas de transpiration abondante. Conçu en caoutchouc naturel récolté de manière éco-responsable avec marquages d’alignement corporel gravés au laser.',
+    features: [
+      'Système d’amorti dense 5 mm protégeant les articulations pendant les exercices',
+      'Sangle de transport en coton tressé offerte avec le tapis',
+    ],
+    specs: {
+      'Dimensions': '183 cm x 68 cm x 5 mm',
+      'Poids': '2,4 kg',
+    },
+    images: [
+      'https://images.unsplash.com/photo-1592432678016-e910b452f9a2?w=1000&auto=format&fit=crop&q=80',
+    ],
+  },
+
+  // -------------------------------------------------------------
+  // 7. Accessories
+  // -------------------------------------------------------------
+  {
+    id: 'dsk-desk-mat',
+    name: 'Tapis de Bureau Laine Mérinos & Cuir Pleine Fleur',
+    slug: 'artisan-wool-felt-leather-desk-pad',
+    brand: 'DeskCraft',
+    price: 49,
+    originalPrice: 65,
+    discountPercent: 24,
+    rating: 4.9,
+    reviewCount: 310,
+    category: 'Accessories',
+    subcategory: 'Accessoires Bureau',
+    inStock: true,
+    stockCount: 50,
+    isBestSeller: true,
+    tags: ['Laine Mérinos', 'Antidérapant', 'Cuir Véritable', 'Résistant à l’Eau'],
+    description:
+      'Feutre naturel de laine Mérinos haute densité associé à un empiècement en cuir tanné végétal italien. Protège le bureau tout en offrant une glisse de souris ultra-douce.',
+    features: [
+      'Feutre en pure laine Mérinos résistant naturellement aux taches et petites éclaboussures',
+      'Guide-câble magnétique intégré pour garder les chargeurs ordonnés sur le bureau',
+      'Base en silicone antidérapante alvéolée assurant une tenue parfaite',
+    ],
+    specs: {
+      'Dimensions': '90 cm x 40 cm x 4 mm',
+      'Composition': 'Feutre de pure laine Mérinos, Cuir de sellerie italien, Base silicone',
+    },
+    images: [
+      'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=1000&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1593062096033-9a26b09da705?w=1000&auto=format&fit=crop&q=80',
     ],
   },
   {
@@ -600,37 +703,184 @@ export const PRODUCTS: Product[] = [
     discountPercent: 13,
     rating: 4.9,
     reviewCount: 89,
-    category: 'lifestyle',
-    subcategory: 'Accessoires Quotidien',
+    category: 'Accessories',
+    subcategory: 'Stylos & Écriture',
     inStock: true,
     stockCount: 28,
     tags: ['Titane CNC', 'Schmidt EasyFlow', 'Mécanisme Verrou', 'Clip Solide'],
     description:
-      'Usiné CNC dans un bloc massif de titane aérospatial Ti-6Al-4V. Mécanisme de déclenchement à verrou fluide au clic mécanique franc et clip de poche discret et robuste.',
+      'Usiné CNC dans un bloc massif de titane aérospatial Ti-6Al-4V. Mécanisme de déclenchement à verrou fluide au clic mécanique franc et clip de poche robuste.',
     features: [
       'Construction en titane Grade 5 taillé dans la masse pour une longévité garantie à vie',
       'Mécanisme d’ouverture à verrou d’une fluidité addictive, actionnable d’une seule main',
-      'Livré avec une cartouche allemande Schmidt EasyFlow 9000 pointe moyenne',
-      'Tolérance d’ajustement éliminant tout jeu de la mine pendant l’écriture',
     ],
     specs: {
       'Longueur': '132 mm',
       'Diamètre': '10,5 mm',
       'Poids': '38 g',
-      'Recharges': 'Format standard Parker G2 (Schmidt, Fisher Space Pen, etc.)',
     },
     images: [
       'https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?w=1000&auto=format&fit=crop&q=80',
     ],
-    reviews: [
-      {
-        id: 'r-13',
-        author: 'Victor Cruz',
-        rating: 5,
-        date: 'Il y a 1 semaine',
-        comment: 'Équilibre et poids parfaits en main. Le mécanisme à verrou est ultra satisfaisant à utiliser pendant les réunions.',
-        verifiedPurchase: true,
-      },
+  },
+  {
+    id: 'dsk-wallet-rfid',
+    name: 'Portefeuille Minimaliste Bloqueur RFID en Fibre de Carbone',
+    slug: 'portefeuille-minimaliste-rfid-carbone',
+    brand: 'TerraCarry',
+    price: 42,
+    originalPrice: 52,
+    discountPercent: 19,
+    rating: 4.8,
+    reviewCount: 120,
+    category: 'Accessories',
+    subcategory: 'Maroquinerie & Cartes',
+    inStock: true,
+    stockCount: 35,
+    isBestSeller: true,
+    tags: ['Fibre de Carbone', 'Anti-Piratage RFID', 'Format Slim', 'Pince à Billets'],
+    description:
+      'Plaques en véritable fibre de carbone 3K avec blindage anti-RFID protégeant vos cartes bancaires contre le piratage sans contact. Accueille jusqu’à 12 cartes.',
+    features: [
+      'Format ultra fin tenant aisément dans une poche avant sans déformer les vêtements',
+      'Pince à billets en acier trempé flexible et élastique renforcé à mémoire de forme',
+    ],
+    specs: {
+      'Matériaux': 'Fibre de carbone 3K véritable, aluminium aéronautique',
+      'Poids': '46 g',
+    },
+    images: [
+      'https://images.unsplash.com/photo-1627123424574-724758594e93?w=1000&auto=format&fit=crop&q=80',
+    ],
+  },
+
+  // -------------------------------------------------------------
+  // 8. Digital
+  // -------------------------------------------------------------
+  {
+    id: 'dsk-digital-ui-kit',
+    name: 'Pack UI/UX Design System Pro & Composants Figma + Code',
+    slug: 'pack-ui-ux-design-system-pro-figma-code',
+    brand: 'DSK Studios',
+    price: 79,
+    originalPrice: 129,
+    discountPercent: 38,
+    rating: 5.0,
+    reviewCount: 63,
+    category: 'Digital',
+    subcategory: 'Design Assets',
+    inStock: true,
+    stockCount: 999,
+    isFeatured: true,
+    tags: ['Figma UI Kit', 'React Tailwind', 'Téléchargement Instantané', 'Licence Commerciale'],
+    description:
+      'Le système de conception le plus complet pour créateurs de produits numériques : plus de 800 composants responsive, modes sombre/clair, tokens typographiques et code React prêt à l’emploi.',
+    features: [
+      'Accès immédiat au fichier Figma complet avec variables, auto-layout 5.0 et variants',
+      'Dépôt GitHub privé contenant tous les composants codés en React 18 & Tailwind CSS',
+      'Mises à jour gratuites à vie et documentation détaillée',
+    ],
+    specs: {
+      'Format': 'Fichier .fig + Dépôt de composants Code',
+      'Livraison': 'Lien de téléchargement instantané par email & espace client',
+    },
+    images: [
+      'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1000&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1581291518655-9523c93269c3?w=1000&auto=format&fit=crop&q=80',
+    ],
+  },
+  {
+    id: 'dsk-digital-workspace-license',
+    name: 'Abonnement DSK Cloud Workspace Pro (Licence 1 An)',
+    slug: 'abonnement-dsk-cloud-workspace-pro-1an',
+    brand: 'DSK Cloud',
+    price: 99,
+    originalPrice: 149,
+    discountPercent: 33,
+    rating: 4.9,
+    reviewCount: 48,
+    category: 'Digital',
+    subcategory: 'Logiciels & Cloud',
+    inStock: true,
+    stockCount: 999,
+    tags: ['Cloud Storage 2TB', 'Sauvegarde Automatique', 'Collaboration Équipe'],
+    description:
+      'Suite cloud professionnelle sécurisée pour freelances, agences et entreprises. Comprend 2 To d’espace de stockage haute vitesse hébergé sur serveurs chiffrés de bout en bout.',
+    features: [
+      '2 To de stockage cloud avec chiffrement AES-256 bits et authentification 2FA',
+      'Partage de fichiers volumineux sécurisé avec mot de passe et date d’expiration',
+      'Synchronisation multi-appareils Mac, Windows, iOS et Android',
+    ],
+    specs: {
+      'Durée': '12 mois d’accès complet Pro',
+      'Activation': 'Clé d’activation numérique délivrée instantanément',
+    },
+    images: [
+      'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1000&auto=format&fit=crop&q=80',
+    ],
+  },
+
+  // -------------------------------------------------------------
+  // 9. Other
+  // -------------------------------------------------------------
+  {
+    id: 'dsk-multitool-compact',
+    name: 'Pince Multifonction & Multi-Outils EDC Compact 18-en-1',
+    slug: 'pince-multifonction-multi-outils-edc-18-en-1',
+    brand: 'ApexPro',
+    price: 49,
+    originalPrice: 59,
+    discountPercent: 16,
+    rating: 4.8,
+    reviewCount: 95,
+    category: 'Other',
+    subcategory: 'Équipement EDC',
+    inStock: true,
+    stockCount: 30,
+    tags: ['Acier Inoxydable 420HC', '18 Outils', 'Verrouillage Sécurité', 'Étui Cordura'],
+    description:
+      'Outil indispensable pour les réparations d’urgence et les aventures outdoor. Intègre pinces, coupe-fil, lame de couteau affûtée, tournevis multiples, décapsuleur et scie.',
+    features: [
+      'Usiné en acier inoxydable résistant à la corrosion avec traitement thermique',
+      'Tous les outils se verrouillent en position ouverte pour une utilisation sans risque',
+      'Livré avec étui de ceinture renforcé en nylon balistique Cordura',
+    ],
+    specs: {
+      'Nombre de fonctions': '18 outils intégrés',
+      'Longueur fermé': '10 cm',
+      'Poids': '235 g',
+    },
+    images: [
+      'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?w=1000&auto=format&fit=crop&q=80',
+    ],
+  },
+  {
+    id: 'dsk-screen-clean-kit',
+    name: 'Kit de Nettoyage Haute Précision pour Écrans & Optiques',
+    slug: 'kit-nettoyage-haute-precision-ecrans-optiques',
+    brand: 'DeskCraft',
+    price: 24,
+    originalPrice: 30,
+    discountPercent: 20,
+    rating: 4.9,
+    reviewCount: 78,
+    category: 'Other',
+    subcategory: 'Entretien & Soin',
+    inStock: true,
+    stockCount: 45,
+    tags: ['Sans Alcool', 'Microfibres Haute Densité', 'Anti-Statique', 'Écologique'],
+    description:
+      'Formule de brumisation sans alcool ni ammoniaque spécialement formulée pour ne pas altérer les revêtements oléophobes des écrans Retina, téléviseurs OLED et objectifs photo.',
+    features: [
+      'Élimine 99,9% des traces de doigts, graisses et poussières sans aucune rayure',
+      'Comprend 2 grands chiffons en microfibre ultra-dense lavables en machine',
+    ],
+    specs: {
+      'Contenance spray': '200 ml + flacon de poche voyage 50 ml',
+      'Compatibilité': 'Smartphones, MacBook, PC portables, Télévisions, Lunettes',
+    },
+    images: [
+      'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=1000&auto=format&fit=crop&q=80',
     ],
   },
 ];

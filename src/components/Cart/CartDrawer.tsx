@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { X, ShoppingBag, ArrowRight, Truck, Tag, ShieldCheck, Trash2 } from 'lucide-react';
+import React from 'react';
+import { X, ShoppingBag, ArrowRight, Truck, ShieldCheck, Trash2 } from 'lucide-react';
 import { useShop } from '../../context/ShopContext';
 import { CartItem } from './CartItem';
 import { formatPrice } from '../../utils/currency';
@@ -11,28 +11,15 @@ export const CartDrawer: React.FC = () => {
     isCartOpen,
     setIsCartOpen,
     cartSubtotal,
-    discountAmount,
     shippingCost,
     cartTotal,
     cartItemCount,
     freeShippingThreshold,
     freeShippingRemaining,
-    promoDiscount,
-    applyPromoCode,
-    removePromoCode,
     navigateTo,
   } = useShop();
 
-  const [promoInput, setPromoInput] = useState('');
-
   if (!isCartOpen) return null;
-
-  const handleApplyPromo = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!promoInput.trim()) return;
-    const success = applyPromoCode(promoInput);
-    if (success) setPromoInput('');
-  };
 
   const handleProceedToCheckout = () => {
     setIsCartOpen(false);
@@ -148,84 +135,12 @@ export const CartDrawer: React.FC = () => {
           {/* Drawer Footer & Checkout Action */}
           {cart.length > 0 && (
             <div className="p-4 sm:p-5 2xl:p-6 border-t border-[#DDE8DE] bg-[#F0FDF4] space-y-3 2xl:space-y-4 font-secondary">
-              {/* Promo Code Input */}
-              <form onSubmit={handleApplyPromo} className="flex gap-2">
-                <div className="relative flex-1">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#647064]">
-                    <Tag size={14} />
-                  </div>
-                  <input
-                    type="text"
-                    value={promoInput}
-                    onChange={(e) => setPromoInput(e.target.value)}
-                    placeholder="Code promo (ex: DSK15)"
-                    className="w-full pl-9 pr-3 py-2 2xl:py-2.5 text-xs 2xl:text-sm bg-[#FAFCFA] border border-[#DDE8DE] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#16A34A]/20 uppercase placeholder:normal-case font-medium text-[#172017]"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="px-3.5 py-2 2xl:px-4 2xl:py-2.5 bg-[#166534] hover:bg-[#16A34A] text-white text-xs 2xl:text-sm font-bold rounded-xl transition-colors font-primary shadow-2xs cursor-pointer"
-                >
-                  Appliquer
-                </button>
-              </form>
-
-              {/* Promo badge if active */}
-              {promoDiscount ? (
-                <div className="flex items-center justify-between px-3 py-2 bg-[#DCFCE7] text-[#166534] rounded-xl text-xs font-semibold border border-[#BBF7D0] font-primary">
-                  <div className="flex items-center gap-1.5 truncate mr-2">
-                    <Tag size={13} className="text-[#166534] shrink-0" />
-                    <span className="truncate">Code <strong>{promoDiscount.code}</strong> (-{promoDiscount.percent}%)</span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={removePromoCode}
-                    className="p-1 text-[#166534] hover:text-rose-600 hover:bg-[#BBF7D0] rounded-lg transition-colors cursor-pointer shrink-0"
-                    title="Retirer ce code promo"
-                    aria-label="Retirer ce code promo"
-                  >
-                    <X size={14} />
-                  </button>
-                </div>
-              ) : (
-                <div className="flex items-center gap-1.5 text-[11px] text-[#647064]">
-                  <span>Disponibles :</span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setPromoInput('DSK15');
-                      applyPromoCode('DSK15');
-                    }}
-                    className="underline hover:text-[#166534] cursor-pointer font-medium"
-                  >
-                    DSK15 (-15%)
-                  </button>
-                  <span>•</span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setPromoInput('BIENVENUE10');
-                      applyPromoCode('BIENVENUE10');
-                    }}
-                    className="underline hover:text-[#166534] cursor-pointer font-medium"
-                  >
-                    BIENVENUE10 (-10%)
-                  </button>
-                </div>
-              )}
-
               {/* Price Breakdown */}
               <div className="space-y-1.5 2xl:space-y-2 text-xs 2xl:text-sm text-[#647064] pt-1">
                 <div className="flex justify-between font-secondary">
                   <span>Sous-total</span>
                   <span className="font-semibold text-[#172017] font-primary">{formatPrice(cartSubtotal)}</span>
                 </div>
-                {discountAmount > 0 && (
-                  <div className="flex justify-between text-[#166534] font-secondary">
-                    <span>Remise Code Promo</span>
-                    <span className="font-semibold font-primary">-{formatPrice(discountAmount)}</span>
-                  </div>
-                )}
                 <div className="flex justify-between font-secondary">
                   <span>Livraison</span>
                   <span className="font-semibold text-[#172017] font-primary">

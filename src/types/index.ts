@@ -17,6 +17,17 @@ export interface ProductVariant {
   priceModifier?: number;
 }
 
+export type ProductCategory =
+  | 'Electronics'
+  | 'Fashion'
+  | 'Books'
+  | 'Home'
+  | 'Beauty'
+  | 'Sports'
+  | 'Accessories'
+  | 'Digital'
+  | 'Other';
+
 export interface Product {
   id: string;
   name: string;
@@ -27,7 +38,7 @@ export interface Product {
   discountPercent?: number;
   rating: number;
   reviewCount: number;
-  category: string;
+  category: ProductCategory;
   subcategory?: string;
   inStock: boolean;
   stockCount: number;
@@ -50,8 +61,8 @@ export interface CartItem {
 }
 
 export interface Category {
-  id: string;
-  name: string;
+  id: ProductCategory;
+  name: ProductCategory;
   slug: string;
   iconName: string;
   itemCount: number;
@@ -62,7 +73,7 @@ export interface Category {
 export type SortOption = 'featured' | 'price-low' | 'price-high' | 'rating' | 'newest';
 
 export interface FilterState {
-  category: string;
+  category: ProductCategory | 'all' | string;
   searchQuery: string;
   minPrice: number;
   maxPrice: number;
@@ -74,14 +85,14 @@ export interface FilterState {
 
 export interface ShippingAddress {
   fullName: string;
-  email: string;
   phone: string;
   addressLine1: string;
+  email?: string;
   addressLine2?: string;
   city: string;
-  state: string;
-  postalCode: string;
-  country: string;
+  state?: string;
+  postalCode?: string;
+  country?: string;
 }
 
 export type PaymentMethod = 'credit_card' | 'paypal' | 'apple_pay' | 'cod';

@@ -8,7 +8,7 @@ interface ProductGridSkeletonProps {
 }
 
 export const ProductGridSkeleton: React.FC<ProductGridSkeletonProps> = ({
-  count = 6,
+  count = 10,
   layout = 'grid',
   columnsClassName,
 }) => {
@@ -16,8 +16,8 @@ export const ProductGridSkeleton: React.FC<ProductGridSkeletonProps> = ({
     <div
       className={
         layout === 'grid'
-          ? columnsClassName || 'grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2.5 sm:gap-3.5 md:gap-4 lg:gap-5 2xl:gap-6'
-          : 'flex flex-col gap-3.5 sm:gap-4 2xl:gap-6'
+          ? columnsClassName || 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 xl:gap-4'
+          : 'flex flex-col gap-3 sm:gap-4'
       }
       aria-busy="true"
       aria-label="Chargement des produits"

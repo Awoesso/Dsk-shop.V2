@@ -1,9 +1,51 @@
-import React, { useState } from 'react';
-import { ShoppingBag, Heart, Menu, X, ArrowRight, ShieldCheck, Sparkles, ChevronRight } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import {
+  ShoppingBag,
+  Heart,
+  Menu,
+  X,
+  ArrowRight,
+  ShieldCheck,
+  Sparkles,
+  ChevronRight,
+  ChevronDown,
+  Laptop,
+  Shirt,
+  BookOpen,
+  Home,
+  Activity,
+  Watch,
+  Cpu,
+  Package,
+} from 'lucide-react';
 import { useShop } from '../../context/ShopContext';
 import { SearchBar } from '../SearchBar/SearchBar';
 import { CATEGORIES } from '../../data/products';
 import { formatPrice } from '../../utils/currency';
+
+const getCategoryIcon = (id: string) => {
+  switch (id) {
+    case 'Electronics':
+      return <Laptop size={15} className="shrink-0" />;
+    case 'Fashion':
+      return <Shirt size={15} className="shrink-0" />;
+    case 'Books':
+      return <BookOpen size={15} className="shrink-0" />;
+    case 'Home':
+      return <Home size={15} className="shrink-0" />;
+    case 'Beauty':
+      return <Sparkles size={15} className="shrink-0" />;
+    case 'Sports':
+      return <Activity size={15} className="shrink-0" />;
+    case 'Accessories':
+      return <Watch size={15} className="shrink-0" />;
+    case 'Digital':
+      return <Cpu size={15} className="shrink-0" />;
+    case 'Other':
+    default:
+      return <Package size={15} className="shrink-0" />;
+  }
+};
 
 export const Header: React.FC = () => {
   const {
@@ -15,18 +57,43 @@ export const Header: React.FC = () => {
     setIsCartOpen,
     setFilters,
     filterState,
+    products,
   } = useShop();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [categoriesDropdownOpen, setCategoriesDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Dynamic category counts
+  const categoryCounts = React.useMemo(() => {
+    const map: Record<string, number> = {};
+    products.forEach((p) => {
+      const k = p.category || 'Other';
+      map[k] = (map[k] || 0) + 1;
+    });
+    return map;
+  }, [products]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setCategoriesDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleCategoryClick = (catId: string) => {
     setFilters({ category: catId, searchQuery: '' });
     navigateTo('shop', { category: catId });
     setMobileMenuOpen(false);
+    setCategoriesDropdownOpen(false);
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-[#F3FAF4]/95 backdrop-blur-md border-b border-[#DDE8DE] transition-all">
+    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 transition-all">
       {/* Top Banner - Vert Profond #14532D */}
       <div className="bg-[#14532D] text-white text-[11px] sm:text-xs 2xl:text-sm py-1.5 sm:py-2 2xl:py-2.5 px-3 sm:px-4 font-medium tracking-wide border-b border-[#166534]/50">
         <div className="max-w-[1720px] 2xl:max-w-[1880px] mx-auto 2xl:px-8 flex items-center justify-between">
@@ -106,13 +173,86 @@ export const Header: React.FC = () => {
                 navigateTo('shop');
               }}
               className={`px-3.5 py-2 2xl:px-4 2xl:py-2.5 rounded-xl transition-colors font-primary cursor-pointer ${
-                activePage === 'shop' && filterState?.sortBy === 'featured'
+                activePage === 'shop' && filterState.category === 'all' && filterState?.sortBy === 'featured'
                   ? 'text-[#166534] bg-[#DCFCE7] font-bold shadow-2xs'
                   : 'hover:text-[#166534] hover:bg-[#F0FDF4]'
               }`}
             >
               Boutique
             </button>
+
+            {/* Desktop Categories Dropdown */}
+            <div className="relative" ref={dropdownRef}>
+              <button
+                onClick={() => setCategoriesDropdownOpen(!categoriesDropdownOpen)}
+                className={`flex items-center gap-1.5 px-3.5 py-2 2xl:px-4 2xl:py-2.5 rounded-xl transition-colors font-primary cursor-pointer ${
+                  categoriesDropdownOpen || (activePage === 'shop' && filterState.category !== 'all')
+                    ? 'text-[#166534] bg-[#DCFCE7] font-bold shadow-2xs'
+                    : 'hover:text-[#166534] hover:bg-[#F0FDF4]'
+                }`}
+              >
+                <span>Catégories</span>
+                <ChevronDown
+                  size={14}
+                  className={`transition-transform duration-200 ${
+                    categoriesDropdownOpen ? 'rotate-180 text-[#166534]' : 'text-[#647064]'
+                  }`}
+                />
+              </button>
+
+              {categoriesDropdownOpen && (
+                <div className="absolute top-full left-0 mt-2 w-72 bg-white rounded-2xl shadow-xl border border-slate-200/80 py-2.5 z-50 animate-in fade-in zoom-in-95 duration-150">
+                  <div className="px-3.5 py-1.5 border-b border-slate-100 flex items-center justify-between">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 font-primary">
+                      9 Collections
+                    </span>
+                    <button
+                      onClick={() => {
+                        setFilters({ category: 'all' });
+                        navigateTo('shop');
+                        setCategoriesDropdownOpen(false);
+                      }}
+                      className="text-[11px] font-semibold text-[#166534] hover:underline cursor-pointer"
+                    >
+                      Tout afficher
+                    </button>
+                  </div>
+                  <div className="mt-1 max-h-[380px] overflow-y-auto px-1.5 space-y-0.5">
+                    {CATEGORIES.map((cat) => {
+                      const isSelected = filterState.category === cat.id;
+                      const count = categoryCounts[cat.id] ?? cat.itemCount;
+                      return (
+                        <button
+                          key={cat.id}
+                          onClick={() => handleCategoryClick(cat.id)}
+                          className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                            isSelected
+                              ? 'bg-[#166534] text-white'
+                              : 'text-slate-700 hover:bg-[#F0FDF4] hover:text-[#166534]'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2.5">
+                            <span className={isSelected ? 'text-white' : 'text-[#166534]'}>
+                              {getCategoryIcon(cat.id)}
+                            </span>
+                            <span>{cat.name}</span>
+                          </div>
+                          <span
+                            className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                              isSelected
+                                ? 'bg-white/20 text-white'
+                                : 'bg-[#DCFCE7] text-[#166534]'
+                            }`}
+                          >
+                            {count}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
             <button
               onClick={() => {
                 setFilters({ category: 'all', searchQuery: '', sortBy: 'newest' });
@@ -138,16 +278,6 @@ export const Header: React.FC = () => {
               }`}
             >
               Meilleures Ventes
-            </button>
-            <button
-              onClick={() => navigateTo('about')}
-              className={`px-3.5 py-2 2xl:px-4 2xl:py-2.5 rounded-xl transition-colors font-primary cursor-pointer ${
-                activePage === 'about'
-                  ? 'text-[#166534] bg-[#DCFCE7] font-bold shadow-2xs'
-                  : 'hover:text-[#166534] hover:bg-[#F0FDF4]'
-              }`}
-            >
-              À Propos
             </button>
             <button
               onClick={() => navigateTo('contact')}
@@ -271,18 +401,6 @@ export const Header: React.FC = () => {
                 }`}
               >
                 <span>Meilleures Ventes</span>
-                <ChevronRight size={16} className="text-[#647064]" />
-              </button>
-              <button
-                onClick={() => {
-                  navigateTo('about');
-                  setMobileMenuOpen(false);
-                }}
-                className={`flex items-center justify-between p-3 rounded-xl text-left font-semibold text-sm ${
-                  activePage === 'about' ? 'bg-[#DCFCE7] text-[#166534]' : 'text-[#172017] hover:bg-[#F0FDF4]'
-                }`}
-              >
-                <span>À Propos</span>
                 <ChevronRight size={16} className="text-[#647064]" />
               </button>
               <button

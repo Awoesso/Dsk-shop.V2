@@ -93,7 +93,7 @@ const AppContent: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F3FAF4] text-[#172017] font-sans selection:bg-[#166534] selection:text-white">
+    <div className="min-h-screen flex flex-col bg-[#FAFAFA] text-slate-900 font-sans selection:bg-slate-900 selection:text-white">
       {/* Sticky Header with Navigation & Quick Actions */}
       <Header />
 

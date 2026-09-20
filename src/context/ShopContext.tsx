@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useMemo, useCall
 import { Product, CartItem, ProductVariant, FilterState, ActivePage, Order, ShippingAddress, PaymentMethod, ToastMessage, ProductReview } from '../types';
 import { PRODUCTS, CATEGORIES } from '../data/products';
 import { USD_TO_FCFA_RATE } from '../utils/currency';
+import { ProductsService, mapDbRowToProduct } from '../services/products.service';
 
 interface ShopContextType {
   products: Product[];
@@ -13,7 +14,6 @@ interface ShopContextType {
   isCartOpen: boolean;
   lastOrder: Order | null;
   toasts: ToastMessage[];
-  promoDiscount: { code: string; percent: number } | null;
   cartSubtotal: number;
   shippingCost: number;
   discountAmount: number;
@@ -50,12 +50,7 @@ interface ShopContextType {
   filteredProducts: Product[];
   
   // Checkout & Orders
-  applyPromoCode: (code: string) => boolean;
-  removePromoCode: () => void;
-  createOrder: (shipping: ShippingAddress, payment: PaymentMethod) => Order;
-  
-  // Review submission
-  addReview: (productId: string, review: Omit<ProductReview, 'id' | 'date'>) => void;
+  createOrder: (shipping: ShippingAddress, payment: PaymentMethod, customOrderNumber?: string) => Order;
   
   // Toasts
   showToast: (message: string, type?: 'success' | 'info' | 'warning', actionLabel?: string, onAction?: () => void) => void;
@@ -91,14 +86,6 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [filterState, setFilterState] = useState<FilterState>(initialFilterState);
-  const [promoDiscount, setPromoDiscount] = useState<{ code: string; percent: number } | null>(() => {
-    try {
-      const saved = localStorage.getItem('dsk_promo');
-      return saved ? JSON.parse(saved) : null;
-    } catch {
-      return null;
-    }
-  });
   const [lastOrder, setLastOrder] = useState<Order | null>(null);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
@@ -152,6 +139,52 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
+  // Fetch live products from Supabase and subscribe to Realtime updates from Nexa
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadSupabaseCatalog() {
+      try {
+        const response = await ProductsService.getProducts({ limit: 50 });
+        if (isMounted && response.data.length > 0) {
+          setProducts(response.data);
+        }
+      } catch {
+        // Fallback remains safely intact
+      }
+    }
+
+    loadSupabaseCatalog();
+
+    // Secure Realtime listener: cleanly auto-unsubscribes on unmount
+    const unsubscribe = ProductsService.subscribeToProducts((event) => {
+      if (!isMounted) return;
+
+      if (event.eventType === 'INSERT') {
+        const newProduct = mapDbRowToProduct(event.newRow);
+        setProducts((prev) => [newProduct, ...prev.filter((p) => p.id !== newProduct.id)]);
+        showToast(`Nouveau produit disponible : ${newProduct.name}`, 'info');
+      } else if (event.eventType === 'UPDATE') {
+        const updatedProduct = mapDbRowToProduct(event.newRow);
+        setProducts((prev) =>
+          prev.map((p) => (p.id === updatedProduct.id ? updatedProduct : p))
+        );
+        showToast(`Mise à jour en direct : ${updatedProduct.name}`, 'info');
+      } else if (event.eventType === 'DELETE') {
+        const deletedId = event.oldRow?.id;
+        if (deletedId) {
+          setProducts((prev) => prev.filter((p) => p.id !== deletedId));
+          setCart((prev) => prev.filter((item) => item.product.id !== deletedId));
+        }
+      }
+    });
+
+    return () => {
+      isMounted = false;
+      unsubscribe();
+    };
+  }, [showToast]);
+
   const triggerLoading = useCallback((duration = 380) => {
     setIsLoading(true);
     if (loadingTimerRef.current) clearTimeout(loadingTimerRef.current);
@@ -160,11 +193,21 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, duration);
   }, []);
 
-  const refreshCatalog = useCallback(() => {
+  const refreshCatalog = useCallback(async () => {
     setIsPageLoading(true);
     setPageLoading('shop');
     setIsLoading(true);
     showToast('Actualisation du catalogue...', 'info');
+
+    try {
+      const response = await ProductsService.getProducts({ limit: 50 });
+      if (response.data.length > 0) {
+        setProducts(response.data);
+      }
+    } catch {
+      // safe fallback
+    }
+
     if (loadingTimerRef.current) clearTimeout(loadingTimerRef.current);
     loadingTimerRef.current = setTimeout(() => {
       setIsPageLoading(false);
@@ -209,17 +252,6 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [wishlist]);
 
-  useEffect(() => {
-    try {
-      if (promoDiscount) {
-        localStorage.setItem('dsk_promo', JSON.stringify(promoDiscount));
-      } else {
-        localStorage.removeItem('dsk_promo');
-      }
-    } catch {
-      // ignore
-    }
-  }, [promoDiscount]);
 
   // Navigation with elegant page skeleton transition
   const navigateTo = useCallback((
@@ -404,30 +436,26 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return isFreeShipping ? 0 : STANDARD_SHIPPING_FLAT;
   }, [cart.length, isFreeShipping]);
 
-  // Exact FCFA parity for discount and total:
-  // Subtotal FCFA - Discount FCFA + Shipping FCFA = Total FCFA (Exact to the single FCFA)
-  const discountAmount = useMemo(() => {
-    if (!promoDiscount || cart.length === 0 || cartSubtotal === 0) return 0;
-    const subtotalFCFA = Math.round(cartSubtotal * USD_TO_FCFA_RATE);
-    const discountFCFA = Math.round((subtotalFCFA * promoDiscount.percent) / 100);
-    return discountFCFA / USD_TO_FCFA_RATE;
-  }, [cart.length, cartSubtotal, promoDiscount]);
+  const discountAmount = 0;
 
   const cartTotal = useMemo(() => {
     if (cart.length === 0) return 0;
     const subtotalFCFA = Math.round(cartSubtotal * USD_TO_FCFA_RATE);
-    const discountFCFA = promoDiscount ? Math.round((subtotalFCFA * promoDiscount.percent) / 100) : 0;
     const shippingFCFA = isFreeShipping ? 0 : Math.round(STANDARD_SHIPPING_FLAT * USD_TO_FCFA_RATE);
-    const totalFCFA = Math.max(0, subtotalFCFA - discountFCFA + shippingFCFA);
+    const totalFCFA = subtotalFCFA + shippingFCFA;
     return totalFCFA / USD_TO_FCFA_RATE;
-  }, [cart.length, cartSubtotal, promoDiscount, isFreeShipping]);
+  }, [cart.length, cartSubtotal, isFreeShipping]);
 
   // Filtered Products Logic
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
       // Category filter
-      if (filterState.category !== 'all' && product.category !== filterState.category) {
-        return false;
+      if (filterState.category !== 'all') {
+        const filterCat = filterState.category.trim().toLowerCase();
+        const prodCat = (product.category || '').trim().toLowerCase();
+        if (filterCat !== prodCat && product.category !== filterState.category) {
+          return false;
+        }
       }
 
       // Search query filter
@@ -480,50 +508,9 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
   }, [products, filterState]);
 
-  // Promo Code
-  const applyPromoCode = useCallback((code: string): boolean => {
-    const cleanCode = code.trim().toUpperCase();
-    if (!cleanCode) return false;
-
-    if (cleanCode === 'DSK15' || cleanCode === 'SAVE15') {
-      setPromoDiscount({ code: cleanCode, percent: 15 });
-      showToast('Code promo DSK15 appliqué : 15% de réduction !', 'success');
-      return true;
-    } else if (cleanCode === 'WELCOME10' || cleanCode === 'BIENVENUE10') {
-      setPromoDiscount({ code: cleanCode, percent: 10 });
-      showToast('Code de bienvenue appliqué : 10% de réduction !', 'success');
-      return true;
-    } else if (cleanCode === 'VIP25') {
-      setPromoDiscount({ code: cleanCode, percent: 25 });
-      showToast('Code VIP Privilège appliqué : 25% de réduction !', 'success');
-      return true;
-    } else if (cleanCode === 'DSK20' || cleanCode === 'PROMO20') {
-      setPromoDiscount({ code: cleanCode, percent: 20 });
-      showToast('Code promo spécial appliqué : 20% de réduction !', 'success');
-      return true;
-    } else if (cleanCode === 'LOME5' || cleanCode === 'DSK5') {
-      setPromoDiscount({ code: cleanCode, percent: 5 });
-      showToast('Code fidélité appliqué : 5% de réduction !', 'success');
-      return true;
-    } else {
-      showToast('Code promo invalide. Essayez « DSK15 », « BIENVENUE10 » ou « VIP25 »', 'warning');
-      return false;
-    }
-  }, [showToast]);
-
-  const removePromoCode = useCallback(() => {
-    setPromoDiscount(null);
-    try {
-      localStorage.removeItem('dsk_promo');
-    } catch {
-      // ignore
-    }
-    showToast('Code promo retiré', 'info');
-  }, [showToast]);
-
   // Checkout & Order Creation
-  const createOrder = useCallback((shipping: ShippingAddress, payment: PaymentMethod): Order => {
-    const orderNumber = `DSK-${Math.floor(100000 + Math.random() * 900000)}`;
+  const createOrder = useCallback((shipping: ShippingAddress, payment: PaymentMethod, customOrderNumber?: string): Order => {
+    const orderNumber = customOrderNumber || `DSK-${Math.floor(100000 + Math.random() * 900000)}`;
     const now = new Date();
     const deliveryDate = new Date(now);
     deliveryDate.setDate(now.getDate() + 3);
@@ -535,7 +522,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       items: [...cart],
       subtotal: cartSubtotal,
       shipping: shippingCost,
-      discount: discountAmount,
+      discount: 0,
       total: cartTotal,
       shippingAddress: shipping,
       paymentMethod: payment,
@@ -545,47 +532,11 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     setLastOrder(newOrder);
     setCart([]);
-    setPromoDiscount(null);
-    try {
-      localStorage.removeItem('dsk_promo');
-    } catch {
-      // ignore
-    }
     setActivePage('order-success');
     window.scrollTo({ top: 0, behavior: 'smooth' });
     showToast(`Commande #${orderNumber} confirmée avec succès !`, 'success');
     return newOrder;
-  }, [cart, cartSubtotal, shippingCost, discountAmount, cartTotal, showToast]);
-
-  // Add Review
-  const addReview = useCallback((productId: string, reviewData: Omit<ProductReview, 'id' | 'date'>) => {
-    const newRev: ProductReview = {
-      ...reviewData,
-      id: Math.random().toString(36).substring(2, 9),
-      date: 'À l’instant',
-    };
-
-    setProducts((prev) =>
-      prev.map((p) => {
-        if (p.id === productId) {
-          const currentReviews = p.reviews || [];
-          const updatedReviews = [newRev, ...currentReviews];
-          const newAvgRating = Number(
-            (updatedReviews.reduce((acc, r) => acc + r.rating, 0) / updatedReviews.length).toFixed(1)
-          );
-          return {
-            ...p,
-            reviews: updatedReviews,
-            reviewCount: p.reviewCount + 1,
-            rating: newAvgRating,
-          };
-        }
-        return p;
-      })
-    );
-
-    showToast('Merci ! Votre avis a été publié avec succès.', 'success');
-  }, [showToast]);
+  }, [cart, cartSubtotal, shippingCost, cartTotal, showToast]);
 
   return (
     <ShopContext.Provider
@@ -599,7 +550,6 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isCartOpen,
         lastOrder,
         toasts,
-        promoDiscount,
         cartSubtotal,
         shippingCost,
         discountAmount,
@@ -626,10 +576,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setFilters,
         resetFilters,
         filteredProducts,
-        applyPromoCode,
-        removePromoCode,
         createOrder,
-        addReview,
         showToast,
         removeToast,
       }}

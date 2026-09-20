@@ -45,10 +45,10 @@ export const HomePage: React.FC = () => {
       <section className="max-w-[1600px] 2xl:max-w-[1760px] mx-auto px-2.5 sm:px-6 lg:px-8 2xl:px-12 font-secondary">
         <div className="flex items-end justify-between mb-4 sm:mb-6 2xl:mb-8">
           <div>
-            <h2 className="text-xl sm:text-2xl lg:text-3xl 2xl:text-4xl font-extrabold text-[#172017] tracking-tight font-primary">
+            <h2 className="text-lg md:text-xl lg:text-2xl font-semibold text-[#172017] tracking-tight font-primary">
               Collections à la Une
             </h2>
-            <p className="text-xs sm:text-sm 2xl:text-base text-[#647064] mt-0.5 sm:mt-1">
+            <p className="text-[11px] md:text-xs font-normal text-[#647064] opacity-70 mt-0.5 sm:mt-1">
               Nos sélections phares d'accessoires et d'équipements pour votre quotidien.
             </p>
           </div>
@@ -111,10 +111,10 @@ export const HomePage: React.FC = () => {
               setFilters({ category: 'all', searchQuery: '' });
               navigateTo('shop');
             }}
-            className="px-5 py-2.5 sm:px-6 sm:py-3 2xl:px-8 2xl:py-4 bg-[#166534] hover:bg-[#16A34A] text-white font-bold text-xs 2xl:text-sm font-primary rounded-xl shadow-xs transition-all inline-flex items-center gap-2 cursor-pointer"
+            className="px-6 py-3 bg-[#166534] hover:bg-[#16A34A] text-white font-semibold text-xs sm:text-sm font-primary rounded-xl shadow-xs transition-all inline-flex items-center gap-2 cursor-pointer active:scale-98"
           >
             <span>Découvrir les {products.length} produits</span>
-            <ArrowRight size={13} className="2xl:w-4 2xl:h-4" />
+            <ArrowRight size={14} />
           </button>
         </div>
       </section>
