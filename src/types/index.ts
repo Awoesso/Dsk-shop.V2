@@ -1,11 +1,12 @@
-export interface ProductReview {
-  id: string;
-  author: string;
-  avatar?: string;
-  rating: number;
-  date: string;
-  comment: string;
-  verifiedPurchase: boolean;
+export interface ProductImageRelational {
+  id?: string;
+  product_id?: string;
+  url?: string;
+  image_url?: string;
+  storage_path?: string;
+  is_primary?: boolean;
+  sort_order?: number | null;
+  created_at?: string;
 }
 
 export interface ProductVariant {
@@ -17,6 +18,17 @@ export interface ProductVariant {
   priceModifier?: number;
 }
 
+export type ProductCategory =
+  | 'Electronics'
+  | 'Fashion'
+  | 'Books'
+  | 'Home'
+  | 'Beauty'
+  | 'Sports'
+  | 'Accessories'
+  | 'Digital'
+  | 'Other';
+
 export interface Product {
   id: string;
   name: string;
@@ -25,22 +37,23 @@ export interface Product {
   price: number;
   originalPrice?: number;
   discountPercent?: number;
-  rating: number;
-  reviewCount: number;
-  category: string;
+  category: ProductCategory;
   subcategory?: string;
   inStock: boolean;
   stockCount: number;
   description: string;
   features: string[];
   specs: Record<string, string>;
+  primaryImage?: string;
   images: string[];
+  product_images?: ProductImageRelational[];
   isFeatured?: boolean;
   isNew?: boolean;
   isBestSeller?: boolean;
   tags: string[];
   variants?: ProductVariant[];
-  reviews?: ProductReview[];
+  currency?: string;
+  status?: string;
 }
 
 export interface CartItem {
@@ -50,8 +63,8 @@ export interface CartItem {
 }
 
 export interface Category {
-  id: string;
-  name: string;
+  id: ProductCategory;
+  name: ProductCategory;
   slug: string;
   iconName: string;
   itemCount: number;
@@ -59,29 +72,28 @@ export interface Category {
   image: string;
 }
 
-export type SortOption = 'featured' | 'price-low' | 'price-high' | 'rating' | 'newest';
+export type SortOption = 'featured' | 'price-low' | 'price-high' | 'newest';
 
 export interface FilterState {
-  category: string;
+  category: ProductCategory | 'all' | string;
   searchQuery: string;
   minPrice: number;
   maxPrice: number;
   sortBy: SortOption;
-  minRating: number;
   inStockOnly: boolean;
   selectedBrand?: string;
 }
 
 export interface ShippingAddress {
   fullName: string;
-  email: string;
   phone: string;
   addressLine1: string;
+  email?: string;
   addressLine2?: string;
   city: string;
-  state: string;
-  postalCode: string;
-  country: string;
+  state?: string;
+  postalCode?: string;
+  country?: string;
 }
 
 export type PaymentMethod = 'credit_card' | 'paypal' | 'apple_pay' | 'cod';

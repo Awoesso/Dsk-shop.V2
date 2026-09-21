@@ -33,7 +33,8 @@ export const OrderSuccessPage: React.FC = () => {
       case 'tmoney':
         return 'Mixx by Yas (T-Money)';
       case 'cod':
-        return 'Paiement à la livraison';
+      case 'cash_on_delivery':
+        return 'Paiement à la livraison (Espèces / T-Money / Moov)';
       case 'credit_card':
         return 'Carte bancaire (Visa / Mastercard)';
       case 'apple_pay':
@@ -65,8 +66,10 @@ export const OrderSuccessPage: React.FC = () => {
             Merci pour votre commande !
           </h1>
           <p className="text-xs sm:text-sm 2xl:text-base text-slate-500 max-w-md 2xl:max-w-lg mx-auto">
-            Nous avons bien enregistré votre achat. Un récapitulatif avec numéro de suivi a été envoyé à{' '}
-            <strong className="text-slate-800">{lastOrder.shippingAddress.email}</strong>.
+            Nous avons bien enregistré votre commande.{' '}
+            Notre équipe logistique vous contactera par appel ou WhatsApp au{' '}
+            <strong className="text-slate-800 font-bold">{lastOrder.shippingAddress.phone}</strong> pour organiser la
+            livraison directe à votre quartier ({lastOrder.shippingAddress.addressLine1}).
           </p>
         </div>
 
@@ -105,10 +108,10 @@ export const OrderSuccessPage: React.FC = () => {
               <p className="text-slate-600">{lastOrder.shippingAddress.addressLine2}</p>
             )}
             <p className="text-slate-600">
-              {lastOrder.shippingAddress.city}, {lastOrder.shippingAddress.state}{' '}
-              {lastOrder.shippingAddress.postalCode}
+              {lastOrder.shippingAddress.city || 'Lomé'}
+              {lastOrder.shippingAddress.state ? `, ${lastOrder.shippingAddress.state}` : ''}
+              {lastOrder.shippingAddress.country ? `, ${lastOrder.shippingAddress.country}` : ', Togo'}
             </p>
-            <p className="text-slate-600">{lastOrder.shippingAddress.country}</p>
             <p className="text-slate-500 pt-1">Tél : {lastOrder.shippingAddress.phone}</p>
           </div>
 

@@ -39,9 +39,9 @@ export const ProductImage: React.FC<ProductImageProps> = ({
     >
       {/* Skeleton Shimmer Overlay while image is loading */}
       {showSkeleton && !isLoaded && !hasError && (
-        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-slate-200/70 animate-shimmer">
-          <div className="w-8 h-8 rounded-lg bg-slate-300/60 flex items-center justify-center text-slate-400/80 animate-pulse">
-            <ImageIcon size={18} />
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-slate-100 animate-shimmer">
+          <div className="w-8 h-8 rounded-xl bg-slate-200/80 flex items-center justify-center text-slate-400 shadow-2xs">
+            <ImageIcon size={16} />
           </div>
         </div>
       )}
