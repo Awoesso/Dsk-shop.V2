@@ -3,7 +3,7 @@ import { ArrowRight, ChevronRight } from 'lucide-react';
 import { useShop } from '../../context/ShopContext';
 import { ProductGrid } from '../../components/ProductGrid/ProductGrid';
 import { ProductImage } from '../../components/Common/ProductImage';
-import { CATEGORIES } from '../../data/products';
+import { CATEGORIES } from '../../constants/categories';
 import { Hero } from '../../components/Home/Hero';
 import { SEO } from '../../components/SEO/SEO';
 
@@ -65,7 +65,7 @@ export const HomePage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6 2xl:gap-8">
-          {CATEGORIES.filter((c) => c.id !== 'all').map((cat) => (
+          {CATEGORIES.map((cat) => (
             <div
               key={cat.id}
               onClick={() => handleExploreCategory(cat.id)}
@@ -143,7 +143,7 @@ export const HomePage: React.FC = () => {
         <ProductGrid
           products={bestSellers}
           title="Les Coups de Cœur de la Communauté"
-          subtitle="Les articles les plus populaires et les mieux notés par notre communauté au Togo."
+          subtitle="Les articles les plus populaires plébiscités par notre communauté au Togo."
           showToolbar={false}
         />
       </section>

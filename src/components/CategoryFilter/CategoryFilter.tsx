@@ -14,7 +14,7 @@ import {
   Package,
 } from 'lucide-react';
 import { useShop } from '../../context/ShopContext';
-import { CATEGORIES } from '../../data/products';
+import { CATEGORIES } from '../../constants/categories';
 import { formatPrice } from '../../utils/currency';
 
 interface CategoryFilterProps {

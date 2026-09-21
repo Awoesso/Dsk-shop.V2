@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Truck, RotateCcw, ShieldCheck, Headphones, ArrowRight, Check } from 'lucide-react';
 import { useShop } from '../../context/ShopContext';
-import { CATEGORIES } from '../../data/products';
+import { CATEGORIES } from '../../constants/categories';
 
 export const Footer: React.FC = () => {
   const { navigateTo, setFilters, showToast } = useShop();

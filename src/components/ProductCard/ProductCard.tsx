@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heart, ShoppingBag, Check, Eye, Star } from 'lucide-react';
+import { Heart, ShoppingBag, Check, Eye } from 'lucide-react';
 import { Product } from '../../types';
 import { useShop } from '../../context/ShopContext';
 import { ProductImage } from '../Common/ProductImage';
@@ -41,6 +41,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, layout = 'gri
       ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
       : null);
 
+  const displayImage = product.primaryImage || product.images?.[0] || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&q=80';
+  const hoverImage = product.images?.[1] || displayImage;
+
   /* -------------------------------------------------------------------------- */
   /*                            LIST VIEW LAYOUT                                */
   /* -------------------------------------------------------------------------- */
@@ -53,7 +56,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, layout = 'gri
         {/* Image Section */}
         <div className="relative w-full sm:w-36 md:w-44 h-36 sm:h-36 md:h-44 bg-[#F3FAF4] rounded-lg p-2 overflow-hidden shrink-0 flex items-center justify-center border border-[#DDE8DE]/60">
           <ProductImage
-            src={product.images[0]}
+            src={displayImage}
             alt={product.name}
             containerClassName="w-full h-full"
             className="object-contain w-full h-full p-2 group-hover:scale-105 transition-transform duration-300 ease-out"
@@ -96,25 +99,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, layout = 'gri
             <p className="text-[11px] md:text-xs font-normal text-[#647064] opacity-70 line-clamp-1 mt-0.5 font-secondary">
               {product.description || (categoryLabel ? `Catégorie: ${categoryLabel}` : '')}
             </p>
-
-            <div className="text-amber-400 text-[11px] flex items-center gap-1 mt-1.5">
-              <div className="flex items-center text-amber-400">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star
-                    key={star}
-                    size={11}
-                    className={
-                      star <= Math.round(product.rating || 4.5)
-                        ? 'fill-amber-400 text-amber-400'
-                        : 'text-slate-200'
-                    }
-                  />
-                ))}
-              </div>
-              <span className="text-[#647064] text-[10px] md:text-[11px] opacity-70">
-                ({product.reviewCount || 623})
-              </span>
-            </div>
           </div>
 
           <div className="flex items-center justify-between mt-3 pt-2 border-t border-[#DDE8DE]/80 gap-3">
@@ -167,10 +151,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, layout = 'gri
     >
       {/* Top section: Image & Badges */}
       <div>
-        {/* Compact Image Container: aspect-square rounded-lg p-2 relative flex items-center justify-center overflow-hidden mb-2 */}
+        {/* Compact Image Container */}
         <div className="aspect-square rounded-lg p-2 relative flex items-center justify-center overflow-hidden mb-2 bg-[#F3FAF4] border border-[#DDE8DE]/60">
           <ProductImage
-            src={isHovered && product.images[1] ? product.images[1] : product.images[0]}
+            src={isHovered && product.images?.[1] ? hoverImage : displayImage}
             alt={product.name}
             containerClassName="w-full h-full"
             className="w-full h-full object-contain p-1.5 group-hover:scale-105 transition-transform duration-300 ease-out"
@@ -213,43 +197,32 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, layout = 'gri
           </div>
         </div>
 
-        {/* Info Section (Below Image) */}
+        {/* Info Section: Category -> Title -> Description */}
         <div>
-          {/* Card Title (H3): text-xs md:text-sm font-semibold line-clamp-1 */}
-          <h3 className="text-xs md:text-sm font-semibold text-[#172017] line-clamp-1 group-hover:text-[#166534] transition-colors font-primary">
+          {/* Category */}
+          {categoryLabel && (
+            <span className="text-[10px] font-semibold text-[#166534] uppercase tracking-wider font-primary block truncate">
+              {categoryLabel}
+            </span>
+          )}
+
+          {/* Card Title (H3) */}
+          <h3 className="text-xs md:text-sm font-semibold text-[#172017] line-clamp-1 group-hover:text-[#166534] transition-colors font-primary mt-0.5">
             {product.name}
           </h3>
 
-          {/* Subtitles & Specs: text-[11px] md:text-xs font-normal opacity-70 */}
-          <p className="text-[11px] md:text-xs font-normal text-[#647064] opacity-70 line-clamp-1 mt-0.5 font-secondary">
-            {product.description || (categoryLabel ? `Catégorie: ${categoryLabel}` : '')}
-          </p>
-
-          {/* Star rating with review count */}
-          <div className="text-amber-400 text-[11px] flex items-center gap-1 mt-1">
-            <div className="flex items-center text-amber-400">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <Star
-                  key={star}
-                  size={10}
-                  className={
-                    star <= Math.round(product.rating || 4.5)
-                      ? 'fill-amber-400 text-amber-400'
-                      : 'text-slate-200'
-                  }
-                />
-              ))}
-            </div>
-            <span className="text-[#647064] text-[10px] md:text-[11px] opacity-70 font-secondary">
-              ({product.reviewCount || 623})
-            </span>
-          </div>
+          {/* Description line */}
+          {product.description && (
+            <p className="text-[11px] font-normal text-[#647064] opacity-70 line-clamp-1 mt-0.5 font-secondary">
+              {product.description}
+            </p>
+          )}
         </div>
       </div>
 
       {/* Bottom Section: Price Tag & Compact Action Button */}
       <div className="mt-2.5 pt-2 border-t border-[#DDE8DE]/80 flex items-center justify-between gap-1.5">
-        {/* Full Price in FCFA: text-xs md:text-sm font-bold whitespace-nowrap (NEVER truncated) */}
+        {/* Full Price in FCFA */}
         <div className="flex flex-col min-w-0">
           <span className="text-xs md:text-sm font-bold text-[#172017] whitespace-nowrap font-primary">
             {formatPrice(product.price)}
@@ -261,7 +234,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, layout = 'gri
           )}
         </div>
 
-        {/* Compact Action Button that fits neatly in 5-column layout without squeezing price */}
+        {/* Compact Action Button */}
         <button
           onClick={handleAddToCart}
           className={`p-2 rounded-lg bg-[#F0FDF4] hover:bg-[#166534] text-[#166534] hover:text-white border border-[#DCFCE7] hover:border-[#166534] transition-all duration-200 shrink-0 cursor-pointer active:scale-95 shadow-2xs flex items-center justify-center ${

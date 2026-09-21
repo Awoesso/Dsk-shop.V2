@@ -108,34 +108,6 @@ export const SEO: React.FC<SEOProps> = ({
       },
     };
 
-    if (product.rating) {
-      productSchema.aggregateRating = {
-        '@type': 'AggregateRating',
-        ratingValue: product.rating,
-        reviewCount: Math.max(1, product.reviewCount || product.reviews?.length || 1),
-        bestRating: 5,
-        worstRating: 1,
-      };
-    }
-
-    if (product.reviews && product.reviews.length > 0) {
-      productSchema.review = product.reviews.map((r) => ({
-        '@type': 'Review',
-        author: {
-          '@type': 'Person',
-          name: r.author,
-        },
-        datePublished: r.date,
-        reviewBody: r.comment,
-        reviewRating: {
-          '@type': 'Rating',
-          ratingValue: r.rating,
-          bestRating: 5,
-          worstRating: 1,
-        },
-      }));
-    }
-
     structuredDataList.push(productSchema);
   }
 

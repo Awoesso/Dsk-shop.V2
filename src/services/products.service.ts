@@ -1,5 +1,5 @@
 import { supabase, getProductImageUrl } from '../lib/supabase';
-import { Product } from '../types';
+import { Product, SortOption } from '../types';
 import { normalizeCategory } from '../constants/categories';
 import {
   clampPagination,
@@ -11,26 +11,8 @@ import {
 } from '../utils/security';
 import { RealtimeChannel } from '@supabase/supabase-js';
 
-// Explicit column projection to prevent data leaks and optimize payload size
-const PRODUCT_EXPLICIT_COLUMNS = `
-  id,
-  created_at,
-  updated_at,
-  name,
-  slug,
-  description,
-  price,
-  currency,
-  category,
-  status,
-  view_count,
-  sales_count,
-  product_images (
-    id,
-    storage_path,
-    sort_order
-  )
-` as const;
+// Relational query embedding product_images
+const PRODUCT_QUERY_WITH_IMAGES = '*, product_images(*)';
 
 export interface GetProductsOptions {
   page?: number;
@@ -39,7 +21,7 @@ export interface GetProductsOptions {
   searchQuery?: string;
   minPrice?: number;
   maxPrice?: number;
-  sortBy?: 'featured' | 'price-low' | 'price-high' | 'rating' | 'newest';
+  sortBy?: SortOption;
   status?: string;
 }
 
@@ -57,25 +39,42 @@ export interface SingleProductResponse {
 }
 
 /**
- * Transforms a raw Supabase database row into the strongly-typed DSK-Shop Product entity.
- * Resolves Storage bucket images securely and ensures type contracts are strictly met.
+ * Helper to safely resolve image URLs whether stored as direct URLs or Supabase storage paths.
+ */
+function resolveImageUrl(img: any): string {
+  if (!img) return '';
+  if (typeof img === 'string') {
+    return img.startsWith('http://') || img.startsWith('https://') ? img : getProductImageUrl(img);
+  }
+  if (img.url && typeof img.url === 'string') return img.url;
+  if (img.image_url && typeof img.image_url === 'string') return img.image_url;
+  if (img.storage_path && typeof img.storage_path === 'string') return getProductImageUrl(img.storage_path);
+  return '';
+}
+
+/**
+ * Transforms a raw Supabase database row with relational product_images
+ * into the strongly-typed DSK-Shop Product entity.
  */
 export function mapDbRowToProduct(row: any): Product {
-  // Sort and map product images through the verified Supabase Storage resolver
-  const rawImages: Array<{ storage_path: string; sort_order: number | null }> =
-    Array.isArray(row.product_images) ? row.product_images : [];
+  const rawImages: any[] = Array.isArray(row.product_images) ? row.product_images : [];
 
   const sortedImages = [...rawImages].sort(
     (a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0)
   );
 
   const images = sortedImages
-    .map((img) => getProductImageUrl(img.storage_path))
+    .map(resolveImageUrl)
     .filter(Boolean);
 
-  // High quality default fallback placeholder if product has no uploaded images yet
+  const neutralPlaceholder = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&q=80';
+
+  // primaryImage: Use product_images.find(img => img.is_primary)?.url or product_images[0]?.url or a neutral placeholder
+  const primaryImgObj = sortedImages.find((img: any) => img.is_primary) || sortedImages[0];
+  const primaryImage = (primaryImgObj ? resolveImageUrl(primaryImgObj) : '') || images[0] || neutralPlaceholder;
+
   if (images.length === 0) {
-    images.push('https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&q=80');
+    images.push(primaryImage);
   }
 
   const isPublished = !row.status || row.status === 'published' || row.status === 'active';
@@ -97,20 +96,21 @@ export function mapDbRowToProduct(row: any): Product {
       Devise: row.currency || 'FCFA',
       Statut: row.status || 'Disponible',
     },
+    primaryImage,
     images,
-    rating: 4.8,
-    reviewCount: Number(row.sales_count) || 0,
+    product_images: rawImages,
     tags: [row.category || 'Shop'].filter(Boolean),
     isFeatured: (row.view_count || 0) > 10,
     isNew: false,
     isBestSeller: (row.sales_count || 0) > 20,
+    currency: row.currency || 'FCFA',
+    status: row.status || 'active',
   };
 }
 
 export const ProductsService = {
   /**
-   * Fetches paginated, sanitized, and filtered products from Supabase.
-   * Respects RLS and bounds limits strictly to max 50 items.
+   * Fetches paginated, sanitized, and filtered products from Supabase with relational images.
    */
   async getProducts(options: GetProductsOptions = {}): Promise<ProductsResponse> {
     const { from, to, safeLimit, safePage } = clampPagination(
@@ -119,9 +119,9 @@ export const ProductsService = {
     );
 
     try {
-      let query = supabase
+      let query = (supabase as any)
         .from('products')
-        .select(PRODUCT_EXPLICIT_COLUMNS, { count: 'exact' })
+        .select(PRODUCT_QUERY_WITH_IMAGES, { count: 'exact' })
         .range(from, to);
 
       // Sanitize and apply category filter if specified
@@ -159,7 +159,6 @@ export const ProductsService = {
         case 'newest':
           query = query.order('created_at', { ascending: false });
           break;
-        case 'rating':
         case 'featured':
         default:
           query = query.order('created_at', { ascending: false });
@@ -201,8 +200,7 @@ export const ProductsService = {
   },
 
   /**
-   * Fetches a single product by its unique slug or UUID.
-   * Parameter is sanitized to prevent injection.
+   * Fetches a single product by its unique slug or UUID with relational product_images.
    */
   async getProductBySlug(rawSlug: string): Promise<SingleProductResponse> {
     const slug = sanitizeSlug(rawSlug);
@@ -212,18 +210,18 @@ export const ProductsService = {
 
     try {
       // First attempt query by slug
-      let { data, error } = await supabase
+      let { data, error } = await (supabase as any)
         .from('products')
-        .select(PRODUCT_EXPLICIT_COLUMNS)
+        .select(PRODUCT_QUERY_WITH_IMAGES)
         .eq('slug', slug)
         .maybeSingle();
 
       // If not found by slug, check if the input is a valid UUID
       const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(slug);
       if (!data && isUuid) {
-        const uuidQuery = await supabase
+        const uuidQuery = await (supabase as any)
           .from('products')
-          .select(PRODUCT_EXPLICIT_COLUMNS)
+          .select(PRODUCT_QUERY_WITH_IMAGES)
           .eq('id', slug)
           .maybeSingle();
         data = uuidQuery.data;
@@ -247,8 +245,7 @@ export const ProductsService = {
   },
 
   /**
-   * Subscribes to real-time changes on the public products catalog (UPDATE, INSERT, DELETE from Nexa).
-   * Ensures scoped channel subscription and returns a safe cleanup unmount function.
+   * Subscribes to real-time changes on the public products catalog.
    */
   subscribeToProducts(
     onUpdate: (payload: { eventType: 'INSERT' | 'UPDATE' | 'DELETE'; newRow: any; oldRow: any }) => void
@@ -260,10 +257,37 @@ export const ProductsService = {
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'products' },
-        (payload) => {
+        async (payload) => {
+          if (payload.eventType === 'DELETE') {
+            onUpdate({
+              eventType: 'DELETE',
+              newRow: null,
+              oldRow: payload.old,
+            });
+            return;
+          }
+
+          // For INSERT and UPDATE, fetch relational product_images join
+          const productId = payload.new?.id;
+          let fullRow = payload.new;
+          if (productId) {
+            try {
+              const res = await (supabase as any)
+                .from('products')
+                .select(PRODUCT_QUERY_WITH_IMAGES)
+                .eq('id', productId)
+                .maybeSingle();
+              if (res.data) {
+                fullRow = res.data;
+              }
+            } catch {
+              // fallback to payload.new
+            }
+          }
+
           onUpdate({
-            eventType: payload.eventType as 'INSERT' | 'UPDATE' | 'DELETE',
-            newRow: payload.new,
+            eventType: payload.eventType as 'INSERT' | 'UPDATE',
+            newRow: fullRow,
             oldRow: payload.old,
           });
         }

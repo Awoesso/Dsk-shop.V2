@@ -36,7 +36,6 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
   const removeSearchChip = () => setFilters({ searchQuery: '' });
   const removeCategoryChip = () => setFilters({ category: 'all' });
   const removeBrandChip = () => setFilters({ selectedBrand: undefined });
-  const removeRatingChip = () => setFilters({ minRating: 0 });
 
   return (
     <div className="w-full font-secondary">
@@ -99,15 +98,6 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
                 </button>
               </span>
             )}
-
-            {filterState.minRating > 0 && (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-semibold bg-amber-50 text-amber-900 border border-amber-200/60 rounded-full font-primary">
-                ★ {filterState.minRating}+
-                <button onClick={removeRatingChip} className="hover:text-rose-600 cursor-pointer">
-                  <X size={12} />
-                </button>
-              </span>
-            )}
           </div>
 
           <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-2.5">
@@ -134,10 +124,9 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
                   className="pl-2.5 pr-7 py-1.5 text-xs font-semibold text-[#172017] bg-white border border-[#DDE8DE] rounded-xl hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#16A34A]/20 focus:border-[#166534] cursor-pointer appearance-none shadow-2xs font-primary"
                 >
                   <option value="featured">En vedette</option>
+                  <option value="newest">Nouveautés</option>
                   <option value="price-low">Prix : Croissant</option>
                   <option value="price-high">Prix : Décroissant</option>
-                  <option value="rating">Mieux notés</option>
-                  <option value="newest">Nouveautés</option>
                 </select>
                 <ArrowUpDown
                   size={12}

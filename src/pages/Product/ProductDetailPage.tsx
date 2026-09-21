@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-  Star,
   Heart,
   ShoppingBag,
   Truck,
@@ -17,7 +16,7 @@ import { ProductDetailSkeleton } from '../../components/Skeleton/ProductDetailSk
 import { formatPrice } from '../../utils/currency';
 import { ProductVariant } from '../../types';
 import { SEO } from '../../components/SEO/SEO';
-import { CATEGORIES } from '../../data/products';
+import { CATEGORIES } from '../../constants/categories';
 
 export const ProductDetailPage: React.FC = () => {
   const {
@@ -244,25 +243,6 @@ export const ProductDetailPage: React.FC = () => {
             <h1 className="text-xl sm:text-2xl md:text-3xl 2xl:text-4xl font-extrabold text-[#172017] tracking-tight mt-1 sm:mt-1.5 font-primary leading-tight">
               {product.name}
             </h1>
-
-            {/* Rating Stars & Reference */}
-            <div className="flex items-center gap-2 mt-2">
-              <div className="flex items-center text-amber-400">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    size={14}
-                    className={`sm:w-4 sm:h-4 2xl:w-4.5 2xl:h-4.5 ${
-                      i < Math.floor(product.rating)
-                        ? 'fill-amber-400 text-amber-400'
-                        : 'text-slate-300'
-                    }`}
-                  />
-                ))}
-              </div>
-              <span className="text-xs sm:text-sm font-bold text-[#172017] font-primary">{product.rating}</span>
-              <span className="text-xs text-[#849385] font-secondary">({product.reviewCount} évaluations)</span>
-            </div>
           </div>
 
           {/* Price Strip */}

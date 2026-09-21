@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
-import { Product, CartItem, ProductVariant, FilterState, ActivePage, Order, ShippingAddress, PaymentMethod, ToastMessage, ProductReview } from '../types';
-import { PRODUCTS, CATEGORIES } from '../data/products';
+import { Product, CartItem, ProductVariant, FilterState, ActivePage, Order, ShippingAddress, PaymentMethod, ToastMessage } from '../types';
+import { CATEGORIES } from '../constants/categories';
 import { USD_TO_FCFA_RATE } from '../utils/currency';
 import { ProductsService, mapDbRowToProduct } from '../services/products.service';
 
@@ -61,9 +61,8 @@ const initialFilterState: FilterState = {
   category: 'all',
   searchQuery: '',
   minPrice: 0,
-  maxPrice: 400,
+  maxPrice: 1000000,
   sortBy: 'featured',
-  minRating: 0,
   inStockOnly: false,
 };
 
@@ -81,7 +80,7 @@ const isSessionAlreadyInitialized = (): boolean => {
 };
 
 export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [products, setProducts] = useState<Product[]>(PRODUCTS);
+  const [products, setProducts] = useState<Product[]>([]);
   const [activePage, setActivePage] = useState<ActivePage>('home');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -145,12 +144,19 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     async function loadSupabaseCatalog() {
       try {
+        setIsLoading(true);
         const response = await ProductsService.getProducts({ limit: 50 });
-        if (isMounted && response.data.length > 0) {
-          setProducts(response.data);
+        if (isMounted) {
+          setProducts(response.data || []);
         }
       } catch {
-        // Fallback remains safely intact
+        if (isMounted) {
+          setProducts([]);
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     }
 
@@ -201,9 +207,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     try {
       const response = await ProductsService.getProducts({ limit: 50 });
-      if (response.data.length > 0) {
-        setProducts(response.data);
-      }
+      setProducts(response.data || []);
     } catch {
       // safe fallback
     }
@@ -475,11 +479,6 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return false;
       }
 
-      // Rating filter
-      if (product.rating < filterState.minRating) {
-        return false;
-      }
-
       // In-stock filter
       if (filterState.inStockOnly && !product.inStock) {
         return false;
@@ -497,8 +496,6 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
           return a.price - b.price;
         case 'price-high':
           return b.price - a.price;
-        case 'rating':
-          return b.rating - a.rating;
         case 'newest':
           return (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0);
         case 'featured':

@@ -3,32 +3,33 @@ import { SlidersHorizontal, X } from 'lucide-react';
 import { useShop } from '../../context/ShopContext';
 import { CategoryFilter } from '../../components/CategoryFilter/CategoryFilter';
 import { ProductGrid } from '../../components/ProductGrid/ProductGrid';
-import { CATEGORIES } from '../../data/products';
+import { CATEGORIES } from '../../constants/categories';
 import { SEO } from '../../components/SEO/SEO';
 
 export const ShopPage: React.FC = () => {
   const { filteredProducts, filterState, setFilters } = useShop();
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
+  const isAllCategories = filterState.category === 'all';
   const currentCategory = CATEGORIES.find((c) => c.id === filterState.category) || CATEGORIES[0];
   const isSearch = Boolean(filterState.searchQuery);
 
   const pageTitle = isSearch
     ? `Recherche: "${filterState.searchQuery}" (${filteredProducts.length} articles) | DSK-Shop`
-    : currentCategory.id === 'all'
+    : isAllCategories
     ? 'Catalogue Produits - Tech, Audio & Lifestyle | DSK-Shop'
     : `${currentCategory.name} - Boutique en ligne Lomé | DSK-Shop`;
 
   const pageDescription = isSearch
     ? `Découvrez les ${filteredProducts.length} articles correspondant à votre recherche "${filterState.searchQuery}" sur DSK-Shop Lomé.`
-    : currentCategory.id === 'all'
+    : isAllCategories
     ? 'Explorez notre gamme complète : smartphones, audio pro, ordinateurs et accessoires du quotidien à Lomé avec livraison sans frais.'
     : `${currentCategory.description} Commandez en ligne chez DSK-Shop avec livraison rapide à Lomé.`;
 
   const breadcrumbs = [
     { name: 'Accueil', url: '/' },
     { name: 'Catalogue', url: '/shop' },
-    ...(currentCategory.id !== 'all'
+    ...(!isAllCategories
       ? [{ name: currentCategory.name, url: `/shop?category=${currentCategory.id}` }]
       : []),
   ];

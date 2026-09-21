@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 import { useShop } from '../../context/ShopContext';
 import { SearchBar } from '../SearchBar/SearchBar';
-import { CATEGORIES } from '../../data/products';
+import { CATEGORIES } from '../../constants/categories';
 import { formatPrice } from '../../utils/currency';
 
 const getCategoryIcon = (id: string) => {
@@ -268,11 +268,11 @@ export const Header: React.FC = () => {
             </button>
             <button
               onClick={() => {
-                setFilters({ category: 'all', searchQuery: '', sortBy: 'rating' });
+                setFilters({ category: 'all', searchQuery: '', sortBy: 'featured' });
                 navigateTo('shop');
               }}
               className={`px-3.5 py-2 2xl:px-4 2xl:py-2.5 rounded-xl transition-colors font-primary cursor-pointer ${
-                activePage === 'shop' && filterState?.sortBy === 'rating'
+                activePage === 'shop' && filterState?.sortBy === 'featured'
                   ? 'text-[#166534] bg-[#DCFCE7] font-bold shadow-2xs'
                   : 'hover:text-[#166534] hover:bg-[#F0FDF4]'
               }`}
@@ -392,12 +392,12 @@ export const Header: React.FC = () => {
               </button>
               <button
                 onClick={() => {
-                  setFilters({ category: 'all', searchQuery: '', sortBy: 'rating' });
+                  setFilters({ category: 'all', searchQuery: '', sortBy: 'featured' });
                   navigateTo('shop');
                   setMobileMenuOpen(false);
                 }}
                 className={`flex items-center justify-between p-3 rounded-xl text-left font-semibold text-sm ${
-                  activePage === 'shop' && filterState?.sortBy === 'rating' ? 'bg-[#DCFCE7] text-[#166534]' : 'text-[#172017] hover:bg-[#F0FDF4]'
+                  activePage === 'shop' && filterState?.sortBy === 'featured' ? 'bg-[#DCFCE7] text-[#166534]' : 'text-[#172017] hover:bg-[#F0FDF4]'
                 }`}
               >
                 <span>Meilleures Ventes</span>
