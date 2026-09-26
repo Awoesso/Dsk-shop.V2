@@ -1,32 +1,41 @@
 import React, { useState } from 'react';
-import { Heart, ShoppingBag, Check, Eye } from 'lucide-react';
+import {
+  Heart,
+  Eye,
+  ShoppingBag,
+  Check,
+} from 'lucide-react';
 import { Product } from '../../types';
 import { useShop } from '../../context/ShopContext';
-import { ProductImage } from '../Common/ProductImage';
-import { ProductCardSkeleton } from '../Skeleton/ProductCardSkeleton';
 import { formatPrice } from '../../utils/currency';
+import { ProductImage } from '../Common/ProductImage';
 
-export interface ProductCardProps {
-  product?: Product;
+interface ProductCardProps {
+  product: Product;
   layout?: 'grid' | 'list';
-  isLoading?: boolean;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = ({ product, layout = 'grid', isLoading = false }) => {
-  if (isLoading || !product) {
-    return <ProductCardSkeleton layout={layout} />;
-  }
-
-  const { addToCart, openProduct, toggleWishlist, isInWishlist } = useShop();
-  const isFavorited = isInWishlist(product.id);
-  const [isHovered, setIsHovered] = useState(false);
+export const ProductCard: React.FC<ProductCardProps> = ({
+  product,
+  layout = 'grid',
+}) => {
+  const { openProduct, addToCart, toggleWishlist, isInWishlist } = useShop();
   const [justAdded, setJustAdded] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+
+  const isFavorited = isInWishlist(product.id);
+
+  // Discount calculation
+  const discount =
+    product.originalPrice && product.originalPrice > product.price
+      ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+      : null;
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
-    addToCart(product, 1, product.variants?.[0]);
+    addToCart(product, 1);
     setJustAdded(true);
-    setTimeout(() => setJustAdded(false), 1400);
+    setTimeout(() => setJustAdded(false), 1800);
   };
 
   const handleToggleWishlist = (e: React.MouseEvent) => {
@@ -34,15 +43,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, layout = 'gri
     toggleWishlist(product.id);
   };
 
-  const categoryLabel = product.category ? product.category.replace(/-/g, ' ') : '';
-  const discount =
-    product.discountPercent ||
-    (product.originalPrice && product.originalPrice > product.price
-      ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
-      : null);
-
-  const displayImage = product.primaryImage || product.images?.[0] || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&q=80';
+  // Image source handling
+  const displayImage = product.primaryImage || product.images?.[0] || '';
   const hoverImage = product.images?.[1] || displayImage;
+
+  const categoryLabel = product.category ? product.category.toUpperCase() : '';
 
   /* -------------------------------------------------------------------------- */
   /*                            LIST VIEW LAYOUT                                */
@@ -51,85 +56,88 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, layout = 'gri
     return (
       <div
         onClick={() => openProduct(product)}
-        className="group relative bg-white border border-[#DDE8DE] hover:border-[#166534]/40 rounded-xl p-3 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col sm:flex-row gap-3 sm:gap-4 cursor-pointer font-secondary"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className="group relative bg-white border border-[#DDE8DE] hover:border-[#166534]/50 p-3 sm:p-4 rounded-xl sm:rounded-2xl flex flex-col sm:flex-row gap-3 sm:gap-4 shadow-2xs hover:shadow-xs transition-all duration-200 ease-out hover:-translate-y-[3px] cursor-pointer font-secondary"
       >
-        {/* Image Section */}
-        <div className="relative w-full sm:w-36 md:w-44 h-36 sm:h-36 md:h-44 bg-[#F3FAF4] rounded-lg p-2 overflow-hidden shrink-0 flex items-center justify-center border border-[#DDE8DE]/60">
+        {/* Compact Thumbnail Container */}
+        <div className="relative w-full sm:w-36 h-36 rounded-lg sm:rounded-xl overflow-hidden shrink-0 flex items-center justify-center p-2 bg-[#F3FAF4] border border-[#DDE8DE]/60">
           <ProductImage
-            src={displayImage}
+            src={isHovered && product.images?.[1] ? hoverImage : displayImage}
             alt={product.name}
             containerClassName="w-full h-full"
-            className="object-contain w-full h-full p-2 group-hover:scale-105 transition-transform duration-300 ease-out"
+            className="w-full h-full object-contain p-1 group-hover:scale-[1.02] transition-transform duration-200 ease-out"
           />
 
-          {/* Floating Wishlist Button */}
           <button
             onClick={handleToggleWishlist}
-            className={`absolute top-1.5 right-1.5 p-1.5 rounded-full bg-white/90 backdrop-blur-xs shadow-2xs transition-all duration-200 active:scale-90 flex items-center justify-center z-10 cursor-pointer border border-[#DDE8DE]/80 ${
-              isFavorited ? 'text-rose-500 border-rose-200 bg-white' : 'text-[#647064] hover:text-rose-500 hover:bg-white'
+            className={`absolute top-2 right-2 p-1.5 rounded-full bg-white/90 backdrop-blur-xs shadow-2xs transition-all duration-200 active:scale-90 flex items-center justify-center border border-[#DDE8DE]/80 cursor-pointer ${
+              isFavorited ? 'text-rose-500 border-rose-200 bg-white' : 'text-[#647064] hover:text-rose-500'
             }`}
             title={isFavorited ? 'Retirer des favoris' : 'Ajouter aux favoris'}
-            aria-label="Favoris"
+            aria-label="Ajouter aux favoris"
           >
-            <Heart
-              size={14}
-              className={isFavorited ? 'fill-rose-500 text-rose-500' : ''}
-            />
+            <Heart size={14} className={isFavorited ? 'fill-rose-500 text-rose-500' : ''} />
           </button>
         </div>
 
-        {/* Info Section */}
-        <div className="flex-1 flex flex-col justify-between min-w-0">
+        {/* Content Area */}
+        <div className="flex flex-col justify-between flex-1 min-w-0">
           <div>
-            <div className="flex items-start justify-between gap-2">
-              <h3 className="text-xs md:text-sm font-semibold text-[#172017] line-clamp-1 group-hover:text-[#166534] transition-colors font-primary">
-                {product.name}
-              </h3>
-              {discount ? (
-                <span className="text-[10px] font-bold bg-[#DCFCE7] text-[#166534] px-1.5 py-0.5 rounded border border-[#DCFCE7] shrink-0 whitespace-nowrap">
-                  -{discount}%
-                </span>
-              ) : categoryLabel ? (
-                <span className="text-[10px] font-medium bg-[#F3FAF4] text-[#166534] px-1.5 py-0.5 rounded border border-[#DDE8DE] shrink-0 whitespace-nowrap capitalize">
-                  {categoryLabel}
-                </span>
-              ) : null}
-            </div>
+            {/* Category label - subtle, extra small, light uppercase */}
+            {categoryLabel && (
+              <span className="text-[9px] font-medium tracking-wider text-[#647064] uppercase block">
+                {categoryLabel}
+              </span>
+            )}
 
-            <p className="text-[11px] md:text-xs font-normal text-[#647064] opacity-70 line-clamp-1 mt-0.5 font-secondary">
-              {product.description || (categoryLabel ? `Catégorie: ${categoryLabel}` : '')}
-            </p>
-          </div>
+            {/* Product title - refined, light & clean */}
+            <h3 className="text-sm font-normal text-[#172017] group-hover:text-[#166534] transition-colors mt-0.5 line-clamp-1">
+              {product.name}
+            </h3>
 
-          <div className="flex items-center justify-between mt-3 pt-2 border-t border-[#DDE8DE]/80 gap-3">
-            <div className="flex items-baseline flex-wrap gap-x-2 gap-y-0.5">
-              <span className="text-xs md:text-sm font-bold text-[#172017] whitespace-nowrap font-primary">
+            {/* Price Tag in FCFA */}
+            <div className="flex items-baseline flex-wrap gap-x-2 gap-y-0.5 mt-1.5">
+              <span className="text-base sm:text-lg font-extrabold text-[#172017] whitespace-nowrap font-primary tracking-tight">
                 {formatPrice(product.price)}
               </span>
               {product.originalPrice && product.originalPrice > product.price && (
-                <span className="text-[10px] md:text-[11px] font-normal text-[#647064] line-through whitespace-nowrap opacity-70">
+                <span className="text-[11px] font-normal text-[#647064] line-through whitespace-nowrap opacity-70">
                   {formatPrice(product.originalPrice)}
+                </span>
+              )}
+              {discount && (
+                <span className="text-[9px] font-bold bg-[#DCFCE7] text-[#166534] px-1.5 py-0.5 rounded">
+                  -{discount}%
                 </span>
               )}
             </div>
 
+            <p className="text-xs font-normal text-[#647064] line-clamp-1 mt-1 font-secondary">
+              {product.description || (categoryLabel ? `Catégorie: ${categoryLabel}` : '')}
+            </p>
+          </div>
+
+          <div className="mt-3 pt-2.5 border-t border-[#DDE8DE]/80">
             <button
               onClick={handleAddToCart}
-              className={`py-1.5 px-3 rounded-lg text-xs font-semibold font-primary border border-[#DCFCE7] bg-[#F0FDF4] hover:bg-[#166534] text-[#166534] hover:text-white transition-all duration-200 flex items-center justify-center gap-1.5 shrink-0 cursor-pointer active:scale-95 shadow-2xs ${
-                justAdded ? 'bg-[#166534] text-white border-[#166534]' : ''
+              className={`w-full sm:w-auto py-2 px-4 rounded-xl text-xs font-bold font-primary transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer active:scale-95 shadow-xs ${
+                justAdded
+                  ? 'bg-[#15803D] text-white'
+                  : 'bg-[#166534] hover:bg-[#15803D] text-white'
               }`}
               title="Ajouter au panier"
               aria-label="Ajouter au panier"
             >
               {justAdded ? (
                 <>
-                  <Check size={14} className="text-white" />
-                  <span>Ajouté</span>
+                  <Check size={15} className="text-white" />
+                  <span>Ajouté au panier</span>
                 </>
               ) : (
                 <>
-                  <ShoppingBag size={14} />
-                  <span>Ajouter</span>
+                  <ShoppingBag size={15} />
+                  <span>Ajouter au panier</span>
                 </>
               )}
             </button>
@@ -147,22 +155,22 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, layout = 'gri
       onClick={() => openProduct(product)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="group relative bg-white border border-[#DDE8DE] hover:border-[#166534]/40 p-3 rounded-xl flex flex-col justify-between shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer font-secondary"
+      className="group relative bg-white border border-[#DDE8DE] hover:border-[#166534]/50 p-2 sm:p-3 rounded-xl sm:rounded-2xl flex flex-col justify-between shadow-2xs hover:shadow-md transition-all duration-200 ease-out hover:-translate-y-[3px] cursor-pointer font-secondary"
     >
-      {/* Top section: Image & Badges */}
+      {/* Top section: Image & Floating controls */}
       <div>
         {/* Compact Image Container */}
-        <div className="aspect-square rounded-lg p-2 relative flex items-center justify-center overflow-hidden mb-2 bg-[#F3FAF4] border border-[#DDE8DE]/60">
+        <div className="aspect-square rounded-lg sm:rounded-xl p-1.5 sm:p-2 relative flex items-center justify-center overflow-hidden mb-2 bg-[#F8FCF9] border border-[#DDE8DE]/50">
           <ProductImage
             src={isHovered && product.images?.[1] ? hoverImage : displayImage}
             alt={product.name}
             containerClassName="w-full h-full"
-            className="w-full h-full object-contain p-1.5 group-hover:scale-105 transition-transform duration-300 ease-out"
+            className="w-full h-full object-contain p-0.5 sm:p-1 group-hover:scale-[1.02] transition-transform duration-200 ease-out"
           />
 
           {/* Discount Badge if available */}
           {discount ? (
-            <span className="absolute top-1.5 left-1.5 text-[10px] font-bold bg-[#DCFCE7] text-[#166534] px-1.5 py-0.5 rounded border border-[#DCFCE7]/60 shadow-2xs">
+            <span className="absolute top-1 left-1 sm:top-1.5 sm:left-1.5 text-[8px] sm:text-[10px] font-bold bg-[#DCFCE7] text-[#166534] px-1 sm:px-1.5 py-0.5 rounded sm:rounded-md border border-[#DCFCE7]/60 shadow-2xs">
               -{discount}%
             </span>
           ) : null}
@@ -170,7 +178,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, layout = 'gri
           {/* Floating Wishlist Button */}
           <button
             onClick={handleToggleWishlist}
-            className={`absolute top-1.5 right-1.5 p-1.5 rounded-full bg-white/90 backdrop-blur-xs shadow-2xs transition-all duration-200 active:scale-90 flex items-center justify-center z-10 cursor-pointer border border-[#DDE8DE]/80 ${
+            className={`absolute top-1 right-1 sm:top-1.5 sm:right-1.5 p-1 sm:p-1.5 rounded-full bg-white/95 backdrop-blur-xs shadow-2xs transition-all duration-200 active:scale-90 flex items-center justify-center z-10 cursor-pointer border border-[#DDE8DE]/80 min-w-[28px] min-h-[28px] ${
               isFavorited ? 'text-rose-500 border-rose-200 bg-white' : 'text-[#647064] hover:text-rose-500 hover:bg-white'
             }`}
             title={isFavorited ? 'Retirer des favoris' : 'Ajouter aux favoris'}
@@ -197,53 +205,60 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, layout = 'gri
           </div>
         </div>
 
-        {/* Info Section: Category -> Title -> Description */}
-        <div>
-          {/* Category */}
+        {/* Info Section: Category -> Title */}
+        <div className="space-y-0.5">
+          {/* Category: extra-small, light, discreet uppercase */}
           {categoryLabel && (
-            <span className="text-[10px] font-semibold text-[#166534] uppercase tracking-wider font-primary block truncate">
+            <span className="text-[8px] sm:text-[9px] font-normal tracking-wider text-[#647064] uppercase block truncate opacity-80">
               {categoryLabel}
             </span>
           )}
 
-          {/* Card Title (H3) */}
-          <h3 className="text-xs md:text-sm font-semibold text-[#172017] line-clamp-1 group-hover:text-[#166534] transition-colors font-primary mt-0.5">
+          {/* Product Name: refined, thinner font weight */}
+          <h3 className="text-xs sm:text-[13px] font-medium text-[#172017] line-clamp-1 group-hover:text-[#166534] transition-colors leading-tight">
             {product.name}
           </h3>
-
-          {/* Description line */}
-          {product.description && (
-            <p className="text-[11px] font-normal text-[#647064] opacity-70 line-clamp-1 mt-0.5 font-secondary">
-              {product.description}
-            </p>
-          )}
         </div>
       </div>
 
-      {/* Bottom Section: Price Tag & Compact Action Button */}
-      <div className="mt-2.5 pt-2 border-t border-[#DDE8DE]/80 flex items-center justify-between gap-1.5">
-        {/* Full Price in FCFA */}
-        <div className="flex flex-col min-w-0">
-          <span className="text-xs md:text-sm font-bold text-[#172017] whitespace-nowrap font-primary">
-            {formatPrice(product.price)}
-          </span>
-          {product.originalPrice && product.originalPrice > product.price && (
-            <span className="text-[10px] md:text-[11px] font-normal text-[#647064] line-through whitespace-nowrap opacity-70">
-              {formatPrice(product.originalPrice)}
+      {/* Bottom Section: Price prominently displayed + Direct Full-width "Ajouter au panier" Button */}
+      <div className="mt-1.5 sm:mt-2 pt-1.5 sm:pt-2 border-t border-[#DDE8DE]/70 space-y-1.5 sm:space-y-2">
+        {/* Prominent Price Tag in FCFA */}
+        <div className="flex items-baseline justify-between gap-1">
+          <div className="flex items-baseline gap-1 sm:gap-1.5 flex-wrap">
+            <span className="text-xs sm:text-base font-extrabold text-[#172017] whitespace-nowrap font-primary tracking-tight">
+              {formatPrice(product.price)}
             </span>
-          )}
+            {product.originalPrice && product.originalPrice > product.price && (
+              <span className="text-[9px] sm:text-[11px] font-normal text-[#647064] line-through whitespace-nowrap opacity-60">
+                {formatPrice(product.originalPrice)}
+              </span>
+            )}
+          </div>
         </div>
 
-        {/* Compact Action Button */}
+        {/* Clear Action Button: "Ajouter au panier" (Green background, white text) */}
         <button
           onClick={handleAddToCart}
-          className={`p-2 rounded-lg bg-[#F0FDF4] hover:bg-[#166534] text-[#166534] hover:text-white border border-[#DCFCE7] hover:border-[#166534] transition-all duration-200 shrink-0 cursor-pointer active:scale-95 shadow-2xs flex items-center justify-center ${
-            justAdded ? 'bg-[#166534] text-white border-[#166534]' : ''
+          className={`w-full py-1.5 sm:py-2 px-1.5 sm:px-2.5 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-bold font-primary transition-all duration-200 flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer active:scale-95 shadow-xs min-h-[36px] sm:min-h-[40px] ${
+            justAdded
+              ? 'bg-[#15803D] text-white'
+              : 'bg-[#166534] hover:bg-[#15803D] text-white'
           }`}
-          title={justAdded ? 'Ajouté au panier' : 'Ajouter au panier'}
+          title="Ajouter au panier"
           aria-label="Ajouter au panier"
         >
-          {justAdded ? <Check size={14} className="text-white" /> : <ShoppingBag size={14} />}
+          {justAdded ? (
+            <>
+              <Check size={13} className="text-white shrink-0 stroke-[2.5]" />
+              <span className="truncate">Ajouté</span>
+            </>
+          ) : (
+            <>
+              <ShoppingBag size={13} className="shrink-0 stroke-[2.2]" />
+              <span className="truncate">Ajouter au panier</span>
+            </>
+          )}
         </button>
       </div>
     </div>

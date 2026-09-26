@@ -24,8 +24,7 @@ interface SEOProps {
 const DEFAULT_TITLE = 'DSK-Shop | Boutique Tech & Lifestyle Premium à Lomé, Togo';
 const DEFAULT_DESCRIPTION =
   'Boutique en ligne DSK-Shop à Lomé, Togo : casques audio haute fidélité, matériel informatique, accessoires connectés et lifestyle. Livraison rapide, paiement sécurisé et garantie 2 ans.';
-const DEFAULT_IMAGE =
-  'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=1200&auto=format&fit=crop&q=80';
+const DEFAULT_IMAGE = '/favicon.svg';
 const SITE_NAME = 'DSK-Shop';
 
 export const SEO: React.FC<SEOProps> = ({

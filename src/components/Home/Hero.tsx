@@ -1,5 +1,6 @@
 import React from 'react';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ShoppingBag, CheckCircle2 } from 'lucide-react';
+import { motion } from 'motion/react';
 import { useShop } from '../../context/ShopContext';
 import { Product } from '../../types';
 import { ProductImage } from '../Common/ProductImage';
@@ -8,25 +9,22 @@ import { formatPrice } from '../../utils/currency';
 export const Hero: React.FC = () => {
   const { products, navigateTo, openProduct, setFilters } = useShop();
 
-  // Curated hero product and secondary subordinate product
-  const mainProduct: Product =
-    products.find((p) => p.id === 'dsk-headphone-pro') || products[0];
-  const secondaryProduct: Product =
-    products.find((p) => p.id === 'dsk-mouse-ergonomic') || products[1];
+  // Use only real products from Supabase database
+  const mainProduct: Product | undefined = products[0];
+  const secondaryProduct: Product | undefined = products[1];
 
-  const handleDiscover = () => {
-    setFilters({ category: 'all', searchQuery: '', sortBy: 'featured' });
-    navigateTo('shop');
-  };
-
-  const handleViewCategories = () => {
-    const heroEl = document.getElementById('hero-section');
-    if (heroEl && heroEl.nextElementSibling) {
-      heroEl.nextElementSibling.scrollIntoView({ behavior: 'smooth' });
+  const handleOrderNow = () => {
+    if (mainProduct) {
+      openProduct(mainProduct);
     } else {
       setFilters({ category: 'all', searchQuery: '', sortBy: 'featured' });
       navigateTo('shop');
     }
+  };
+
+  const handleViewCatalog = () => {
+    setFilters({ category: 'all', searchQuery: '', sortBy: 'featured' });
+    navigateTo('shop');
   };
 
   return (
@@ -34,121 +32,153 @@ export const Hero: React.FC = () => {
       id="hero-section"
       className="w-full bg-[#F3FAF4] border-b border-[#DDE8DE] relative overflow-hidden text-[#172017]"
     >
-      <div className="max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 py-8 sm:py-10 lg:py-0 lg:min-h-[520px] lg:max-h-[580px] xl:min-h-[540px] xl:max-h-[600px] flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 py-6 sm:py-12 lg:py-16 flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-10 lg:gap-14">
         
         {/* ========================================================= */}
-        {/* GAUCHE — ZONE ÉDITORIALE COMPACTE (38–42% sur desktop)    */}
+        {/* GAUCHE — ZONE ÉDITORIALE DSK-SHOP                         */}
         {/* ========================================================= */}
-        <div className="w-full lg:w-[40%] flex flex-col justify-center text-center lg:text-left z-10 space-y-4 sm:space-y-5">
-          {/* 1. Label Eyebrow discret */}
-          <div>
-            <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-[#DCFCE7]/85 text-[#166534] text-[11px] sm:text-xs font-semibold uppercase tracking-[0.08em] font-primary">
-              DSK-Shop Essentials
-            </span>
-          </div>
-
-          {/* 2. Titre audacieux 52–64px en Manrope (4 mots, leading 1.02) */}
-          <h1
-            className="text-[34px] sm:text-[42px] md:text-5xl lg:text-[54px] xl:text-[60px] font-extrabold text-[#172017] tracking-tight leading-[1.02] font-primary"
-            style={{ fontFamily: "'Manrope', sans-serif" }}
+        <div className="w-full lg:w-[50%] flex flex-col justify-center text-center lg:text-left z-10 space-y-3.5 sm:space-y-6">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, ease: 'easeOut' }}
           >
-            Mieux équipé.
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#DCFCE7] text-[#166534] text-xs font-bold uppercase tracking-wider font-primary">
+              <span className="w-2 h-2 rounded-full bg-[#16A34A] animate-pulse" />
+              DSK-Shop · Lomé
+            </span>
+          </motion.div>
+
+          {/* Titre : fade + translateY(15px), 0ms, 450ms */}
+          <motion.h1
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, ease: 'easeOut' }}
+            className="text-2xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-extrabold text-[#172017] tracking-tight leading-[1.18] font-primary"
+          >
+            Achetez juste.
             <br />
-            <span className="text-[#166534]">Chaque jour.</span>
-          </h1>
+            <span className="text-[#166534]">Recevez vite.</span>
+          </motion.h1>
 
-          {/* 3. Courte description précise en DM Sans */}
-          <p className="text-base sm:text-[17px] text-[#647064] leading-relaxed font-secondary max-w-md mx-auto lg:mx-0">
-            Des produits utiles, soigneusement sélectionnés pour votre quotidien.
-          </p>
+          {/* Description : fade + translateY(15px), 80ms, 500ms */}
+          <motion.p
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.08, ease: 'easeOut' }}
+            className="text-xs sm:text-base md:text-lg text-[#647064] leading-relaxed font-secondary max-w-lg mx-auto lg:mx-0"
+          >
+            L&apos;essentiel du quotidien livré rapidement à Lomé. Retrouvez vos articles préférés avec paiement simplifié et livraison directe à votre porte.
+          </motion.p>
 
-          {/* 4. Bouton CTA primaire vert #16A34A + lien secondaire discret */}
-          <div className="pt-2 sm:pt-3 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 font-secondary">
+          {/* Boutons : fade + translateY(15px), 160ms, 500ms */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.16, ease: 'easeOut' }}
+            className="pt-1 sm:pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-2.5 sm:gap-3.5 font-secondary"
+          >
             <button
-              id="hero-primary-cta"
-              onClick={handleDiscover}
-              className="group h-[48px] px-6 sm:px-7 bg-[#16A34A] hover:bg-[#166534] text-white text-sm font-semibold rounded-xl transition-all duration-200 shadow-xs flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99] w-full sm:w-auto"
+              id="hero-order-cta"
+              onClick={handleOrderNow}
+              className="h-[46px] sm:h-[48px] px-6 sm:px-7 bg-[#166534] hover:bg-[#16A34A] text-white text-xs sm:text-sm font-bold rounded-xl transition-all duration-200 shadow-xs flex items-center justify-center gap-2 cursor-pointer active:scale-98 w-full sm:w-auto font-primary"
             >
-              <span>Découvrir les produits</span>
-              <ArrowRight
-                size={15}
-                className="group-hover:translate-x-0.5 transition-transform duration-200"
-              />
+              <ShoppingBag size={17} />
+              <span>Commander maintenant</span>
             </button>
-
             <button
-              onClick={handleViewCategories}
-              className="text-xs font-semibold text-[#166534] hover:text-[#16A34A] transition-colors inline-flex items-center gap-1 cursor-pointer font-primary py-1"
+              id="hero-catalog-cta"
+              onClick={handleViewCatalog}
+              className="h-[46px] sm:h-[48px] px-5 sm:px-6 bg-white hover:bg-slate-50 text-[#172017] hover:text-[#166534] border border-[#DDE8DE] text-xs sm:text-sm font-bold rounded-xl transition-all duration-200 shadow-2xs flex items-center justify-center gap-2 cursor-pointer active:scale-98 w-full sm:w-auto font-primary"
             >
-              <span>Voir les catégories</span>
-              <span aria-hidden="true">→</span>
+              <span>Voir le catalogue</span>
+              <ArrowRight size={16} />
             </button>
-          </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.22, ease: 'easeOut' }}
+            className="pt-1 flex flex-wrap items-center justify-center lg:justify-start gap-3 sm:gap-4 text-[11px] sm:text-xs text-[#647064]"
+          >
+            <span className="flex items-center gap-1">
+              <CheckCircle2 size={13} className="text-[#16A34A]" /> Livraison express Lomé
+            </span>
+            <span className="flex items-center gap-1">
+              <CheckCircle2 size={13} className="text-[#16A34A]" /> T-Money, Flooz & Espèces
+            </span>
+          </motion.div>
         </div>
 
         {/* ========================================================= */}
-        {/* DROITE — SCÈNE PRODUIT ART-DIRIGÉE (58–62% sur desktop)   */}
+        {/* DROITE — PRODUITS RÉELS DE LA BOUTIQUE                    */}
         {/* ========================================================= */}
-        <div className="w-full lg:w-[60%] relative flex items-center justify-center py-2 sm:py-4 lg:py-6">
-          {/* Forme organique verte signature DSK-Shop en arrière-plan */}
+        <div className="w-full lg:w-[48%] relative flex items-center justify-center py-2 sm:py-4">
           <div
-            className="absolute inset-0 m-auto w-[92%] sm:w-[88%] lg:w-[94%] h-[88%] sm:h-[90%] lg:h-[92%] rounded-[40px] sm:rounded-[56px] lg:rounded-[72px] bg-gradient-to-br from-[#DCFCE7] via-[#E8F7EC] to-[#DCFCE7]/75 border border-[#D5EDD8] pointer-events-none -rotate-1"
+            className="absolute inset-0 m-auto w-[94%] h-[94%] rounded-3xl bg-gradient-to-br from-[#DCFCE7] via-[#E8F7EC] to-[#DCFCE7]/60 border border-[#D5EDD8] pointer-events-none"
             aria-hidden="true"
           />
 
-          {/* Composition produit cohérente et intégrée */}
-          <div className="relative z-10 w-full h-[320px] sm:h-[380px] lg:h-[440px] xl:h-[470px] flex items-center justify-center">
-            {/* Produit Principal (Casque Studio ANC) */}
-            {mainProduct && (
+          {/* Image : fade + scale(0.97) -> 1, 100ms, 600ms */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.97 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.1, ease: 'easeOut' }}
+            className="relative z-10 w-full flex items-center justify-center gap-2.5 sm:gap-4 p-2 sm:p-4"
+          >
+            {/* Produit Réel 1 */}
+            {mainProduct ? (
               <div
                 onClick={() => openProduct(mainProduct)}
-                className="relative z-10 w-[240px] sm:w-[290px] md:w-[330px] lg:w-[340px] xl:w-[370px] aspect-square rounded-3xl overflow-hidden cursor-pointer group/main transition-transform duration-300 hover:scale-[1.02]"
+                className="w-1/2 sm:w-[58%] aspect-square max-w-[280px] sm:max-w-[320px] rounded-xl sm:rounded-2xl overflow-hidden cursor-pointer bg-white p-2 sm:p-3 border border-[#DDE8DE] shadow-xs hover:shadow-md transition-all group flex flex-col justify-between"
                 title={mainProduct.name}
               >
-                <div className="w-full h-full rounded-3xl overflow-hidden shadow-[0_20px_45px_-18px_rgba(20,83,45,0.22)] bg-[#F8FCF8]/40 border border-[#DCFCE7]/70 p-2 sm:p-3 flex items-center justify-center">
+                <div className="w-full flex-1 rounded-lg sm:rounded-xl overflow-hidden bg-[#F3FAF4] flex items-center justify-center p-1.5 sm:p-2 min-h-0">
                   <ProductImage
-                    src={mainProduct.images[0]}
+                    src={mainProduct.images?.[0] || mainProduct.primaryImage || ''}
                     alt={mainProduct.name}
-                    containerClassName="w-full h-full rounded-2xl overflow-hidden"
-                    className="w-full h-full object-cover object-center group-hover/main:scale-105 transition-transform duration-500"
+                    containerClassName="w-full h-full"
+                    className="w-full h-full object-contain group-hover:scale-[1.02] transition-transform duration-200 ease-out"
                   />
                 </div>
-
-                {/* Étiquette produit subtile en pilule discrète */}
-                <div className="absolute bottom-4 left-4 sm:left-6 z-20 flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/95 backdrop-blur-xs border border-[#DDE8DE] shadow-xs pointer-events-auto">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#16A34A]" />
-                  <span className="text-xs font-semibold text-[#172017] font-secondary">
-                    {mainProduct.name.split(' ')[0]} {mainProduct.name.split(' ')[1]} Pro
+                <div className="pt-1.5 sm:pt-2 px-0.5 sm:px-1 flex flex-col sm:flex-row sm:items-center justify-between gap-0.5">
+                  <span className="font-bold text-xs sm:text-sm text-[#172017] font-primary truncate">
+                    {mainProduct.name}
                   </span>
-                  <span className="text-xs font-bold text-[#166534] font-primary font-mono">
+                  <span className="text-[11px] sm:text-xs font-black text-[#166534] font-primary whitespace-nowrap">
                     {formatPrice(mainProduct.price)}
                   </span>
                 </div>
               </div>
-            )}
+            ) : null}
 
-            {/* Produit Secondaire Subordonné (Souris Ergonomique) */}
-            {secondaryProduct && (
+            {/* Produit Réel 2 (si existant) */}
+            {secondaryProduct ? (
               <div
                 onClick={() => openProduct(secondaryProduct)}
-                className="absolute bottom-1 sm:bottom-3 right-1 sm:right-4 lg:right-2 xl:right-6 z-20 w-[125px] sm:w-[150px] lg:w-[160px] aspect-square rounded-2xl bg-white/95 backdrop-blur-xs border border-[#DDE8DE] p-2 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer group/sec"
+                className="w-1/2 sm:w-[42%] aspect-square max-w-[220px] sm:max-w-[240px] rounded-xl sm:rounded-2xl overflow-hidden cursor-pointer bg-white p-2 sm:p-3 border border-[#DDE8DE] shadow-xs hover:shadow-md transition-all group flex flex-col justify-between"
                 title={secondaryProduct.name}
               >
-                <div className="w-full h-full rounded-xl bg-[#FAFCFA] flex items-center justify-center p-2 overflow-hidden">
+                <div className="w-full flex-1 rounded-lg sm:rounded-xl overflow-hidden bg-[#F3FAF4] flex items-center justify-center p-1.5 sm:p-2 min-h-0">
                   <ProductImage
-                    src={secondaryProduct.images[0]}
+                    src={secondaryProduct.images?.[0] || secondaryProduct.primaryImage || ''}
                     alt={secondaryProduct.name}
                     containerClassName="w-full h-full"
-                    className="object-contain group-hover/sec:scale-105 transition-transform duration-200"
+                    className="w-full h-full object-contain group-hover:scale-[1.02] transition-transform duration-200 ease-out"
                   />
                 </div>
-                <div className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 whitespace-nowrap bg-white px-2.5 py-0.5 rounded-full border border-[#DDE8DE] shadow-2xs text-[10px] font-semibold text-[#172017]">
-                  <span>{secondaryProduct.name.split(' ')[0]}</span> ·{' '}
-                  <span className="text-[#166534] font-bold">{formatPrice(secondaryProduct.price)}</span>
+                <div className="pt-1.5 sm:pt-2 px-0.5 sm:px-1 flex flex-col sm:flex-row sm:items-center justify-between gap-0.5">
+                  <span className="font-bold text-xs text-[#172017] font-primary truncate">
+                    {secondaryProduct.name}
+                  </span>
+                  <span className="text-[11px] sm:text-xs font-black text-[#166534] font-primary whitespace-nowrap">
+                    {formatPrice(secondaryProduct.price)}
+                  </span>
                 </div>
               </div>
-            )}
-          </div>
+            ) : null}
+          </motion.div>
         </div>
 
       </div>

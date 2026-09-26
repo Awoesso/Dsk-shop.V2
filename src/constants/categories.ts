@@ -18,81 +18,81 @@ export const CATEGORIES: Category[] = [
     name: 'Electronics',
     slug: 'electronics',
     iconName: 'Laptop',
-    itemCount: 6,
-    description: 'Smartphones, ordinateurs, audio haute-fidélité et gadgets innovants.',
-    image: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=800&auto=format&fit=crop&q=80',
+    itemCount: 0,
+    description: 'Smartphones, audio, informatique et accessoires technologiques.',
+    image: '',
   },
   {
     id: 'Fashion',
     name: 'Fashion',
     slug: 'fashion',
     iconName: 'Shirt',
-    itemCount: 3,
-    description: 'Vêtements élégants, streetwear, chaussures et tendances de saison.',
-    image: 'https://images.unsplash.com/photo-1445205170230-053b83016050?w=800&auto=format&fit=crop&q=80',
+    itemCount: 0,
+    description: 'Vêtements, chaussures et mode urbaine.',
+    image: '',
   },
   {
     id: 'Books',
     name: 'Books',
     slug: 'books',
     iconName: 'BookOpen',
-    itemCount: 2,
-    description: 'Romans, livres de développement personnel, guides et littérature.',
-    image: 'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=800&auto=format&fit=crop&q=80',
+    itemCount: 0,
+    description: 'Livres et papeterie.',
+    image: '',
   },
   {
     id: 'Home',
     name: 'Home',
     slug: 'home',
     iconName: 'Home',
-    itemCount: 3,
-    description: 'Décoration intérieure, mobilier, luminaires et équipement de maison.',
-    image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=800&auto=format&fit=crop&q=80',
+    itemCount: 0,
+    description: 'Maison, décoration et équipement.',
+    image: '',
   },
   {
     id: 'Beauty',
     name: 'Beauty',
     slug: 'beauty',
     iconName: 'Sparkles',
-    itemCount: 2,
-    description: 'Soins pour le visage, parfums de prestige, maquillage et bien-être.',
-    image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&auto=format&fit=crop&q=80',
+    itemCount: 0,
+    description: 'Soins, beauté et bien-être.',
+    image: '',
   },
   {
     id: 'Sports',
     name: 'Sports',
     slug: 'sports',
     iconName: 'Activity',
-    itemCount: 3,
-    description: 'Équipements d’entraînement, fitness, running et accessoires de sport.',
-    image: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=800&auto=format&fit=crop&q=80',
+    itemCount: 0,
+    description: 'Sport, fitness et accessoires extérieurs.',
+    image: '',
   },
   {
     id: 'Accessories',
     name: 'Accessories',
     slug: 'accessories',
     iconName: 'Watch',
-    itemCount: 3,
-    description: 'Montres, lunettes, maroquinerie, bijoux et sacs haut de gamme.',
-    image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&auto=format&fit=crop&q=80',
+    itemCount: 0,
+    description: 'Montres, maroquinerie, bijoux et sacs.',
+    image: '',
   },
   {
     id: 'Digital',
     name: 'Digital',
     slug: 'digital',
     iconName: 'Cpu',
-    itemCount: 2,
-    description: 'Logiciels, cartes cadeaux, abonnements et ressources numériques.',
-    image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80',
+    itemCount: 0,
+    description: 'Services et produits numériques.',
+    image: '',
   },
   {
     id: 'Other',
     name: 'Other',
     slug: 'other',
     iconName: 'Package',
-    itemCount: 2,
-    description: 'Articles diversifiés, sélections spéciales et nouveautés exclusives.',
-    image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=80',
+    itemCount: 0,
+    description: 'Articles divers et nouveautés.',
+    image: '',
   },
 ];
 
@@ -138,30 +138,22 @@ export function normalizeCategory(rawCategory?: string | null): ProductCategory 
     case 'audio':
     case 'computing':
     case 'smart-home':
-    case 'smartphones':
-    case 'gaming':
-    case 'informatique':
       return 'Electronics';
     case 'fashion':
     case 'mode':
-    case 'clothing':
-    case 'vêtements':
-    case 'vetements':
+    case 'streetwear':
+    case 'chaussures':
+    case 'habits':
       return 'Fashion';
     case 'books':
     case 'livres':
-    case 'reading':
       return 'Books';
     case 'home':
     case 'maison':
-    case 'deco':
-    case 'décors':
       return 'Home';
     case 'beauty':
-    case 'beaute':
     case 'beauté':
-    case 'soins':
-    case 'cosmetique':
+    case 'parfums':
       return 'Beauty';
     case 'sports':
     case 'sport':
@@ -169,22 +161,14 @@ export function normalizeCategory(rawCategory?: string | null): ProductCategory 
       return 'Sports';
     case 'accessories':
     case 'accessoires':
-    case 'lifestyle':
-    case 'bijoux':
     case 'montres':
+    case 'coques':
       return 'Accessories';
     case 'digital':
     case 'numerique':
     case 'numérique':
-    case 'software':
       return 'Digital';
-    case 'other':
-    case 'divers':
-    case 'autre':
-    case 'autres':
-      return 'Other';
     default:
-      const match = PRODUCT_CATEGORIES.find((c) => c.toLowerCase() === clean);
-      return match || 'Other';
+      return 'Other';
   }
 }

@@ -47,7 +47,7 @@ export const CartPage: React.FC = () => {
   }
 
   return (
-    <div className="max-w-7xl 2xl:max-w-[1720px] mx-auto px-3 sm:px-6 lg:px-8 2xl:px-12 py-6 sm:py-8 2xl:py-12 pb-20 font-secondary">
+    <div className="max-w-7xl 2xl:max-w-[1720px] mx-auto px-3 sm:px-6 lg:px-8 2xl:px-12 py-6 sm:py-8 2xl:py-12 pb-28 sm:pb-16 font-secondary">
       <SEO
         title={`Mon Panier (${cartItemCount} articles) | DSK-Shop`}
         description="Passez votre commande en toute sécurité chez DSK-Shop. Livraison express à Lomé."

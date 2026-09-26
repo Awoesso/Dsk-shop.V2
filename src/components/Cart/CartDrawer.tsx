@@ -41,7 +41,7 @@ export const CartDrawer: React.FC = () => {
         className="fixed inset-0 bg-[#14532D]/40 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
       />
 
-      <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
+      <div className="fixed inset-y-0 right-0 max-w-full flex pl-4 sm:pl-10">
         <div className="w-screen max-w-md 2xl:max-w-lg bg-[#FAFCFA] shadow-2xl flex flex-col animate-in slide-in-from-right duration-250 border-l border-[#DDE8DE]">
           {/* Drawer Header */}
           <div className="p-4 sm:p-5 2xl:p-6 border-b border-[#DDE8DE] flex items-center justify-between font-primary bg-[#F0FDF4]/60">
@@ -134,7 +134,7 @@ export const CartDrawer: React.FC = () => {
 
           {/* Drawer Footer & Checkout Action */}
           {cart.length > 0 && (
-            <div className="p-4 sm:p-5 2xl:p-6 border-t border-[#DDE8DE] bg-[#F0FDF4] space-y-3 2xl:space-y-4 font-secondary">
+            <div className="p-4 sm:p-5 2xl:p-6 border-t border-[#DDE8DE] bg-[#F0FDF4] space-y-3 2xl:space-y-4 font-secondary pb-[calc(1rem+env(safe-area-inset-bottom,0px))]">
               {/* Price Breakdown */}
               <div className="space-y-1.5 2xl:space-y-2 text-xs 2xl:text-sm text-[#647064] pt-1">
                 <div className="flex justify-between font-secondary">

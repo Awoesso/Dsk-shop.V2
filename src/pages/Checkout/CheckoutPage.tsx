@@ -12,6 +12,7 @@ import {
 import { useShop } from '../../context/ShopContext';
 import { formatPrice, toFCFA } from '../../utils/currency';
 import { SEO } from '../../components/SEO/SEO';
+import { ProductImage } from '../../components/Common/ProductImage';
 import { OrdersService } from '../../services/orders.service';
 
 export const CheckoutPage: React.FC = () => {
@@ -83,15 +84,24 @@ export const CheckoutPage: React.FC = () => {
 
     setIsSubmitting(true);
     try {
-      // 1. Persist order directly to Supabase via OrdersService
+      // 1. Persist order atomically directly to Supabase via OrdersService
       const result = await OrdersService.createOrder({
-        customer_name: formData.fullName,
-        customer_phone: formData.phone,
-        shipping_address: formData.address,
-        items: cart,
+        customer_name: formData.fullName.trim(),
+        customer_phone: formData.phone.trim(),
+        shipping_address: formData.address.trim(),
+        city: 'Lomé',
+        currency: 'XOF',
         total_amount: toFCFA(cartTotal),
         payment_method: 'cash_on_delivery',
+        payment_status: 'pending',
         order_status: 'pending',
+        items: cart.map((item) => ({
+          product_id: item.product.id,
+          product_name: item.product.name,
+          unit_price: toFCFA(item.product.price + (item.selectedVariant?.priceModifier || 0)),
+          quantity: item.quantity,
+          selected_variant: item.selectedVariant ? item.selectedVariant.name : null,
+        })),
       });
 
       if (!result.success && result.error) {
@@ -120,7 +130,7 @@ export const CheckoutPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl 2xl:max-w-[1720px] mx-auto px-3 sm:px-6 lg:px-8 2xl:px-12 py-5 sm:py-8 2xl:py-12 pb-24 font-secondary">
+    <div className="max-w-7xl 2xl:max-w-[1720px] mx-auto px-3 sm:px-6 lg:px-8 2xl:px-12 py-5 sm:py-8 2xl:py-12 pb-28 sm:pb-16 font-secondary">
       <SEO
         title="Validation de Commande Rapide | DSK-Shop"
         description="Commandez en 3 clics chez DSK-Shop Lomé. Aucun e-mail requis, paiement à la livraison à domicile."
@@ -178,7 +188,7 @@ export const CheckoutPage: React.FC = () => {
                     value={formData.fullName}
                     onChange={handleInputChange}
                     placeholder="ex. Koffi Mensah"
-                    className="w-full px-4 py-3 bg-slate-50/80 hover:bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-medium text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 transition-all shadow-2xs"
+                    className="w-full px-4 py-3 bg-slate-50/80 hover:bg-slate-50 border border-slate-200 rounded-xl text-base sm:text-sm font-medium text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 transition-all shadow-2xs"
                   />
                 </div>
 
@@ -199,7 +209,7 @@ export const CheckoutPage: React.FC = () => {
                       value={formData.phone}
                       onChange={handleInputChange}
                       placeholder="+228 90 12 34 56 ou 70 12 34 56"
-                      className="w-full pl-10 pr-4 py-3 bg-slate-50/80 hover:bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-medium text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 transition-all shadow-2xs"
+                      className="w-full pl-10 pr-4 py-3 bg-slate-50/80 hover:bg-slate-50 border border-slate-200 rounded-xl text-base sm:text-sm font-medium text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 transition-all shadow-2xs"
                     />
                     <Smartphone size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
                   </div>
@@ -224,7 +234,7 @@ export const CheckoutPage: React.FC = () => {
                     value={formData.address}
                     onChange={handleInputChange}
                     placeholder="ex. Tokoin Casablanca, face pharmacie ou Bè Klikamé"
-                    className="w-full px-4 py-3 bg-slate-50/80 hover:bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm font-medium text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 transition-all shadow-2xs"
+                    className="w-full px-4 py-3 bg-slate-50/80 hover:bg-slate-50 border border-slate-200 rounded-xl text-base sm:text-sm font-medium text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 transition-all shadow-2xs"
                   />
                 </div>
               </div>
@@ -284,11 +294,11 @@ export const CheckoutPage: React.FC = () => {
             {cart.map((item, idx) => (
               <div key={idx} className="py-3 flex items-center gap-3">
                 <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 overflow-hidden shrink-0 flex items-center justify-center">
-                  <img
-                    src={item.product.images[0]}
+                  <ProductImage
+                    src={item.product.images?.[0] || item.product.primaryImage || ''}
                     alt={item.product.name}
+                    containerClassName="w-full h-full"
                     className="w-full h-full object-contain p-1"
-                    referrerPolicy="no-referrer"
                   />
                 </div>
                 <div className="flex-1 min-w-0">

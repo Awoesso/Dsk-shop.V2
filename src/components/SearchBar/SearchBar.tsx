@@ -3,6 +3,7 @@ import { Search, X, ArrowRight, CornerDownLeft } from 'lucide-react';
 import { useShop } from '../../context/ShopContext';
 import { Product } from '../../types';
 import { formatPrice } from '../../utils/currency';
+import { ProductImage } from '../Common/ProductImage';
 
 interface SearchBarProps {
   placeholder?: string;
@@ -87,7 +88,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
             if (query.trim().length >= 2) setIsOpen(true);
           }}
           placeholder={placeholder}
-          className="w-full pl-10 2xl:pl-12 pr-10 2xl:pr-12 py-2.5 2xl:py-3.5 bg-[#F0FDF4] hover:bg-white focus:bg-white text-sm 2xl:text-base font-secondary text-[#172017] placeholder:text-[#647064] rounded-xl 2xl:rounded-2xl border border-[#DDE8DE] focus:border-[#16A34A] focus:ring-2 focus:ring-[#16A34A]/20 focus:outline-none transition-all shadow-2xs"
+          className="w-full pl-10 2xl:pl-12 pr-10 2xl:pr-12 py-2.5 2xl:py-3.5 bg-[#F0FDF4] hover:bg-white focus:bg-white text-base sm:text-sm 2xl:text-base font-secondary text-[#172017] placeholder:text-[#647064] rounded-xl 2xl:rounded-2xl border border-[#DDE8DE] focus:border-[#16A34A] focus:ring-2 focus:ring-[#16A34A]/20 focus:outline-none transition-all shadow-2xs"
         />
         {query && (
           <button
@@ -103,7 +104,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 
       {/* Instant Dropdown Preview */}
       {isOpen && query.trim().length >= 2 && (
-        <div className="absolute left-0 right-0 top-full mt-2 bg-[#FAFCFA] rounded-2xl shadow-xl shadow-emerald-950/10 border border-[#DDE8DE] overflow-hidden z-50 divide-y divide-[#DDE8DE] animate-in fade-in-50 zoom-in-95 duration-150">
+        <div className="absolute left-0 right-0 top-full mt-2 bg-[#FAFCFA] rounded-2xl shadow-xl shadow-emerald-950/10 border border-[#DDE8DE] overflow-hidden z-50 divide-y divide-[#DDE8DE] animate-in fade-in-50 zoom-in-95 duration-150 max-h-[75vh] overflow-y-auto">
           {matchingSuggestions.length > 0 ? (
             <div className="py-2">
               <div className="px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-[#166534] font-primary">
@@ -115,11 +116,11 @@ export const SearchBar: React.FC<SearchBarProps> = ({
                   onClick={() => handleSelectProduct(prod)}
                   className="w-full px-3.5 py-2.5 flex items-center gap-3 hover:bg-[#F0FDF4] text-left transition-colors group cursor-pointer"
                 >
-                  <img
-                    src={prod.images[0]}
+                  <ProductImage
+                    src={prod.images?.[0] || prod.primaryImage || ''}
                     alt={prod.name}
-                    className="w-10 h-10 2xl:w-12 2xl:h-12 object-cover rounded-lg bg-[#F0FDF4] border border-[#DDE8DE] flex-shrink-0"
-                    referrerPolicy="no-referrer"
+                    containerClassName="w-10 h-10 2xl:w-12 2xl:h-12 rounded-lg bg-[#F0FDF4] border border-[#DDE8DE] flex-shrink-0 overflow-hidden"
+                    className="w-full h-full object-cover"
                   />
                   <div className="flex-1 min-w-0">
                     <p className="text-[11px] 2xl:text-xs text-[#647064] font-medium uppercase font-secondary">{prod.brand}</p>

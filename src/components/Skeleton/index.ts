@@ -10,3 +10,4 @@ export * from './CheckoutSkeleton';
 export * from './AboutSkeleton';
 export * from './ContactSkeleton';
 export * from './OrderSuccessSkeleton';
+export * from './AccountSkeleton';

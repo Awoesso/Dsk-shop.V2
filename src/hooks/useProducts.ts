@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Product } from '../types';
 import { ProductsService, GetProductsOptions } from '../services/products.service';
 
@@ -7,13 +7,20 @@ export function useProducts(options: GetProductsOptions = {}) {
   const [totalCount, setTotalCount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const isMountedRef = useRef<boolean>(true);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const fetchProducts = useCallback(async () => {
     setIsLoading(true);
     setError(null);
-
     const response = await ProductsService.getProducts(options);
-
+    if (!isMountedRef.current) return;
     if (response.error) {
       setError(response.error);
     } else {
@@ -32,13 +39,7 @@ export function useProducts(options: GetProductsOptions = {}) {
   ]);
 
   useEffect(() => {
-    let isMounted = true;
-
     fetchProducts();
-
-    return () => {
-      isMounted = false;
-    };
   }, [fetchProducts]);
 
   return {

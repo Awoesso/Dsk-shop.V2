@@ -122,14 +122,12 @@ export interface Database {
           order_number: string;
           customer_name: string;
           customer_phone: string;
-          customer_email: string | null;
           shipping_address: string;
           city: string | null;
-          items: Json;
           total_amount: number;
           currency: string | null;
           payment_method: string | null;
-          status: string | null;
+          payment_status: string | null;
           order_status: string | null;
           notes: string | null;
         };
@@ -139,14 +137,12 @@ export interface Database {
           order_number?: string;
           customer_name: string;
           customer_phone: string;
-          customer_email?: string | null;
           shipping_address: string;
           city?: string | null;
-          items?: Json;
           total_amount: number;
           currency?: string | null;
           payment_method?: string | null;
-          status?: string | null;
+          payment_status?: string | null;
           order_status?: string | null;
           notes?: string | null;
         };
@@ -156,14 +152,12 @@ export interface Database {
           order_number?: string;
           customer_name?: string;
           customer_phone?: string;
-          customer_email?: string | null;
           shipping_address?: string;
           city?: string | null;
-          items?: Json;
           total_amount?: number;
           currency?: string | null;
           payment_method?: string | null;
-          status?: string | null;
+          payment_status?: string | null;
           order_status?: string | null;
           notes?: string | null;
         };
@@ -174,39 +168,40 @@ export interface Database {
           id: string;
           created_at: string;
           order_id: string;
-          order_number: string | null;
           product_id: string;
           product_name: string;
           quantity: number;
           unit_price: number;
-          total_price: number;
-          variant_name: string | null;
+          selected_variant: string | null;
         };
         Insert: {
           id?: string;
           created_at?: string;
           order_id: string;
-          order_number?: string | null;
           product_id: string;
           product_name: string;
-          quantity?: number;
-          unit_price?: number;
-          total_price?: number;
-          variant_name?: string | null;
+          quantity: number;
+          unit_price: number;
+          selected_variant?: string | null;
         };
         Update: {
           id?: string;
           created_at?: string;
           order_id?: string;
-          order_number?: string | null;
           product_id?: string;
           product_name?: string;
           quantity?: number;
           unit_price?: number;
-          total_price?: number;
-          variant_name?: string | null;
+          selected_variant?: string | null;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey";
+            columns: ["order_id"];
+            referencedRelation: "orders";
+            referencedColumns: ["id"];
+          }
+        ];
       };
       notifications: {
         Row: {
@@ -215,7 +210,7 @@ export interface Database {
           title: string;
           message: string;
           type: string | null;
-          read: boolean | null;
+          is_read: boolean;
           metadata: Json | null;
         };
         Insert: {
@@ -224,7 +219,7 @@ export interface Database {
           title: string;
           message: string;
           type?: string | null;
-          read?: boolean | null;
+          is_read?: boolean;
           metadata?: Json | null;
         };
         Update: {
@@ -233,7 +228,7 @@ export interface Database {
           title?: string;
           message?: string;
           type?: string | null;
-          read?: boolean | null;
+          is_read?: boolean;
           metadata?: Json | null;
         };
         Relationships: [];
@@ -243,7 +238,23 @@ export interface Database {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      create_order_with_items: {
+        Args: {
+          p_order_number: string;
+          p_customer_name: string;
+          p_customer_phone: string;
+          p_shipping_address: string;
+          p_city?: string;
+          p_total_amount?: number;
+          p_currency?: string;
+          p_payment_method?: string;
+          p_payment_status?: string;
+          p_order_status?: string;
+          p_notes?: string | null;
+          p_items?: Json;
+        };
+        Returns: Json;
+      };
     };
     Enums: {
       [_ in never]: never;

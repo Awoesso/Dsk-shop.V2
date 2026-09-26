@@ -1,10 +1,20 @@
 -- ==============================================================================
--- DSK-SHOP: SUPABASE SCHEMA FOR ORDERS, ORDER_ITEMS & NOTIFICATIONS
--- Execute this script in your Supabase project SQL Editor
+-- DSK-SHOP: SUPABASE MIGRATION - ORDERS, ORDER_ITEMS, NOTIFICATIONS & REALTIME
+-- ==============================================================================
+-- Exécutez ce script dans l'éditeur SQL de votre projet Supabase
 -- (https://app.supabase.com/project/_/sql)
+--
+-- Ce script implémente de façon idempotente et sécurisée :
+-- 1. Les tables orders, order_items et notifications selon le schéma exact requis
+-- 2. La fonction PostgreSQL et le trigger AFTER INSERT sur orders pour générer automatiquement la notification
+-- 3. La fonction RPC create_order_with_items pour garantir l'atomicité lors de la commande
+-- 4. Les règles RLS (Row Level Security) sécurisées
+-- 5. L'ajout des tables orders et notifications à la publication supabase_realtime
 -- ==============================================================================
 
--- 1. Create 'orders' table
+-- ------------------------------------------------------------------------------
+-- 1. CRÉATION / AJUSTEMENT DE LA TABLE 'orders'
+-- ------------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.orders (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     order_number TEXT UNIQUE NOT NULL,
@@ -21,7 +31,14 @@ CREATE TABLE IF NOT EXISTS public.orders (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 2. Create 'order_items' table
+-- Index pour requêtes rapides
+CREATE INDEX IF NOT EXISTS idx_orders_order_number ON public.orders(order_number);
+CREATE INDEX IF NOT EXISTS idx_orders_created_at ON public.orders(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_orders_status ON public.orders(order_status);
+
+-- ------------------------------------------------------------------------------
+-- 2. CRÉATION / AJUSTEMENT DE LA TABLE 'order_items'
+-- ------------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.order_items (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     order_id UUID NOT NULL REFERENCES public.orders(id) ON DELETE CASCADE,
@@ -33,7 +50,13 @@ CREATE TABLE IF NOT EXISTS public.order_items (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 3. Create 'notifications' table
+-- Index de relation
+CREATE INDEX IF NOT EXISTS idx_order_items_order_id ON public.order_items(order_id);
+CREATE INDEX IF NOT EXISTS idx_order_items_product_id ON public.order_items(product_id);
+
+-- ------------------------------------------------------------------------------
+-- 3. CRÉATION / AJUSTEMENT DE LA TABLE 'notifications'
+-- ------------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.notifications (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     title TEXT NOT NULL,
@@ -44,52 +67,32 @@ CREATE TABLE IF NOT EXISTS public.notifications (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 4. Indexes for fast query lookup
-CREATE INDEX IF NOT EXISTS idx_orders_order_number ON public.orders(order_number);
-CREATE INDEX IF NOT EXISTS idx_orders_created_at ON public.orders(created_at DESC);
-CREATE INDEX IF NOT EXISTS idx_order_items_order_id ON public.order_items(order_id);
+-- Si la table existait déjà avec une ancienne colonne 'read', migration sécurisée vers 'is_read'
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_schema = 'public' 
+      AND table_name = 'notifications' 
+      AND column_name = 'read'
+  ) AND NOT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_schema = 'public' 
+      AND table_name = 'notifications' 
+      AND column_name = 'is_read'
+  ) THEN
+    ALTER TABLE public.notifications RENAME COLUMN read TO is_read;
+  END IF;
+END $$;
+
+-- Index sur notifications
 CREATE INDEX IF NOT EXISTS idx_notifications_created_at ON public.notifications(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_notifications_is_read ON public.notifications(is_read);
 
--- 5. Enable Row Level Security (RLS)
-ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.order_items ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
-
--- 6. Policies (SÉCURITÉ STRICTE : Aucune exposition des données clients à anon)
--- IMPORTANT : Les tables 'orders' et 'order_items' ont déjà leurs policies INSERT configurées.
--- Ne PAS créer de policy SELECT publique pour 'anon' : les commandes contiennent des données
--- sensibles (nom, téléphone, adresse). Les visiteurs invités n'ont JAMAIS besoin de SELECT
--- car le frontend DSK-Shop génère l'UUID avec crypto.randomUUID() et insère sans .select().
-
--- Orders : INSERT pour anon et authenticated
--- (Si déjà existante, ne pas la recréer inutilement)
--- CREATE POLICY "orders_insert_policy" ON public.orders FOR INSERT TO anon, authenticated WITH CHECK (true);
-
--- Orders : SELECT RÉSERVÉ aux utilisateurs authentifiés (admin / Nexa)
-DROP POLICY IF EXISTS "orders_select_policy" ON public.orders;
-CREATE POLICY "orders_select_policy" ON public.orders FOR SELECT TO authenticated USING (true);
-
--- Orders : UPDATE RÉSERVÉ aux utilisateurs authentifiés
-DROP POLICY IF EXISTS "orders_update_policy" ON public.orders;
-CREATE POLICY "orders_update_policy" ON public.orders FOR UPDATE TO authenticated USING (true) WITH CHECK (true);
-
--- Order Items : INSERT pour anon et authenticated
--- (Si déjà existante, ne pas la recréer inutilement)
--- CREATE POLICY "order_items_insert_policy" ON public.order_items FOR INSERT TO anon, authenticated WITH CHECK (true);
-
--- Order Items : SELECT RÉSERVÉ aux utilisateurs authentifiés
-DROP POLICY IF EXISTS "order_items_select_policy" ON public.order_items;
-CREATE POLICY "order_items_select_policy" ON public.order_items FOR SELECT TO authenticated USING (true);
-
--- Notifications : réservé aux gestionnaires authentifiés
-DROP POLICY IF EXISTS "notifications_select_policy" ON public.notifications;
-CREATE POLICY "notifications_select_policy" ON public.notifications FOR SELECT TO authenticated USING (true);
-
-DROP POLICY IF EXISTS "notifications_update_policy" ON public.notifications;
-CREATE POLICY "notifications_update_policy" ON public.notifications FOR UPDATE TO authenticated USING (true) WITH CHECK (true);
-
--- 7. Trigger PostgreSQL: Automatic Notification on New Order
+-- ------------------------------------------------------------------------------
+-- 4. FONCTION POSTGRESQL & TRIGGER : NOTIFICATION AUTOMATIQUE SUR NOUVELLE COMMANDE
+-- ------------------------------------------------------------------------------
+-- Se déclenche UNIQUEMENT lors d'un INSERT sur 'orders' (jamais sur UPDATE)
 CREATE OR REPLACE FUNCTION public.handle_new_order_notification()
 RETURNS TRIGGER
 LANGUAGE plpgsql
@@ -97,6 +100,7 @@ SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
+  -- Éviter toute duplication de notification pour la même commande
   IF NOT EXISTS (
     SELECT 1 FROM public.notifications 
     WHERE (metadata->>'order_id')::text = NEW.id::text 
@@ -132,13 +136,19 @@ BEGIN
 END;
 $$;
 
+-- Recréation propre et idempotente du trigger
 DROP TRIGGER IF EXISTS trigger_notify_on_new_order ON public.orders;
+
 CREATE TRIGGER trigger_notify_on_new_order
 AFTER INSERT ON public.orders
 FOR EACH ROW
 EXECUTE FUNCTION public.handle_new_order_notification();
 
--- 8. Atomic RPC: create_order_with_items
+-- ------------------------------------------------------------------------------
+-- 5. FONCTION RPC ATOMIQUE : CRÉATION DE COMMANDE AVEC SES ARTICLES (TRANSACTIONNEL)
+-- ------------------------------------------------------------------------------
+-- Empêche le problème d'une commande enregistrée sans ses articles.
+-- Si l'insertion d'un article échoue, toute la transaction est annulée.
 CREATE OR REPLACE FUNCTION public.create_order_with_items(
   p_order_number TEXT,
   p_customer_name TEXT,
@@ -162,19 +172,24 @@ DECLARE
   v_order_id UUID;
   v_item JSONB;
 BEGIN
+  -- 1. Validation de base
   IF p_customer_name IS NULL OR trim(p_customer_name) = '' THEN
     RAISE EXCEPTION 'Le nom du client est requis.';
   END IF;
+
   IF p_customer_phone IS NULL OR trim(p_customer_phone) = '' THEN
     RAISE EXCEPTION 'Le numéro de téléphone du client est requis.';
   END IF;
+
   IF p_shipping_address IS NULL OR trim(p_shipping_address) = '' THEN
     RAISE EXCEPTION 'L''adresse de livraison est requise.';
   END IF;
+
   IF p_items IS NULL OR jsonb_array_length(p_items) = 0 THEN
     RAISE EXCEPTION 'La commande doit comporter au moins un article.';
   END IF;
 
+  -- 2. Insertion dans 'orders'
   INSERT INTO public.orders (
     order_number,
     customer_name,
@@ -202,6 +217,7 @@ BEGIN
   )
   RETURNING id INTO v_order_id;
 
+  -- 3. Insertion des lignes dans 'order_items'
   FOR v_item IN SELECT * FROM jsonb_array_elements(p_items)
   LOOP
     INSERT INTO public.order_items (
@@ -225,19 +241,75 @@ BEGIN
     );
   END LOOP;
 
+  -- 4. Retour des informations au frontend
   RETURN jsonb_build_object(
     'success', true,
     'order_id', v_order_id,
     'order_number', p_order_number
   );
 EXCEPTION WHEN OTHERS THEN
+  -- En cas d'erreur, rollback automatique de toute l'opération
   RAISE EXCEPTION 'Erreur transactionnelle create_order_with_items: %', SQLERRM;
 END;
 $$;
 
--- 9. Realtime publication
+-- ------------------------------------------------------------------------------
+-- 6. SÉCURITÉ ROW LEVEL SECURITY (RLS)
+-- ------------------------------------------------------------------------------
+-- RÈGLE DE SÉCURITÉ STRICTE :
+-- 1. Les tables 'orders' et 'order_items' autorisent l'INSERT pour 'anon' et 'authenticated'.
+-- 2. JAMAIS de SELECT public pour 'anon' : les commandes contiennent des données personnelles
+--    (nom, téléphone, adresse, notes).
+-- 3. Le frontend DSK-Shop génère l'UUID côté client avec crypto.randomUUID() et insère sans .select().
+-- 4. Seuls les utilisateurs authentifiés (administrateurs / tableau de bord Nexa) peuvent lire les commandes.
+-- ------------------------------------------------------------------------------
+ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.order_items ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
+
+-- Politiques pour 'orders'
+-- Note : Si la policy INSERT existe déjà dans le projet, ne pas la recréer
+DROP POLICY IF EXISTS "orders_select_policy" ON public.orders;
+CREATE POLICY "orders_select_policy"
+ON public.orders FOR SELECT
+TO authenticated
+USING (true);
+
+DROP POLICY IF EXISTS "orders_update_policy" ON public.orders;
+CREATE POLICY "orders_update_policy"
+ON public.orders FOR UPDATE
+TO authenticated
+USING (true)
+WITH CHECK (true);
+
+-- Politiques pour 'order_items'
+DROP POLICY IF EXISTS "order_items_select_policy" ON public.order_items;
+CREATE POLICY "order_items_select_policy"
+ON public.order_items FOR SELECT
+TO authenticated
+USING (true);
+
+-- Politiques pour 'notifications'
+DROP POLICY IF EXISTS "notifications_select_policy" ON public.notifications;
+CREATE POLICY "notifications_select_policy"
+ON public.notifications FOR SELECT
+TO authenticated
+USING (true);
+
+DROP POLICY IF EXISTS "notifications_update_policy" ON public.notifications;
+CREATE POLICY "notifications_update_policy"
+ON public.notifications FOR UPDATE
+TO authenticated
+USING (true)
+WITH CHECK (true);
+
+-- ------------------------------------------------------------------------------
+-- 7. CONFIGURATION DU REALTIME SUPABASE
+-- ------------------------------------------------------------------------------
+-- Ajout idempotent des tables à la publication 'supabase_realtime' sans écraser les autres tables
 DO $$
 BEGIN
+  -- Ajout de 'orders'
   IF NOT EXISTS (
     SELECT 1 FROM pg_publication_tables 
     WHERE pubname = 'supabase_realtime' 
@@ -247,6 +319,7 @@ BEGIN
     ALTER PUBLICATION supabase_realtime ADD TABLE public.orders;
   END IF;
 
+  -- Ajout de 'notifications'
   IF NOT EXISTS (
     SELECT 1 FROM pg_publication_tables 
     WHERE pubname = 'supabase_realtime' 

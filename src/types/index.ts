@@ -113,7 +113,19 @@ export interface Order {
   estimatedDelivery: string;
 }
 
-export type ActivePage = 'home' | 'shop' | 'product' | 'cart' | 'checkout' | 'order-success' | 'wishlist' | 'about' | 'contact';
+export type ActivePage =
+  | 'home'
+  | 'shop'
+  | 'product'
+  | 'cart'
+  | 'checkout'
+  | 'order-success'
+  | 'wishlist'
+  | 'about'
+  | 'contact'
+  | 'account';
+
+export * from './orders';
 
 export interface ToastMessage {
   id: string;

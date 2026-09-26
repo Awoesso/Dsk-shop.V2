@@ -67,13 +67,13 @@ export function mapDbRowToProduct(row: any): Product {
     .map(resolveImageUrl)
     .filter(Boolean);
 
-  const neutralPlaceholder = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&q=80';
+  const neutralPlaceholder = '';
 
   // primaryImage: Use product_images.find(img => img.is_primary)?.url or product_images[0]?.url or a neutral placeholder
   const primaryImgObj = sortedImages.find((img: any) => img.is_primary) || sortedImages[0];
   const primaryImage = (primaryImgObj ? resolveImageUrl(primaryImgObj) : '') || images[0] || neutralPlaceholder;
 
-  if (images.length === 0) {
+  if (images.length === 0 && primaryImage) {
     images.push(primaryImage);
   }
 

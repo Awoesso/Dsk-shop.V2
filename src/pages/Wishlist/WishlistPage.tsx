@@ -41,7 +41,7 @@ export const WishlistPage: React.FC = () => {
   }
 
   return (
-    <div className="max-w-[1600px] 2xl:max-w-[1760px] mx-auto px-3 sm:px-6 lg:px-8 2xl:px-12 py-4 sm:py-8 2xl:py-12 pb-20 font-secondary">
+    <div className="max-w-[1600px] 2xl:max-w-[1760px] mx-auto px-3 sm:px-6 lg:px-8 2xl:px-12 py-4 sm:py-8 2xl:py-12 pb-28 sm:pb-16 font-secondary">
       <SEO
         title={`Ma Liste d'Envies (${favoritedProducts.length} articles) | DSK-Shop Lomé`}
         description="Retrouvez tous vos articles et produits favoris enregistrés sur DSK-Shop Lomé."

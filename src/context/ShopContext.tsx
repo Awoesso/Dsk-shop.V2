@@ -68,8 +68,8 @@ const initialFilterState: FilterState = {
 
 const ShopContext = createContext<ShopContextType | undefined>(undefined);
 
-const FREE_SHIPPING_THRESHOLD = 99;
-const STANDARD_SHIPPING_FLAT = 12;
+const FREE_SHIPPING_THRESHOLD = 60000;
+const STANDARD_SHIPPING_FLAT = 2000;
 
 const isSessionAlreadyInitialized = (): boolean => {
   try {

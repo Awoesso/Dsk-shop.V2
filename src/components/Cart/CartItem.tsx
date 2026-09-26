@@ -32,7 +32,7 @@ export const CartItem: React.FC<CartItemProps> = ({ item, compact = false }) => 
         className="w-16 h-16 sm:w-20 sm:h-20 bg-[#F0FDF4] rounded-xl overflow-hidden flex-shrink-0 cursor-pointer border border-[#DDE8DE] hover:opacity-90 transition-opacity"
       >
         <ProductImage
-          src={product.images[0]}
+          src={product.images?.[0] || product.primaryImage || ''}
           alt={product.name}
           containerClassName="w-full h-full"
         />

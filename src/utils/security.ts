@@ -86,7 +86,10 @@ export function handleSecureError(
   error: unknown,
   context: string = 'Operation'
 ): SafeAppError {
-  const isDev = import.meta.env.DEV;
+  const isDev = Boolean(
+    (typeof import.meta !== 'undefined' && import.meta?.env?.DEV) ||
+    (typeof process !== 'undefined' && process?.env?.NODE_ENV !== 'production')
+  );
 
   // Supabase / PostgREST error structures
   const postgrestError = error as {

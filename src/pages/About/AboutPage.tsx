@@ -6,11 +6,9 @@ import {
   RotateCcw,
   Sparkles,
   ArrowRight,
-  Leaf,
   CheckCircle2,
 } from 'lucide-react';
 import { useShop } from '../../context/ShopContext';
-import { ProductImage } from '../../components/Common/ProductImage';
 import { SEO } from '../../components/SEO/SEO';
 
 export const AboutPage: React.FC = () => {
@@ -24,152 +22,142 @@ export const AboutPage: React.FC = () => {
   const commitments = [
     {
       icon: ShieldCheck,
-      title: 'Garantie Remplacement 2 Ans',
+      title: 'Garantie & Authenticité',
       description:
-        'Chaque pièce est couverte par une garantie matérielle complète. En cas de dysfonctionnement, nous remplaçons sans délai.',
-      metric: '100% garanti',
+        'Chaque produit est minutieusement vérifié avant sa mise en rayon pour vous garantir un fonctionnement optimal.',
+      metric: '100% testé',
     },
     {
       icon: Award,
-      title: 'Matériaux Certifiés & Durables',
+      title: 'Sélection Exigeante',
       description:
-        'Aluminium 6063 fraisé CNC, transducteurs béryllium et circuits électroniques rigoureusement calibrés en atelier.',
-      metric: 'Norme Grade A',
+        'Nous sélectionnons uniquement des articles utiles et éprouvés pour votre confort au quotidien.',
+      metric: 'Sélection certifiée',
     },
     {
       icon: Truck,
-      title: 'Expédition Sécurisée & Suivie',
+      title: 'Livraison Rapide à Lomé',
       description:
-        'Envois sous 24h avec emballage renforcé et suivi en direct du départ de l’entrepôt jusqu’à votre porte.',
-      metric: '24-48h dispatch',
+        'Expédition rapide directement à votre domicile ou bureau à Lomé avec paiement sécurisé.',
+      metric: 'Livraison express',
     },
     {
       icon: RotateCcw,
-      title: 'Essai Sérénité 30 Jours',
+      title: 'Service Client Dédié',
       description:
-        'Prenez le temps d’intégrer vos équipements à votre espace. Retours simplifiés sous 30 jours sans friction.',
-      metric: 'Retours gratuits',
+        'Une assistance locale réactive et disponible via WhatsApp ou appel pour répondre à toutes vos questions.',
+      metric: 'Support local',
     },
   ];
 
   return (
-    <div className="max-w-[1600px] 2xl:max-w-[1760px] mx-auto px-3 sm:px-6 lg:px-8 2xl:px-12 py-8 sm:py-12 2xl:py-16 space-y-12 sm:space-y-16 2xl:space-y-24 font-secondary text-[#172017]">
+    <div className="max-w-[1600px] 2xl:max-w-[1760px] mx-auto px-3.5 sm:px-6 lg:px-8 2xl:px-12 py-8 sm:py-12 2xl:py-16 pb-28 sm:pb-16 space-y-12 sm:space-y-16 font-secondary text-[#172017]">
       <SEO
-        title="À Propos de DSK-Shop | Notre Mission & Vision à Lomé"
-        description="Découvrez l'histoire de DSK-Shop à Lomé : notre sélection rigoureuse d'équipements technologiques et lifestyle, notre engagement qualité et notre service client."
+        title="À Propos de DSK-Shop | Boutique à Lomé, Togo"
+        description="Découvrez l'engagement de DSK-Shop à Lomé : des articles utiles sélectionnés avec soin, un service client réactif et une livraison rapide à domicile."
         breadcrumbs={[
           { name: 'Accueil', url: '/' },
           { name: 'À Propos', url: '/about' },
         ]}
         keywords={['À propos DSK-Shop', 'boutique tech Lomé', 'Togo', 'garantie', 'qualité']}
       />
+
       {/* Editorial Hero Banner */}
-      <section className="relative overflow-hidden rounded-2xl sm:rounded-3xl border border-[#DDE8DE] bg-gradient-to-br from-[#F3FAF4] via-[#F8FCF8] to-[#F0FDF4] p-6 sm:p-12 lg:p-16 2xl:p-20">
-        <div className="max-w-3xl 2xl:max-w-4xl space-y-4 sm:space-y-6 2xl:space-y-8">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 2xl:px-4 2xl:py-1.5 rounded-full bg-[#DCFCE7] text-[#166534] text-xs 2xl:text-sm font-bold font-primary tracking-wider uppercase">
-            <Sparkles size={13} className="text-[#16A34A] 2xl:w-4 2xl:h-4" /> Notre Vision
+      <section className="relative overflow-hidden rounded-2xl sm:rounded-3xl border border-[#DDE8DE] bg-[#F3FAF4] p-6 sm:p-10 lg:p-14">
+        <div className="max-w-3xl space-y-4 sm:space-y-5">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#DCFCE7] text-[#166534] text-xs font-bold font-primary tracking-wider uppercase">
+            <Sparkles size={13} className="text-[#16A34A]" /> Notre Mission
           </span>
           <h1
-            className="text-3xl sm:text-4xl lg:text-5xl 2xl:text-6xl font-extrabold text-[#172017] tracking-tight leading-[1.15] font-primary"
-            style={{ fontFamily: "'Manrope', sans-serif" }}
+            className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#172017] tracking-tight leading-tight font-primary"
           >
-            L&apos;exigence de l&apos;essentiel high-tech.
+            DSK-Shop · Vos essentiels à Lomé
           </h1>
-          <p className="text-base sm:text-lg 2xl:text-xl text-[#647064] leading-relaxed">
-            Chez <strong className="text-[#172017] font-semibold">DSK-Shop Lomé</strong>, nous croyons qu&apos;un espace de travail et des équipements du quotidien doivent allier pureté visuelle, acoustique fidèle et longévité mécanique irréprochable.
+          <p className="text-sm sm:text-base text-[#647064] leading-relaxed">
+            Chez <strong className="text-[#172017] font-semibold">DSK-Shop</strong>, nous mettons à votre disposition des produits fiables et de qualité avec une expérience d'achat directe, transparente et sans tracas.
           </p>
           <div className="pt-2">
             <button
               onClick={handleExploreShop}
-              className="inline-flex items-center gap-2 px-6 py-3.5 2xl:px-8 2xl:py-4 bg-[#16A34A] hover:bg-[#166534] text-white rounded-xl text-sm 2xl:text-base font-bold font-primary transition-colors shadow-xs cursor-pointer"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-[#166534] hover:bg-[#16A34A] text-white rounded-xl text-sm font-bold font-primary transition-colors shadow-xs cursor-pointer"
             >
-              <span>Découvrir la collection</span>
-              <ArrowRight size={16} className="2xl:w-5 2xl:h-5" />
+              <span>Découvrir la boutique</span>
+              <ArrowRight size={15} />
             </button>
           </div>
         </div>
       </section>
 
-      {/* Brand Story & Philosophy Split */}
-      <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 2xl:gap-16 items-center">
-        <div className="lg:col-span-6 space-y-5 2xl:space-y-7">
-          <span className="text-xs 2xl:text-sm font-bold text-[#16A34A] uppercase tracking-wider font-mono">
-            01 // Savoir-Faire & Proximité
+      {/* Brand Story & Philosophy */}
+      <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-white p-6 sm:p-10 rounded-2xl border border-[#DDE8DE] shadow-2xs">
+        <div className="lg:col-span-8 space-y-4">
+          <span className="text-xs font-bold text-[#16A34A] uppercase tracking-wider font-mono">
+            Proximité & Qualité
           </span>
           <h2
-            className="text-2xl sm:text-3xl 2xl:text-4xl font-extrabold text-[#172017] font-primary tracking-tight"
-            style={{ fontFamily: "'Manrope', sans-serif" }}
+            className="text-xl sm:text-2xl font-bold text-[#172017] font-primary tracking-tight"
           >
-            Une sélection minutieuse, sans compromis.
+            Une équipe engagée au Togo pour votre satisfaction.
           </h2>
-          <p className="text-sm sm:text-base 2xl:text-lg text-[#647064] leading-relaxed">
-            Plutôt que d&apos;accumuler des milliers de références superflues, notre équipe basée à Lomé teste, calibre et sélectionne uniquement les outils qui apportent un réel gain de confort, de silence et de performance au quotidien.
+          <p className="text-xs sm:text-sm text-[#647064] leading-relaxed">
+            Notre priorité est de vous fournir des articles de qualité avec un accompagnement personnalisé. De la prise de commande à la livraison devant votre porte, nous vous assurons une totale tranquillité d'esprit.
           </p>
-          <ul className="space-y-3 2xl:space-y-4 pt-2 text-sm 2xl:text-base text-[#172017]">
+          <ul className="space-y-2.5 pt-2 text-xs sm:text-sm text-[#172017]">
             <li className="flex items-start gap-2.5">
-              <CheckCircle2 size={18} className="text-[#16A34A] mt-0.5 flex-shrink-0 2xl:w-5 2xl:h-5" />
+              <CheckCircle2 size={16} className="text-[#16A34A] mt-0.5 flex-shrink-0" />
               <span>Contrôle qualité systématique avant chaque expédition à Lomé</span>
             </li>
             <li className="flex items-start gap-2.5">
-              <CheckCircle2 size={18} className="text-[#16A34A] mt-0.5 flex-shrink-0 2xl:w-5 2xl:h-5" />
-              <span>Conception ergonomique validée pour les longues sessions de travail</span>
+              <CheckCircle2 size={16} className="text-[#16A34A] mt-0.5 flex-shrink-0" />
+              <span>Service client togolais réactif par appel et WhatsApp</span>
             </li>
             <li className="flex items-start gap-2.5">
-              <CheckCircle2 size={18} className="text-[#16A34A] mt-0.5 flex-shrink-0 2xl:w-5 2xl:h-5" />
-              <span>Service client togolais réactif par appel, WhatsApp et email</span>
+              <CheckCircle2 size={16} className="text-[#16A34A] mt-0.5 flex-shrink-0" />
+              <span>Commandes simplifiées et prise en charge rapide</span>
             </li>
           </ul>
         </div>
-
-        <div className="lg:col-span-6">
-          <div className="rounded-2xl sm:rounded-3xl overflow-hidden border border-[#DDE8DE] shadow-sm aspect-[4/3]">
-            <ProductImage
-              src="https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=1200&auto=format&fit=crop&q=80"
-              alt="Atelier DSK-Shop"
-              containerClassName="w-full h-full"
-              className="w-full h-full object-cover"
-            />
+        <div className="lg:col-span-4 flex justify-center">
+          <div className="w-full max-w-[240px] aspect-square rounded-2xl bg-[#F3FAF4] border border-[#DDE8DE] flex flex-col items-center justify-center p-6 text-center">
+            <span className="text-3xl font-black text-[#166534] font-primary">DSK</span>
+            <span className="text-xs font-semibold text-[#647064] mt-1">Boutique officielle Lomé</span>
           </div>
         </div>
       </section>
 
       {/* Pillars Matrix */}
-      <section className="space-y-6 2xl:space-y-8">
-        <div className="text-center max-w-xl 2xl:max-w-2xl mx-auto">
+      <section className="space-y-6">
+        <div className="text-center max-w-xl mx-auto">
           <h2
-            className="text-2xl sm:text-3xl 2xl:text-4xl font-extrabold text-[#172017] font-primary tracking-tight"
-            style={{ fontFamily: "'Manrope', sans-serif" }}
+            className="text-xl sm:text-2xl font-bold text-[#172017] font-primary tracking-tight"
           >
             Nos Engagements
           </h2>
-          <p className="text-sm 2xl:text-base text-[#647064] mt-1.5">
+          <p className="text-xs sm:text-sm text-[#647064] mt-1">
             Une expérience d&apos;achat transparente, fiable et respectueuse au Togo.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 2xl:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {commitments.map((c, idx) => {
             const Icon = c.icon;
             return (
               <div
                 key={idx}
-                className="p-6 2xl:p-8 rounded-2xl bg-[#FFFFFF] border border-[#DDE8DE] shadow-2xs hover:border-[#16A34A] transition-all space-y-3"
+                className="p-5 rounded-2xl bg-white border border-[#DDE8DE] shadow-2xs space-y-2.5"
               >
-                <div className="w-10 h-10 2xl:w-12 2xl:h-12 rounded-xl bg-[#DCFCE7] text-[#166534] flex items-center justify-center">
-                  <Icon size={20} className="2xl:w-6 2xl:h-6" />
+                <div className="w-9 h-9 rounded-xl bg-[#DCFCE7] text-[#166534] flex items-center justify-center">
+                  <Icon size={18} />
                 </div>
                 <div>
-                  <span className="text-[10px] 2xl:text-xs font-bold font-mono text-[#16A34A] uppercase tracking-wider">
+                  <span className="text-[10px] font-bold font-mono text-[#16A34A] uppercase tracking-wider">
                     {c.metric}
                   </span>
-                  <h3
-                    className="text-base 2xl:text-lg font-bold text-[#172017] mt-0.5 font-primary"
-                    style={{ fontFamily: "'Manrope', sans-serif" }}
-                  >
+                  <h3 className="text-sm font-bold text-[#172017] mt-0.5 font-primary">
                     {c.title}
                   </h3>
                 </div>
-                <p className="text-xs 2xl:text-sm text-[#647064] leading-relaxed">
+                <p className="text-xs text-[#647064] leading-relaxed">
                   {c.description}
                 </p>
               </div>

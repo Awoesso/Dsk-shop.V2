@@ -1,10 +1,29 @@
 import { createClient } from '@supabase/supabase-js';
 import { Database } from '../types/database.types';
 
-const envSupabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const getEnv = (key: string): string | undefined => {
+  try {
+    if (typeof import.meta !== 'undefined' && import.meta?.env?.[key]) {
+      return import.meta.env[key];
+    }
+  } catch {
+    // ignore
+  }
+  try {
+    if (typeof process !== 'undefined' && process?.env?.[key]) {
+      return process.env[key];
+    }
+  } catch {
+    // ignore
+  }
+  return undefined;
+};
+
+const envSupabaseUrl = getEnv('VITE_SUPABASE_URL') || getEnv('SUPABASE_URL');
 const envSupabaseKey =
-  import.meta.env.VITE_SUPABASE_ANON_KEY ||
-  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+  getEnv('VITE_SUPABASE_ANON_KEY') ||
+  getEnv('VITE_SUPABASE_PUBLISHABLE_KEY') ||
+  getEnv('SUPABASE_ANON_KEY');
 
 // Fallback to project defaults defined in .env.example
 const defaultSupabaseUrl = 'https://khtndvcjfovnazdiykew.supabase.co';
@@ -36,11 +55,12 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseKey, {
 
 /**
  * Helper to resolve public CDN URL for product images stored in Supabase Storage.
- * Defaults to the 'products' bucket verified during schema inspection.
+ * The Supabase project stores images in bucket 'product-covers' under paths like 'products/eb863bfa...'.
+ * Defaults to 'product-covers'.
  */
 export function getProductImageUrl(
   storagePath: string | null | undefined,
-  bucket: string = 'products'
+  bucket: string = 'product-covers'
 ): string {
   if (!storagePath) {
     return '';

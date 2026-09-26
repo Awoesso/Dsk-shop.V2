@@ -4,6 +4,7 @@ import { Product, SortOption } from '../../types';
 import { ProductCard } from '../ProductCard/ProductCard';
 import { ProductGridSkeleton } from '../Skeleton/ProductGridSkeleton';
 import { useShop } from '../../context/ShopContext';
+import { StaggerItem } from '../Common/ScrollAnimation';
 
 interface ProductGridProps {
   products: Product[];
@@ -100,7 +101,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
             )}
           </div>
 
-          <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-2.5">
+          <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-2.5 w-full sm:w-auto">
             {/* Refresh button */}
             <button
               onClick={refreshCatalog}

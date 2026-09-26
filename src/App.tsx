@@ -20,6 +20,7 @@ import {
   OrderSuccessSkeleton,
   AboutSkeleton,
   ContactSkeleton,
+  AccountSkeleton,
 } from './components/Skeleton';
 
 // Pages
@@ -32,6 +33,7 @@ import { CheckoutPage } from './pages/Checkout/CheckoutPage';
 import { OrderSuccessPage } from './pages/Checkout/OrderSuccessPage';
 import { AboutPage } from './pages/About/AboutPage';
 import { ContactPage } from './pages/Contact/ContactPage';
+import { AccountPage } from './pages/Account/AccountPage';
 
 const AppContent: React.FC = () => {
   const { activePage, selectedProduct, isInitialLoading, isPageLoading } = useShop();
@@ -63,6 +65,8 @@ const AppContent: React.FC = () => {
           return <AboutSkeleton />;
         case 'contact':
           return <ContactSkeleton />;
+        case 'account':
+          return <AccountSkeleton />;
         default:
           return <HomeSkeleton />;
       }
@@ -87,6 +91,8 @@ const AppContent: React.FC = () => {
         return <AboutPage />;
       case 'contact':
         return <ContactPage />;
+      case 'account':
+        return <AccountPage />;
       default:
         return <HomePage />;
     }

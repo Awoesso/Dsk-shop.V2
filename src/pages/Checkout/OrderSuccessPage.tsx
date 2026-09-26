@@ -3,6 +3,7 @@ import { CheckCircle2, PackageCheck, Calendar, MapPin, ArrowRight, Printer } fro
 import { useShop } from '../../context/ShopContext';
 import { formatPrice } from '../../utils/currency';
 import { SEO } from '../../components/SEO/SEO';
+import { ProductImage } from '../../components/Common/ProductImage';
 
 export const OrderSuccessPage: React.FC = () => {
   const { lastOrder, navigateTo } = useShop();
@@ -137,11 +138,11 @@ export const OrderSuccessPage: React.FC = () => {
             {lastOrder.items.map((item, idx) => (
               <div key={idx} className="py-3 2xl:py-4 flex items-center justify-between gap-4 first:pt-0 last:pb-0">
                 <div className="flex items-center gap-3 2xl:gap-4">
-                  <img
-                    src={item.product.images[0]}
+                  <ProductImage
+                    src={item.product.images?.[0] || item.product.primaryImage || ''}
                     alt={item.product.name}
-                    className="w-12 h-12 2xl:w-16 2xl:h-16 rounded-xl object-cover bg-slate-100"
-                    referrerPolicy="no-referrer"
+                    containerClassName="w-12 h-12 2xl:w-16 2xl:h-16 rounded-xl overflow-hidden bg-slate-100 flex-shrink-0"
+                    className="w-full h-full object-cover"
                   />
                   <div>
                     <h4 className="text-xs 2xl:text-sm font-bold text-slate-900 font-primary">{item.product.name}</h4>

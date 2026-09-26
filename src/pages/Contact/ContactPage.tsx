@@ -56,7 +56,7 @@ export const ContactPage: React.FC = () => {
   ];
 
   return (
-    <div className="max-w-[1600px] 2xl:max-w-[1760px] mx-auto px-3 sm:px-6 lg:px-8 2xl:px-12 py-8 sm:py-12 2xl:py-16 space-y-12 sm:space-y-16 2xl:space-y-24 font-secondary text-[#172017]">
+    <div className="max-w-[1600px] 2xl:max-w-[1760px] mx-auto px-3 sm:px-6 lg:px-8 2xl:px-12 py-8 sm:py-12 2xl:py-16 pb-28 sm:pb-16 space-y-12 sm:space-y-16 2xl:space-y-24 font-secondary text-[#172017]">
       <SEO
         title="Contact & Support Client | DSK-Shop Lomé"
         description="Besoin d'aide ou d'un renseignement sur vos commandes DSK-Shop ? Contactez notre équipe basée à Lomé, Togo. Support réactif par email, téléphone et WhatsApp."
@@ -187,7 +187,7 @@ export const ContactPage: React.FC = () => {
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       placeholder="Ex: Koffi Mensah"
-                      className="w-full px-3.5 py-2.5 2xl:py-3 rounded-xl border border-[#DDE8DE] bg-[#FAFCFA] text-sm 2xl:text-base text-[#172017] focus:outline-none focus:border-[#16A34A] focus:ring-1 focus:ring-[#16A34A]"
+                      className="w-full px-3.5 py-2.5 2xl:py-3 rounded-xl border border-[#DDE8DE] bg-[#FAFCFA] text-base sm:text-sm 2xl:text-base text-[#172017] focus:outline-none focus:border-[#16A34A] focus:ring-1 focus:ring-[#16A34A]"
                     />
                   </div>
 
@@ -201,7 +201,7 @@ export const ContactPage: React.FC = () => {
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       placeholder="koffi@example.com"
-                      className="w-full px-3.5 py-2.5 2xl:py-3 rounded-xl border border-[#DDE8DE] bg-[#FAFCFA] text-sm 2xl:text-base text-[#172017] focus:outline-none focus:border-[#16A34A] focus:ring-1 focus:ring-[#16A34A]"
+                      className="w-full px-3.5 py-2.5 2xl:py-3 rounded-xl border border-[#DDE8DE] bg-[#FAFCFA] text-base sm:text-sm 2xl:text-base text-[#172017] focus:outline-none focus:border-[#16A34A] focus:ring-1 focus:ring-[#16A34A]"
                     />
                   </div>
                 </div>
@@ -213,7 +213,7 @@ export const ContactPage: React.FC = () => {
                   <select
                     value={formData.subject}
                     onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                    className="w-full px-3.5 py-2.5 2xl:py-3 rounded-xl border border-[#DDE8DE] bg-[#FAFCFA] text-sm 2xl:text-base text-[#172017] focus:outline-none focus:border-[#16A34A] focus:ring-1 focus:ring-[#16A34A]"
+                    className="w-full px-3.5 py-2.5 2xl:py-3 rounded-xl border border-[#DDE8DE] bg-[#FAFCFA] text-base sm:text-sm 2xl:text-base text-[#172017] focus:outline-none focus:border-[#16A34A] focus:ring-1 focus:ring-[#16A34A]"
                   >
                     <option value="order">Suivi ou question sur une commande</option>
                     <option value="product">Conseil avant-achat sur un produit</option>
@@ -232,7 +232,7 @@ export const ContactPage: React.FC = () => {
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     placeholder="Détaillez votre demande..."
-                    className="w-full px-3.5 py-2.5 2xl:py-3 rounded-xl border border-[#DDE8DE] bg-[#FAFCFA] text-sm 2xl:text-base text-[#172017] focus:outline-none focus:border-[#16A34A] focus:ring-1 focus:ring-[#16A34A] resize-none"
+                    className="w-full px-3.5 py-2.5 2xl:py-3 rounded-xl border border-[#DDE8DE] bg-[#FAFCFA] text-base sm:text-sm 2xl:text-base text-[#172017] focus:outline-none focus:border-[#16A34A] focus:ring-1 focus:ring-[#16A34A] resize-none"
                   />
                 </div>
 

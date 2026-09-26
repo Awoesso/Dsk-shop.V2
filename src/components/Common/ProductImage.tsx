@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ImageIcon } from 'lucide-react';
+import { Package } from 'lucide-react';
 
 interface ProductImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   src: string;
@@ -35,22 +35,29 @@ export const ProductImage: React.FC<ProductImageProps> = ({
 
   return (
     <div
-      className={`relative overflow-hidden bg-slate-100 ${aspectRatioClassName} ${containerClassName}`}
+      className={`relative overflow-hidden bg-[#F3FAF4] ${aspectRatioClassName} ${containerClassName}`}
     >
       {/* Skeleton Shimmer Overlay while image is loading */}
       {showSkeleton && !isLoaded && !hasError && (
-        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-slate-100 animate-shimmer">
-          <div className="w-8 h-8 rounded-xl bg-slate-200/80 flex items-center justify-center text-slate-400 shadow-2xs">
-            <ImageIcon size={16} />
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-[#F3FAF4] animate-shimmer">
+          <div className="w-8 h-8 rounded-xl bg-[#DCFCE7]/70 flex items-center justify-center text-[#166534] shadow-2xs">
+            <Package size={16} />
           </div>
         </div>
       )}
 
-      {/* Error state fallback */}
-      {hasError ? (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-100 text-slate-400 p-3 text-center">
-          <ImageIcon size={24} className="mb-1 text-slate-300" />
-          <span className="text-[11px] font-medium text-slate-400">Image unavailable</span>
+      {/* Elegant Fallback if image fails or bucket not yet populated */}
+      {hasError || !src ? (
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-[#F3FAF4] to-[#E8F5EB] p-3 text-center select-none">
+          <div className="w-10 h-10 rounded-2xl bg-white/90 border border-[#DDE8DE] text-[#166534] flex items-center justify-center mb-1.5 shadow-2xs">
+            <Package size={20} />
+          </div>
+          <span className="text-[11px] font-semibold text-[#166534] font-primary line-clamp-1 max-w-[120px]">
+            {alt || 'DSK-Shop'}
+          </span>
+          <span className="text-[10px] text-[#849385] font-secondary mt-0.5">
+            Aperçu produit
+          </span>
         </div>
       ) : (
         <img
@@ -62,7 +69,7 @@ export const ProductImage: React.FC<ProductImageProps> = ({
             setHasError(true);
             setIsLoaded(true);
           }}
-          className={`w-full h-full object-cover object-center transition-opacity duration-500 ease-out ${
+          className={`w-full h-full object-cover object-center transition-opacity duration-300 ease-out ${
             isLoaded ? 'opacity-100' : 'opacity-0'
           } ${className}`}
           referrerPolicy="no-referrer"
