@@ -54,7 +54,7 @@ export const Hero: React.FC = () => {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45, ease: 'easeOut' }}
-            className="text-2xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-extrabold text-[#172017] tracking-tight leading-[1.18] font-primary"
+            className="text-2xl min-[400px]:text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-extrabold text-[#172017] tracking-tight leading-[1.18] font-primary"
           >
             Achetez juste.
             <br />
@@ -66,7 +66,7 @@ export const Hero: React.FC = () => {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.08, ease: 'easeOut' }}
-            className="text-xs sm:text-base md:text-lg text-[#647064] leading-relaxed font-secondary max-w-lg mx-auto lg:mx-0"
+            className="text-xs sm:text-base md:text-lg text-[#647064] leading-relaxed font-secondary max-w-lg mx-auto lg:mx-0 px-1 sm:px-0"
           >
             L&apos;essentiel du quotidien livré rapidement à Lomé. Retrouvez vos articles préférés avec paiement simplifié et livraison directe à votre porte.
           </motion.p>
@@ -76,12 +76,12 @@ export const Hero: React.FC = () => {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.16, ease: 'easeOut' }}
-            className="pt-1 sm:pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-2.5 sm:gap-3.5 font-secondary"
+            className="pt-1 sm:pt-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-center lg:justify-start gap-2.5 sm:gap-3.5 font-secondary w-full sm:w-auto"
           >
             <button
               id="hero-order-cta"
               onClick={handleOrderNow}
-              className="h-[46px] sm:h-[48px] px-6 sm:px-7 bg-[#166534] hover:bg-[#16A34A] text-white text-xs sm:text-sm font-bold rounded-xl transition-all duration-200 shadow-xs flex items-center justify-center gap-2 cursor-pointer active:scale-98 w-full sm:w-auto font-primary"
+              className="h-[48px] px-6 sm:px-7 bg-[#166534] hover:bg-[#16A34A] text-white text-xs sm:text-sm font-bold rounded-xl transition-all duration-200 shadow-xs flex items-center justify-center gap-2 cursor-pointer active:scale-98 w-full sm:w-auto font-primary"
             >
               <ShoppingBag size={17} />
               <span>Commander maintenant</span>
@@ -89,7 +89,7 @@ export const Hero: React.FC = () => {
             <button
               id="hero-catalog-cta"
               onClick={handleViewCatalog}
-              className="h-[46px] sm:h-[48px] px-5 sm:px-6 bg-white hover:bg-slate-50 text-[#172017] hover:text-[#166534] border border-[#DDE8DE] text-xs sm:text-sm font-bold rounded-xl transition-all duration-200 shadow-2xs flex items-center justify-center gap-2 cursor-pointer active:scale-98 w-full sm:w-auto font-primary"
+              className="h-[48px] px-5 sm:px-6 bg-white hover:bg-slate-50 text-[#172017] hover:text-[#166534] border border-[#DDE8DE] text-xs sm:text-sm font-bold rounded-xl transition-all duration-200 shadow-2xs flex items-center justify-center gap-2 cursor-pointer active:scale-98 w-full sm:w-auto font-primary"
             >
               <span>Voir le catalogue</span>
               <ArrowRight size={16} />
@@ -100,7 +100,7 @@ export const Hero: React.FC = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.22, ease: 'easeOut' }}
-            className="pt-1 flex flex-wrap items-center justify-center lg:justify-start gap-3 sm:gap-4 text-[11px] sm:text-xs text-[#647064]"
+            className="pt-1 flex flex-wrap items-center justify-center lg:justify-start gap-2.5 sm:gap-4 text-[11px] sm:text-xs text-[#647064]"
           >
             <span className="flex items-center gap-1">
               <CheckCircle2 size={13} className="text-[#16A34A]" /> Livraison express Lomé
@@ -125,16 +125,16 @@ export const Hero: React.FC = () => {
             initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.1, ease: 'easeOut' }}
-            className="relative z-10 w-full flex items-center justify-center gap-2.5 sm:gap-4 p-2 sm:p-4"
+            className="relative z-10 w-full flex items-center justify-center gap-3 sm:gap-4 p-2 sm:p-4"
           >
             {/* Produit Réel 1 */}
             {mainProduct ? (
               <div
                 onClick={() => openProduct(mainProduct)}
-                className="w-1/2 sm:w-[58%] aspect-square max-w-[280px] sm:max-w-[320px] rounded-xl sm:rounded-2xl overflow-hidden cursor-pointer bg-white p-2 sm:p-3 border border-[#DDE8DE] shadow-xs hover:shadow-md transition-all group flex flex-col justify-between"
+                className="w-full max-w-[260px] sm:max-w-[320px] sm:w-[58%] aspect-square rounded-2xl overflow-hidden cursor-pointer bg-white p-2.5 sm:p-3 border border-[#DDE8DE] shadow-xs hover:shadow-md transition-all group flex flex-col justify-between"
                 title={mainProduct.name}
               >
-                <div className="w-full flex-1 rounded-lg sm:rounded-xl overflow-hidden bg-[#F3FAF4] flex items-center justify-center p-1.5 sm:p-2 min-h-0">
+                <div className="w-full flex-1 rounded-xl overflow-hidden bg-[#F3FAF4] flex items-center justify-center p-2 min-h-0">
                   <ProductImage
                     src={mainProduct.images?.[0] || mainProduct.primaryImage || ''}
                     alt={mainProduct.name}
@@ -142,25 +142,25 @@ export const Hero: React.FC = () => {
                     className="w-full h-full object-contain group-hover:scale-[1.02] transition-transform duration-200 ease-out"
                   />
                 </div>
-                <div className="pt-1.5 sm:pt-2 px-0.5 sm:px-1 flex flex-col sm:flex-row sm:items-center justify-between gap-0.5">
+                <div className="pt-2 px-1 flex items-center justify-between gap-1">
                   <span className="font-bold text-xs sm:text-sm text-[#172017] font-primary truncate">
                     {mainProduct.name}
                   </span>
-                  <span className="text-[11px] sm:text-xs font-black text-[#166534] font-primary whitespace-nowrap">
+                  <span className="text-xs sm:text-sm font-black text-[#166534] font-primary whitespace-nowrap">
                     {formatPrice(mainProduct.price)}
                   </span>
                 </div>
               </div>
             ) : null}
 
-            {/* Produit Réel 2 (si existant) */}
+            {/* Produit Réel 2 (affiché sur tablette/desktop pour un rendu aéré) */}
             {secondaryProduct ? (
               <div
                 onClick={() => openProduct(secondaryProduct)}
-                className="w-1/2 sm:w-[42%] aspect-square max-w-[220px] sm:max-w-[240px] rounded-xl sm:rounded-2xl overflow-hidden cursor-pointer bg-white p-2 sm:p-3 border border-[#DDE8DE] shadow-xs hover:shadow-md transition-all group flex flex-col justify-between"
+                className="hidden sm:flex sm:w-[42%] aspect-square max-w-[240px] rounded-2xl overflow-hidden cursor-pointer bg-white p-2.5 sm:p-3 border border-[#DDE8DE] shadow-xs hover:shadow-md transition-all group flex-col justify-between"
                 title={secondaryProduct.name}
               >
-                <div className="w-full flex-1 rounded-lg sm:rounded-xl overflow-hidden bg-[#F3FAF4] flex items-center justify-center p-1.5 sm:p-2 min-h-0">
+                <div className="w-full flex-1 rounded-xl overflow-hidden bg-[#F3FAF4] flex items-center justify-center p-2 min-h-0">
                   <ProductImage
                     src={secondaryProduct.images?.[0] || secondaryProduct.primaryImage || ''}
                     alt={secondaryProduct.name}
@@ -168,11 +168,11 @@ export const Hero: React.FC = () => {
                     className="w-full h-full object-contain group-hover:scale-[1.02] transition-transform duration-200 ease-out"
                   />
                 </div>
-                <div className="pt-1.5 sm:pt-2 px-0.5 sm:px-1 flex flex-col sm:flex-row sm:items-center justify-between gap-0.5">
+                <div className="pt-2 px-1 flex items-center justify-between gap-1">
                   <span className="font-bold text-xs text-[#172017] font-primary truncate">
                     {secondaryProduct.name}
                   </span>
-                  <span className="text-[11px] sm:text-xs font-black text-[#166534] font-primary whitespace-nowrap">
+                  <span className="text-xs font-black text-[#166534] font-primary whitespace-nowrap">
                     {formatPrice(secondaryProduct.price)}
                   </span>
                 </div>

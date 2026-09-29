@@ -73,7 +73,22 @@ export const CartPage: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 2xl:gap-12 items-start">
         {/* Left Column: Cart Items List */}
-        <div className="lg:col-span-8 bg-[#FAFCFA] p-4 sm:p-6 lg:p-8 2xl:p-10 rounded-2xl sm:rounded-3xl border border-[#DDE8DE] shadow-2xs space-y-5 sm:space-y-6 2xl:space-y-8">
+        <div className="lg:col-span-8 bg-[#FAFCFA] p-3.5 sm:p-6 lg:p-8 2xl:p-10 rounded-2xl sm:rounded-3xl border border-[#DDE8DE] shadow-2xs space-y-4 sm:space-y-6 2xl:space-y-8">
+          {/* Quick Mobile Checkout Bar (Visible on phones above items) */}
+          <div className="lg:hidden flex items-center justify-between p-3 sm:p-3.5 bg-white rounded-xl sm:rounded-2xl border border-[#DDE8DE] shadow-2xs font-primary gap-3">
+            <div>
+              <span className="text-[10px] text-[#647064] block font-medium">Total estimé ({cartItemCount} {cartItemCount > 1 ? 'articles' : 'article'})</span>
+              <span className="text-sm sm:text-base font-black text-[#166534]">{formatPrice(cartTotal)}</span>
+            </div>
+            <button
+              onClick={() => navigateTo('checkout')}
+              className="px-4 py-2.5 bg-[#166534] hover:bg-[#16A34A] text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
+            >
+              <span>Commander</span>
+              <ArrowRight size={14} />
+            </button>
+          </div>
+
           {/* Free Shipping Banner */}
           <div className="bg-[#F0FDF4] p-3.5 sm:p-4 2xl:p-6 rounded-xl sm:rounded-2xl border border-[#DDE8DE]">
             <div className="flex items-center justify-between text-xs 2xl:text-sm mb-2 font-primary gap-2">

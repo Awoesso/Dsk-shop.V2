@@ -8,6 +8,8 @@ import {
   CheckCircle2,
   Lock,
   Package,
+  ChevronDown,
+  ShoppingBag,
 } from 'lucide-react';
 import { useShop } from '../../context/ShopContext';
 import { formatPrice, toFCFA } from '../../utils/currency';
@@ -35,6 +37,7 @@ export const CheckoutPage: React.FC = () => {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showMobileSummary, setShowMobileSummary] = useState(false);
 
   // If cart is empty, show empty state with catalog redirect
   if (cart.length === 0) {
@@ -138,7 +141,7 @@ export const CheckoutPage: React.FC = () => {
       />
 
       {/* Navigation Breadcrumb */}
-      <div className="flex items-center gap-2 sm:gap-3 text-xs 2xl:text-sm font-medium text-[#647064] mb-5 sm:mb-8 font-primary">
+      <div className="flex items-center gap-2 sm:gap-3 text-xs 2xl:text-sm font-medium text-[#647064] mb-3 sm:mb-6 font-primary">
         <button
           id="checkout-back-to-cart-btn"
           onClick={() => navigateTo('cart')}
@@ -148,6 +151,74 @@ export const CheckoutPage: React.FC = () => {
         </button>
         <span>/</span>
         <span className="text-[#166534] font-bold">Commande Rapide</span>
+      </div>
+
+      {/* Mobile Collapsible Order Summary Accordion (Visible on small screens) */}
+      <div className="lg:hidden bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden mb-4 sm:mb-6">
+        <button
+          type="button"
+          onClick={() => setShowMobileSummary(!showMobileSummary)}
+          className="w-full p-3.5 sm:p-4 flex items-center justify-between text-left font-primary bg-[#F8FCF9] hover:bg-[#F0FDF4] transition-colors cursor-pointer"
+          aria-expanded={showMobileSummary}
+        >
+          <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-slate-900">
+            <ShoppingBag size={16} className="text-[#166534]" />
+            <span>{showMobileSummary ? 'Masquer le récapitulatif' : 'Voir le récapitulatif'}</span>
+            <span className="text-slate-500 font-normal">({cartItemCount})</span>
+            <ChevronDown
+              size={14}
+              className={`text-slate-400 transition-transform duration-200 ${
+                showMobileSummary ? 'rotate-180 text-[#166534]' : ''
+              }`}
+            />
+          </div>
+          <span className="text-sm sm:text-base font-black text-[#166534]">
+            {formatPrice(cartTotal)}
+          </span>
+        </button>
+
+        {showMobileSummary && (
+          <div className="p-4 border-t border-slate-100 space-y-3 font-secondary animate-in fade-in duration-150">
+            <div className="divide-y divide-slate-100 max-h-56 overflow-y-auto pr-1">
+              {cart.map((item, idx) => (
+                <div key={idx} className="py-2.5 flex items-center gap-3">
+                  <div className="w-11 h-11 rounded-lg bg-slate-50 border border-slate-100 overflow-hidden shrink-0 flex items-center justify-center p-1">
+                    <ProductImage
+                      src={item.product.images?.[0] || item.product.primaryImage || ''}
+                      alt={item.product.name}
+                      containerClassName="w-full h-full"
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-bold text-slate-900 truncate font-primary">
+                      {item.product.name}
+                    </p>
+                    <p className="text-[11px] text-slate-500">
+                      Qté : {item.quantity} {item.selectedVariant ? `• ${item.selectedVariant.name}` : ''}
+                    </p>
+                  </div>
+                  <span className="text-xs font-bold text-slate-900 font-primary shrink-0">
+                    {formatPrice((item.product.price + (item.selectedVariant?.priceModifier || 0)) * item.quantity)}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <div className="space-y-1.5 text-xs text-slate-600 pt-2 border-t border-slate-100">
+              <div className="flex justify-between">
+                <span>Sous-total</span>
+                <span className="font-semibold text-slate-900 font-primary">{formatPrice(cartSubtotal)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Livraison</span>
+                <span className="font-semibold text-emerald-700 font-primary">
+                  {shippingCost === 0 ? 'OFFERTE' : formatPrice(shippingCost)}
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 2xl:gap-12 items-start">

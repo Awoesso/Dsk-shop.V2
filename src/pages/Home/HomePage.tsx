@@ -174,7 +174,7 @@ export const HomePage: React.FC = () => {
           </div>
 
           {/* Grille de catégories actives (valeur > 0 uniquement) */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5 sm:gap-4 lg:gap-5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 sm:gap-4 lg:gap-5">
             {activeCategories.map((cat) => {
               const Icon = cat.icon;
               const count = categoryCounts[cat.id] ?? 0;
@@ -182,23 +182,23 @@ export const HomePage: React.FC = () => {
                 <button
                   key={cat.id}
                   onClick={() => handleCategoryClick(cat.id)}
-                  className="group p-4 rounded-2xl bg-white border border-[#DDE8DE] hover:border-[#166534]/60 shadow-2xs hover:shadow-xs transition-all text-left flex flex-col justify-between cursor-pointer"
+                  className="group p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white border border-[#DDE8DE] hover:border-[#166534]/60 shadow-2xs hover:shadow-xs transition-all text-left flex flex-col justify-between cursor-pointer"
                 >
                   <div>
-                    <div className="w-11 h-11 rounded-xl bg-[#F3FAF4] group-hover:bg-[#DCFCE7] text-[#166534] flex items-center justify-center transition-colors mb-3">
-                      <Icon size={22} />
+                    <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-[#F3FAF4] group-hover:bg-[#DCFCE7] text-[#166534] flex items-center justify-center transition-colors mb-2.5 sm:mb-3">
+                      <Icon size={19} className="sm:w-[22px] sm:h-[22px]" />
                     </div>
-                    <h3 className="text-sm sm:text-base font-bold text-[#172017] font-primary group-hover:text-[#166534] transition-colors">
+                    <h3 className="text-xs sm:text-base font-bold text-[#172017] font-primary group-hover:text-[#166534] transition-colors line-clamp-1">
                       {cat.name}
                     </h3>
-                    <span className="text-[11px] font-semibold text-[#166534] mt-0.5 block">
+                    <span className="text-[10px] sm:text-[11px] font-semibold text-[#166534] mt-0.5 block">
                       {count} {count > 1 ? 'articles' : 'article'}
                     </span>
-                    <p className="text-[11px] text-[#647064] mt-1.5 line-clamp-2 leading-relaxed">
+                    <p className="text-[10px] sm:text-[11px] text-[#647064] mt-1 line-clamp-2 leading-relaxed hidden min-[360px]:block">
                       {cat.description}
                     </p>
                   </div>
-                  <div className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-[#166534] group-hover:translate-x-0.5 transition-transform">
+                  <div className="mt-2.5 sm:mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] sm:text-[11px] font-bold text-[#166534] group-hover:translate-x-0.5 transition-transform">
                     <span>Découvrir</span>
                     <ArrowRight size={12} />
                   </div>
@@ -233,7 +233,7 @@ export const HomePage: React.FC = () => {
         </div>
 
         {popularProducts.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-5 gap-3.5 sm:gap-4 xl:gap-5">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-5 gap-2.5 sm:gap-4 xl:gap-5">
             {popularProducts.map((product) => (
               <ProductCard key={product.id} product={product} layout="grid" />
             ))}
@@ -263,13 +263,13 @@ export const HomePage: React.FC = () => {
             <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-900/80 border border-emerald-700/60 text-emerald-300 text-xs font-bold uppercase tracking-wider font-primary">
               <Layers size={13} /> Sélection exclusive DSK Shop Lomé
             </span>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight font-primary leading-tight">
+            <h2 className="text-xl min-[400px]:text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight font-primary leading-tight">
               Découvrez notre collection phare du moment
             </h2>
             <p className="text-xs sm:text-sm lg:text-base text-emerald-100/90 leading-relaxed font-secondary">
               Équipements de pointe et accessoires du quotidien sélectionnés pour leur robustesse et leur tarif accessible sans frais cachés.
             </p>
-            <div className="pt-1 flex flex-wrap items-center justify-center lg:justify-start gap-4 text-xs text-emerald-200">
+            <div className="pt-1 flex flex-wrap items-center justify-center lg:justify-start gap-2.5 sm:gap-4 text-xs text-emerald-200">
               <span className="flex items-center gap-1.5">
                 <CheckCircle2 size={15} className="text-emerald-400" /> Stocks réels et vérifiés
               </span>
@@ -282,10 +282,10 @@ export const HomePage: React.FC = () => {
             </div>
           </div>
 
-          <div className="relative z-10 shrink-0">
+          <div className="relative z-10 shrink-0 w-full sm:w-auto">
             <button
               onClick={() => handleSeeAll('featured')}
-              className="px-8 py-4 bg-white hover:bg-emerald-50 text-[#14532D] text-sm font-extrabold rounded-xl transition-all shadow-sm flex items-center gap-2 cursor-pointer font-primary active:scale-98"
+              className="w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 bg-white hover:bg-emerald-50 text-[#14532D] text-xs sm:text-sm font-extrabold rounded-xl transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer font-primary active:scale-98 min-h-[46px]"
             >
               <span>Explorer toute la collection</span>
               <ArrowRight size={16} />
@@ -318,7 +318,7 @@ export const HomePage: React.FC = () => {
         </div>
 
         {newProducts.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-5 gap-3.5 sm:gap-4 xl:gap-5">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-5 gap-2.5 sm:gap-4 xl:gap-5">
             {newProducts.map((product) => (
               <ProductCard key={product.id} product={product} layout="grid" />
             ))}

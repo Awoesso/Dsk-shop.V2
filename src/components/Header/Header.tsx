@@ -298,7 +298,7 @@ export const Header: React.FC = () => {
             <button
               id="header-cart-btn"
               onClick={() => setIsCartOpen(true)}
-              className="relative flex items-center gap-2 px-3 sm:px-3.5 py-1.5 sm:py-2 bg-[#166534] hover:bg-[#16A34A] text-white rounded-lg sm:rounded-xl transition-all shadow-2xs focus:outline-none font-primary cursor-pointer"
+              className="relative flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1.5 sm:py-2 bg-[#166534] hover:bg-[#16A34A] text-white rounded-lg sm:rounded-xl transition-all shadow-2xs focus:outline-none font-primary cursor-pointer min-h-[38px] sm:min-h-[42px]"
               title="Mon Panier"
               aria-label="Mon Panier"
             >
@@ -318,10 +318,10 @@ export const Header: React.FC = () => {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-1.5 sm:p-2 text-[#172017] hover:text-[#166534] hover:bg-[#F0FDF4] rounded-lg lg:hidden transition-colors cursor-pointer"
+              className="p-2 min-w-[38px] min-h-[38px] flex items-center justify-center text-[#172017] hover:text-[#166534] hover:bg-[#F0FDF4] rounded-lg lg:hidden transition-colors cursor-pointer"
               aria-label="Ouvrir le menu de navigation"
             >
-              {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
+              {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
         </div>

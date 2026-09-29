@@ -327,8 +327,8 @@ export const ProductDetailPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Standard actions for tablet & desktop */}
-            <div className="hidden sm:grid grid-cols-2 gap-3 pt-2 font-primary">
+            {/* Standard actions for mobile, tablet & desktop */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 pt-2 font-primary">
               <button
                 onClick={handleAddToCart}
                 className="py-3 px-4 bg-[#DCFCE7] hover:bg-white text-[#166534] border border-[#16A34A]/40 font-bold text-xs sm:text-sm rounded-xl transition-all flex items-center justify-center gap-2 shadow-2xs cursor-pointer min-h-[44px]"

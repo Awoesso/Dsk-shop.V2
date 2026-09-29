@@ -99,7 +99,7 @@ export const ShopPage: React.FC = () => {
           <ProductGrid
             products={filteredProducts}
             showToolbar={true}
-            columnsClassName="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-3 sm:gap-4 xl:gap-5"
+            columnsClassName="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-2.5 sm:gap-4 xl:gap-5"
           />
 
           {/* Guide d'achat & Conseils DSK Shop */}

@@ -41,7 +41,7 @@ export const CartDrawer: React.FC = () => {
         className="fixed inset-0 bg-[#14532D]/40 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
       />
 
-      <div className="fixed inset-y-0 right-0 max-w-full flex pl-4 sm:pl-10">
+      <div className="fixed inset-y-0 right-0 max-w-full flex pl-0 sm:pl-10">
         <div className="w-screen max-w-md 2xl:max-w-lg bg-[#FAFCFA] shadow-2xl flex flex-col animate-in slide-in-from-right duration-250 border-l border-[#DDE8DE]">
           {/* Drawer Header */}
           <div className="p-4 sm:p-5 2xl:p-6 border-b border-[#DDE8DE] flex items-center justify-between font-primary bg-[#F0FDF4]/60">

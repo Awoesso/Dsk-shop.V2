@@ -65,11 +65,11 @@ export const Footer: React.FC = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Votre adresse email..."
-                    className="flex-1 min-w-0 px-3.5 py-2.5 2xl:py-3 bg-white/5 text-white placeholder:text-slate-500 text-base sm:text-xs 2xl:text-sm rounded-xl border border-white/10 focus:outline-none focus:border-[#16A34A] transition-colors"
+                    className="flex-1 min-w-0 px-3.5 py-2.5 2xl:py-3 bg-white/5 text-white placeholder:text-slate-500 text-base sm:text-xs 2xl:text-sm rounded-xl border border-white/10 focus:outline-none focus:border-[#16A34A] transition-colors min-h-[44px]"
                   />
                   <button
                     type="submit"
-                    className="px-4 py-2.5 2xl:px-6 2xl:py-3 bg-[#16A34A] hover:bg-emerald-500 text-white font-bold text-xs 2xl:text-sm rounded-xl transition-colors flex items-center justify-center gap-1 shadow-xs cursor-pointer min-h-[42px]"
+                    className="px-4 py-2.5 2xl:px-6 2xl:py-3 bg-[#16A34A] hover:bg-emerald-500 text-white font-bold text-xs 2xl:text-sm rounded-xl transition-colors flex items-center justify-center gap-1 shadow-xs cursor-pointer min-h-[44px]"
                   >
                     <span>S&apos;inscrire</span>
                     <ArrowRight size={13} className="2xl:w-4 2xl:h-4" />

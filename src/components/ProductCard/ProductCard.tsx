@@ -61,7 +61,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         className="group relative bg-white border border-[#DDE8DE] hover:border-[#166534]/50 p-3 sm:p-4 rounded-xl sm:rounded-2xl flex flex-col sm:flex-row gap-3 sm:gap-4 shadow-2xs hover:shadow-xs transition-all duration-200 ease-out hover:-translate-y-[3px] cursor-pointer font-secondary"
       >
         {/* Compact Thumbnail Container */}
-        <div className="relative w-full sm:w-36 h-36 rounded-lg sm:rounded-xl overflow-hidden shrink-0 flex items-center justify-center p-2 bg-[#F3FAF4] border border-[#DDE8DE]/60">
+        <div className="relative w-28 h-28 sm:w-36 sm:h-36 rounded-lg sm:rounded-xl overflow-hidden shrink-0 flex items-center justify-center p-2 bg-[#F3FAF4] border border-[#DDE8DE]/60">
           <ProductImage
             src={isHovered && product.images?.[1] ? hoverImage : displayImage}
             alt={product.name}
@@ -71,7 +71,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
           <button
             onClick={handleToggleWishlist}
-            className={`absolute top-2 right-2 p-1.5 rounded-full bg-white/90 backdrop-blur-xs shadow-2xs transition-all duration-200 active:scale-90 flex items-center justify-center border border-[#DDE8DE]/80 cursor-pointer ${
+            className={`absolute top-1.5 right-1.5 sm:top-2 sm:right-2 p-1.5 rounded-full bg-white/90 backdrop-blur-xs shadow-2xs transition-all duration-200 active:scale-90 flex items-center justify-center border border-[#DDE8DE]/80 cursor-pointer min-w-[32px] min-h-[32px] ${
               isFavorited ? 'text-rose-500 border-rose-200 bg-white' : 'text-[#647064] hover:text-rose-500'
             }`}
             title={isFavorited ? 'Retirer des favoris' : 'Ajouter aux favoris'}
@@ -240,7 +240,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         {/* Clear Action Button: "Ajouter au panier" (Green background, white text) */}
         <button
           onClick={handleAddToCart}
-          className={`w-full py-1.5 sm:py-2 px-1.5 sm:px-2.5 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-bold font-primary transition-all duration-200 flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer active:scale-95 shadow-xs min-h-[36px] sm:min-h-[40px] ${
+          className={`w-full py-2 px-1.5 sm:px-2.5 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-bold font-primary transition-all duration-200 flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer active:scale-95 shadow-xs min-h-[38px] sm:min-h-[42px] ${
             justAdded
               ? 'bg-[#15803D] text-white'
               : 'bg-[#166534] hover:bg-[#15803D] text-white'
@@ -250,13 +250,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         >
           {justAdded ? (
             <>
-              <Check size={13} className="text-white shrink-0 stroke-[2.5]" />
+              <Check size={14} className="text-white shrink-0 stroke-[2.5]" />
               <span className="truncate">Ajouté</span>
             </>
           ) : (
             <>
-              <ShoppingBag size={13} className="shrink-0 stroke-[2.2]" />
-              <span className="truncate">Ajouter au panier</span>
+              <ShoppingBag size={14} className="shrink-0 stroke-[2.2]" />
+              <span className="truncate hidden min-[360px]:inline">Ajouter au panier</span>
+              <span className="min-[360px]:hidden">Ajouter</span>
             </>
           )}
         </button>
