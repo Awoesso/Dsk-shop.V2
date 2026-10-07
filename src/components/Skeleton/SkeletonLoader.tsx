@@ -15,7 +15,7 @@ export const SkeletonBox: React.FC<SkeletonProps> = ({
 }) => {
   return (
     <div
-      className={`bg-[#E8F3E9] ${animate ? 'animate-shimmer' : ''} ${className}`}
+      className={`bg-bamboo-skeleton-box ${animate ? 'animate-shimmer' : ''} ${className}`}
       aria-hidden="true"
       {...props}
     />
@@ -39,7 +39,7 @@ export const SkeletonLine: React.FC<
 }) => {
   return (
     <div
-      className={`${height} ${width} rounded-md bg-[#E3EFE4] ${
+      className={`${height} ${width} rounded-md bg-bamboo-skeleton-line ${
         animate ? 'animate-shimmer' : ''
       } ${className}`}
       aria-hidden="true"
@@ -58,7 +58,7 @@ export const SkeletonCircle: React.FC<
 > = ({ className = '', size = 'w-10 h-10', animate = true, ...props }) => {
   return (
     <div
-      className={`${size} rounded-full bg-[#E3EFE4] flex-shrink-0 ${
+      className={`${size} rounded-full bg-bamboo-skeleton-line flex-shrink-0 ${
         animate ? 'animate-shimmer' : ''
       } ${className}`}
       aria-hidden="true"
@@ -84,7 +84,7 @@ export const SkeletonButton: React.FC<
 }) => {
   return (
     <div
-      className={`${width} ${height} rounded-xl bg-[#DCFCE7]/70 ${
+      className={`${width} ${height} rounded-xl bg-bamboo-tint/70 ${
         animate ? 'animate-shimmer' : ''
       } ${className}`}
       aria-hidden="true"
@@ -103,7 +103,7 @@ export const SkeletonCard: React.FC<SkeletonProps> = ({
 }) => {
   return (
     <div
-      className={`bg-[#FAFCFA] rounded-2xl sm:rounded-3xl border border-[#DDE8DE] p-5 sm:p-6 shadow-2xs ${className}`}
+      className={`bg-bamboo-card rounded-2xl sm:rounded-3xl border border-bamboo-divider p-5 sm:p-6 shadow-2xs ${className}`}
       aria-hidden="true"
       {...props}
     >

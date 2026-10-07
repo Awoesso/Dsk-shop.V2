@@ -7,7 +7,7 @@ export const CheckoutSkeleton: React.FC = () => {
       {/* Checkout Breadcrumb Skeleton */}
       <div className="flex items-center gap-3 mb-6">
         <SkeletonLine height="h-3.5" width="w-24" />
-        <span className="text-[#DDE8DE]">/</span>
+        <span className="text-bamboo-divider">/</span>
         <SkeletonLine height="h-3.5" width="w-28" />
       </div>
 
@@ -15,9 +15,9 @@ export const CheckoutSkeleton: React.FC = () => {
         {/* Left Column: Form Steps Skeleton */}
         <div className="lg:col-span-8 space-y-8">
           {/* Step 1 Skeleton */}
-          <div className="bg-[#FAFCFA] p-6 sm:p-8 rounded-3xl border border-[#DDE8DE] shadow-2xs space-y-5">
-            <div className="flex items-center gap-3 pb-3 border-b border-[#DDE8DE]">
-              <div className="w-8 h-8 rounded-full bg-[#166534]/20 flex-shrink-0" />
+          <div className="bg-bamboo-card p-6 sm:p-8 rounded-3xl border border-bamboo-divider shadow-2xs space-y-5">
+            <div className="flex items-center gap-3 pb-3 border-b border-bamboo-divider">
+              <div className="w-8 h-8 rounded-full bg-bamboo-forest/20 flex-shrink-0" />
               <div className="space-y-1">
                 <SkeletonLine height="h-5" width="w-48" />
                 <SkeletonLine height="h-3" width="w-64" />
@@ -45,9 +45,9 @@ export const CheckoutSkeleton: React.FC = () => {
           </div>
 
           {/* Step 2 Skeleton */}
-          <div className="bg-[#FAFCFA] p-6 sm:p-8 rounded-3xl border border-[#DDE8DE] shadow-2xs space-y-5">
-            <div className="flex items-center gap-3 pb-3 border-b border-[#DDE8DE]">
-              <div className="w-8 h-8 rounded-full bg-[#166534]/20 flex-shrink-0" />
+          <div className="bg-bamboo-card p-6 sm:p-8 rounded-3xl border border-bamboo-divider shadow-2xs space-y-5">
+            <div className="flex items-center gap-3 pb-3 border-b border-bamboo-divider">
+              <div className="w-8 h-8 rounded-full bg-bamboo-forest/20 flex-shrink-0" />
               <div className="space-y-1">
                 <SkeletonLine height="h-5" width="w-44" />
                 <SkeletonLine height="h-3" width="w-56" />
@@ -56,8 +56,8 @@ export const CheckoutSkeleton: React.FC = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="p-4 rounded-2xl border border-[#DDE8DE] bg-[#F0FDF4]/50 space-y-2">
-                  <div className="w-8 h-8 rounded-lg bg-[#E3EFE4]" />
+                <div key={i} className="p-4 rounded-2xl border border-bamboo-divider bg-bamboo-subtle/50 space-y-2">
+                  <div className="w-8 h-8 rounded-lg bg-bamboo-skeleton-line" />
                   <SkeletonLine height="h-4" width="w-24" />
                   <SkeletonLine height="h-3" width="w-20" />
                 </div>
@@ -71,7 +71,7 @@ export const CheckoutSkeleton: React.FC = () => {
           <SkeletonCard className="space-y-5 sticky top-24">
             <SkeletonLine height="h-6" width="w-40" />
 
-            <div className="space-y-3 max-h-60 overflow-hidden py-2 border-y border-[#DDE8DE]">
+            <div className="space-y-3 max-h-60 overflow-hidden py-2 border-y border-bamboo-divider">
               {[1, 2].map((i) => (
                 <div key={i} className="flex items-center gap-3">
                   <SkeletonBox className="w-12 h-12 rounded-lg flex-shrink-0" />
@@ -93,7 +93,7 @@ export const CheckoutSkeleton: React.FC = () => {
                 <SkeletonLine height="h-3.5" width="w-24" />
                 <SkeletonLine height="h-3.5" width="w-14" />
               </div>
-              <div className="flex justify-between pt-2 border-t border-[#DDE8DE]">
+              <div className="flex justify-between pt-2 border-t border-bamboo-divider">
                 <SkeletonLine height="h-6" width="w-24" />
                 <SkeletonLine height="h-6" width="w-28" />
               </div>

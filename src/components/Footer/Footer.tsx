@@ -31,14 +31,14 @@ export const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="bg-[#0c1d12] text-slate-300 pt-12 2xl:pt-16 pb-28 md:pb-12 2xl:pb-16 border-t border-emerald-950/60 font-secondary">
+    <footer className="bg-bamboo-darkest text-slate-300 pt-12 2xl:pt-16 pb-28 md:pb-12 2xl:pb-16 border-t border-emerald-950/60 font-secondary">
       {/* Main Footer Links & Newsletter */}
       <div className="max-w-7xl 2xl:max-w-[1760px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-10 2xl:gap-14">
           {/* Brand Col: DSK Shop */}
           <div className="lg:col-span-2 space-y-4">
             <div className="flex items-center gap-2.5 font-primary">
-              <div className="w-9 h-9 2xl:w-11 2xl:h-11 rounded-xl bg-[#16A34A] text-white flex items-center justify-center font-extrabold tracking-tight">
+              <div className="w-9 h-9 2xl:w-11 2xl:h-11 rounded-xl bg-bamboo-accent text-white flex items-center justify-center font-extrabold tracking-tight">
                 <span>DSK</span>
               </div>
               <span className="text-xl 2xl:text-2xl font-extrabold tracking-tight text-white">
@@ -65,11 +65,11 @@ export const Footer: React.FC = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Votre adresse email..."
-                    className="flex-1 min-w-0 px-3.5 py-2.5 2xl:py-3 bg-white/5 text-white placeholder:text-slate-500 text-base sm:text-xs 2xl:text-sm rounded-xl border border-white/10 focus:outline-none focus:border-[#16A34A] transition-colors min-h-[44px]"
+                    className="flex-1 min-w-0 px-3.5 py-2.5 2xl:py-3 bg-white/5 text-white placeholder:text-slate-500 text-base sm:text-xs 2xl:text-sm rounded-xl border border-white/10 focus:outline-none focus:border-bamboo-accent transition-colors min-h-[44px]"
                   />
                   <button
                     type="submit"
-                    className="px-4 py-2.5 2xl:px-6 2xl:py-3 bg-[#16A34A] hover:bg-emerald-500 text-white font-bold text-xs 2xl:text-sm rounded-xl transition-colors flex items-center justify-center gap-1 shadow-xs cursor-pointer min-h-[44px]"
+                    className="px-4 py-2.5 2xl:px-6 2xl:py-3 bg-bamboo-accent hover:bg-emerald-500 text-white font-bold text-xs 2xl:text-sm rounded-xl transition-colors flex items-center justify-center gap-1 shadow-xs cursor-pointer min-h-[44px]"
                   >
                     <span>S&apos;inscrire</span>
                     <ArrowRight size={13} className="2xl:w-4 2xl:h-4" />
@@ -88,7 +88,7 @@ export const Footer: React.FC = () => {
               <li>
                 <button
                   onClick={() => navigateTo('home')}
-                  className="hover:text-[#16A34A] transition-colors cursor-pointer text-left"
+                  className="hover:text-bamboo-accent transition-colors cursor-pointer text-left"
                 >
                   Accueil
                 </button>
@@ -99,7 +99,7 @@ export const Footer: React.FC = () => {
                     setFilters({ category: 'all', searchQuery: '' });
                     navigateTo('shop');
                   }}
-                  className="hover:text-[#16A34A] transition-colors cursor-pointer text-left"
+                  className="hover:text-bamboo-accent transition-colors cursor-pointer text-left"
                 >
                   Boutique / Catalogue
                 </button>
@@ -107,7 +107,7 @@ export const Footer: React.FC = () => {
               <li>
                 <button
                   onClick={() => navigateTo('account')}
-                  className="hover:text-[#16A34A] transition-colors cursor-pointer text-left"
+                  className="hover:text-bamboo-accent transition-colors cursor-pointer text-left"
                 >
                   Mon Compte
                 </button>
@@ -115,7 +115,7 @@ export const Footer: React.FC = () => {
               <li>
                 <button
                   onClick={() => navigateTo('cart')}
-                  className="hover:text-[#16A34A] transition-colors cursor-pointer text-left"
+                  className="hover:text-bamboo-accent transition-colors cursor-pointer text-left"
                 >
                   Panier d&apos;achats
                 </button>
@@ -123,7 +123,7 @@ export const Footer: React.FC = () => {
               <li>
                 <button
                   onClick={() => navigateTo('about')}
-                  className="hover:text-[#16A34A] transition-colors cursor-pointer text-left"
+                  className="hover:text-bamboo-accent transition-colors cursor-pointer text-left"
                 >
                   À Propos de DSK
                 </button>
@@ -140,7 +140,7 @@ export const Footer: React.FC = () => {
               <li>
                 <button
                   onClick={() => navigateTo('contact')}
-                  className="hover:text-[#16A34A] transition-colors cursor-pointer text-left"
+                  className="hover:text-bamboo-accent transition-colors cursor-pointer text-left"
                 >
                   Livraison rapide (24h à Lomé)
                 </button>
@@ -148,7 +148,7 @@ export const Footer: React.FC = () => {
               <li>
                 <button
                   onClick={() => navigateTo('contact')}
-                  className="hover:text-[#16A34A] transition-colors cursor-pointer text-left"
+                  className="hover:text-bamboo-accent transition-colors cursor-pointer text-left"
                 >
                   Retours sous 30 jours
                 </button>
@@ -156,7 +156,7 @@ export const Footer: React.FC = () => {
               <li>
                 <button
                   onClick={() => navigateTo('contact')}
-                  className="hover:text-[#16A34A] transition-colors cursor-pointer text-left"
+                  className="hover:text-bamboo-accent transition-colors cursor-pointer text-left"
                 >
                   Contact & Assistance directe
                 </button>
@@ -185,7 +185,7 @@ export const Footer: React.FC = () => {
                   <li key={cat.id}>
                     <button
                       onClick={() => handleCategoryNav(cat.id)}
-                      className="hover:text-[#16A34A] transition-colors cursor-pointer text-left"
+                      className="hover:text-bamboo-accent transition-colors cursor-pointer text-left"
                     >
                       {cat.name}
                     </button>

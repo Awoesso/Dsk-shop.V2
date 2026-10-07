@@ -15,7 +15,7 @@ export const OrderSuccessPage: React.FC = () => {
         <h2 className="text-xl 2xl:text-2xl font-bold text-slate-800 font-primary">Aucune commande récente trouvée</h2>
         <button
           onClick={() => navigateTo('home')}
-          className="mt-4 px-6 py-2.5 2xl:px-8 2xl:py-3 bg-[#166534] hover:bg-[#16A34A] text-white rounded-xl text-xs 2xl:text-sm font-bold font-primary cursor-pointer transition-colors shadow-xs"
+          className="mt-4 px-6 py-2.5 2xl:px-8 2xl:py-3 bg-bamboo-forest hover:bg-bamboo-accent text-white rounded-xl text-xs 2xl:text-sm font-bold font-primary cursor-pointer transition-colors shadow-xs"
         >
           Retour à l&apos;accueil
         </button>
@@ -178,7 +178,7 @@ export const OrderSuccessPage: React.FC = () => {
             </div>
             <div className="flex justify-between text-sm 2xl:text-base font-black text-slate-900 pt-2 border-t border-slate-200 font-primary">
               <span>Total Payé</span>
-              <span className="text-[#166534]">{formatPrice(lastOrder.total)}</span>
+              <span className="text-bamboo-forest">{formatPrice(lastOrder.total)}</span>
             </div>
           </div>
         </div>
@@ -194,7 +194,7 @@ export const OrderSuccessPage: React.FC = () => {
 
           <button
             onClick={() => navigateTo('home')}
-            className="w-full sm:w-auto px-6 py-3 2xl:px-8 2xl:py-3.5 bg-[#166534] hover:bg-[#16A34A] text-white text-xs 2xl:text-sm font-bold rounded-xl 2xl:rounded-2xl transition-colors flex items-center justify-center gap-2 shadow-xs cursor-pointer"
+            className="w-full sm:w-auto px-6 py-3 2xl:px-8 2xl:py-3.5 bg-bamboo-forest hover:bg-bamboo-accent text-white text-xs 2xl:text-sm font-bold rounded-xl 2xl:rounded-2xl transition-colors flex items-center justify-center gap-2 shadow-xs cursor-pointer"
           >
             <span>Continuer mes achats</span>
             <ArrowRight size={15} className="2xl:w-4 2xl:h-4" />

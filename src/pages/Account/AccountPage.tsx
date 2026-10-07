@@ -21,14 +21,14 @@ export const AccountPage: React.FC = () => {
 
       <div className="flex flex-col md:flex-row items-start gap-4 sm:gap-8">
         {/* Sidebar Nav */}
-        <div className="w-full md:w-64 bg-white rounded-2xl border border-[#DDE8DE] p-4 sm:p-5 shadow-2xs space-y-3">
+        <div className="w-full md:w-64 bg-white rounded-2xl border border-bamboo-divider p-4 sm:p-5 shadow-2xs space-y-3">
           <div className="flex items-center gap-3 pb-3 sm:pb-4 border-b border-slate-100">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#DCFCE7] text-[#166534] flex items-center justify-center font-bold text-base sm:text-lg font-primary shrink-0">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-bamboo-tint text-bamboo-forest flex items-center justify-center font-bold text-base sm:text-lg font-primary shrink-0">
               <User size={20} className="sm:w-[22px] sm:h-[22px]" />
             </div>
             <div className="min-w-0">
-              <h2 className="text-sm font-bold text-[#172017] font-primary truncate">Client DSK-Shop</h2>
-              <p className="text-xs text-[#647064]">Lomé, Togo</p>
+              <h2 className="text-sm font-bold text-bamboo-text-main font-primary truncate">Client DSK-Shop</h2>
+              <p className="text-xs text-bamboo-text-muted">Lomé, Togo</p>
             </div>
           </div>
 
@@ -37,8 +37,8 @@ export const AccountPage: React.FC = () => {
               onClick={() => setActiveTab('profile')}
               className={`flex items-center justify-center md:justify-start gap-1.5 sm:gap-2.5 px-2.5 sm:px-3.5 py-2 sm:py-2.5 rounded-xl font-semibold transition-colors cursor-pointer text-center md:text-left min-h-[42px] ${
                 activeTab === 'profile'
-                  ? 'bg-[#166534] text-white shadow-2xs'
-                  : 'text-slate-700 hover:bg-[#F0FDF4] hover:text-[#166534] bg-slate-50 md:bg-transparent'
+                  ? 'bg-bamboo-forest text-white shadow-2xs'
+                  : 'text-slate-700 hover:bg-bamboo-subtle hover:text-bamboo-forest bg-slate-50 md:bg-transparent'
               }`}
             >
               <User size={15} />
@@ -48,8 +48,8 @@ export const AccountPage: React.FC = () => {
               onClick={() => setActiveTab('orders')}
               className={`flex items-center justify-center md:justify-start gap-1.5 sm:gap-2.5 px-2.5 sm:px-3.5 py-2 sm:py-2.5 rounded-xl font-semibold transition-colors cursor-pointer text-center md:text-left min-h-[42px] ${
                 activeTab === 'orders'
-                  ? 'bg-[#166534] text-white shadow-2xs'
-                  : 'text-slate-700 hover:bg-[#F0FDF4] hover:text-[#166534] bg-slate-50 md:bg-transparent'
+                  ? 'bg-bamboo-forest text-white shadow-2xs'
+                  : 'text-slate-700 hover:bg-bamboo-subtle hover:text-bamboo-forest bg-slate-50 md:bg-transparent'
               }`}
             >
               <Package size={15} />
@@ -60,13 +60,13 @@ export const AccountPage: React.FC = () => {
             </button>
             <button
               onClick={() => navigateTo('wishlist')}
-              className="flex items-center justify-center md:justify-between gap-1.5 sm:gap-2.5 px-2.5 sm:px-3.5 py-2 sm:py-2.5 rounded-xl font-semibold text-slate-700 hover:bg-[#F0FDF4] hover:text-[#166534] transition-colors cursor-pointer text-center md:text-left min-h-[42px] bg-slate-50 md:bg-transparent"
+              className="flex items-center justify-center md:justify-between gap-1.5 sm:gap-2.5 px-2.5 sm:px-3.5 py-2 sm:py-2.5 rounded-xl font-semibold text-slate-700 hover:bg-bamboo-subtle hover:text-bamboo-forest transition-colors cursor-pointer text-center md:text-left min-h-[42px] bg-slate-50 md:bg-transparent"
             >
               <div className="flex items-center gap-1.5 sm:gap-2.5 truncate">
                 <Heart size={15} />
                 <span className="truncate">Favoris</span>
               </div>
-              <span className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full bg-[#DCFCE7] text-[#166534] font-bold">
+              <span className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full bg-bamboo-tint text-bamboo-forest font-bold">
                 {wishlist.length}
               </span>
             </button>
@@ -74,14 +74,14 @@ export const AccountPage: React.FC = () => {
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 w-full bg-white rounded-2xl border border-[#DDE8DE] p-4 sm:p-6 md:p-8 shadow-2xs">
+        <div className="flex-1 w-full bg-white rounded-2xl border border-bamboo-divider p-4 sm:p-6 md:p-8 shadow-2xs">
           {activeTab === 'profile' && (
             <div className="space-y-6">
               <div>
-                <h1 className="text-xl font-bold text-[#172017] font-primary">
+                <h1 className="text-xl font-bold text-bamboo-text-main font-primary">
                   Mon Profil & Préférences
                 </h1>
-                <p className="text-xs text-[#647064] mt-1">
+                <p className="text-xs text-bamboo-text-muted mt-1">
                   Vos informations de commande et zone de livraison à Lomé.
                 </p>
               </div>
@@ -89,17 +89,17 @@ export const AccountPage: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-1">
                   <span className="text-xs text-slate-500 flex items-center gap-1.5 font-medium">
-                    <MapPin size={14} className="text-[#166534]" /> Zone de livraison
+                    <MapPin size={14} className="text-bamboo-forest" /> Zone de livraison
                   </span>
-                  <p className="text-sm font-bold text-[#172017]">Lomé et périphérie (Togo)</p>
+                  <p className="text-sm font-bold text-bamboo-text-main">Lomé et périphérie (Togo)</p>
                   <p className="text-xs text-slate-500">Expédition rapide à domicile ou bureau</p>
                 </div>
 
                 <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-1">
                   <span className="text-xs text-slate-500 flex items-center gap-1.5 font-medium">
-                    <Shield size={14} className="text-[#166534]" /> Sécurité & Garantie
+                    <Shield size={14} className="text-bamboo-forest" /> Sécurité & Garantie
                   </span>
-                  <p className="text-sm font-bold text-[#172017]">Garantie DSK-Shop active</p>
+                  <p className="text-sm font-bold text-bamboo-text-main">Garantie DSK-Shop active</p>
                   <p className="text-xs text-slate-500">Produits testés et vérifiés avant départ</p>
                 </div>
               </div>
@@ -110,7 +110,7 @@ export const AccountPage: React.FC = () => {
                 </p>
                 <button
                   onClick={() => navigateTo('contact')}
-                  className="px-4 py-2 bg-[#166534] hover:bg-[#16A34A] text-white text-xs font-bold rounded-xl transition-colors cursor-pointer font-primary"
+                  className="px-4 py-2 bg-bamboo-forest hover:bg-bamboo-accent text-white text-xs font-bold rounded-xl transition-colors cursor-pointer font-primary"
                 >
                   Contacter le support client
                 </button>
@@ -121,26 +121,26 @@ export const AccountPage: React.FC = () => {
           {activeTab === 'orders' && (
             <div className="space-y-6">
               <div>
-                <h1 className="text-xl font-bold text-[#172017] font-primary">
+                <h1 className="text-xl font-bold text-bamboo-text-main font-primary">
                   Historique de vos Commandes
                 </h1>
-                <p className="text-xs text-[#647064] mt-1">
+                <p className="text-xs text-bamboo-text-muted mt-1">
                   Suivez en direct l&apos;état de vos commandes passées sur DSK-Shop.
                 </p>
               </div>
 
               {lastOrder ? (
-                <div className="p-5 rounded-xl border border-emerald-200 bg-[#F0FDF4] space-y-4">
+                <div className="p-5 rounded-xl border border-emerald-200 bg-bamboo-subtle space-y-4">
                   <div className="flex flex-wrap items-center justify-between gap-2 border-b border-emerald-100 pb-3">
                     <div>
                       <span className="text-[11px] uppercase font-bold tracking-wider text-emerald-800 font-primary">
                         Dernière Commande
                       </span>
-                      <p className="text-sm font-extrabold text-[#172017] font-mono">
+                      <p className="text-sm font-extrabold text-bamboo-text-main font-mono">
                         {lastOrder.orderNumber}
                       </p>
                     </div>
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-[#166534]">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-bamboo-forest">
                       <CheckCircle2 size={13} /> {lastOrder.status === 'confirmed' ? 'Confirmée' : lastOrder.status}
                     </span>
                   </div>
@@ -151,16 +151,16 @@ export const AccountPage: React.FC = () => {
                         <span className="font-semibold text-slate-800">
                           {item.quantity}x {item.product.name}
                         </span>
-                        <span className="font-bold text-[#166534]">
+                        <span className="font-bold text-bamboo-forest">
                           {formatPrice(item.product.price * item.quantity)}
                         </span>
                       </div>
                     ))}
                   </div>
 
-                  <div className="pt-2 border-t border-emerald-100 flex items-center justify-between text-xs sm:text-sm font-bold text-[#172017]">
+                  <div className="pt-2 border-t border-emerald-100 flex items-center justify-between text-xs sm:text-sm font-bold text-bamboo-text-main">
                     <span>Total payé</span>
-                    <span className="text-base text-[#166534]">
+                    <span className="text-base text-bamboo-forest">
                       {formatPrice(lastOrder.total)}
                     </span>
                   </div>
@@ -168,7 +168,7 @@ export const AccountPage: React.FC = () => {
               ) : (
                 <div className="text-center py-12 space-y-3">
                   <Clock size={36} className="mx-auto text-slate-300" />
-                  <h3 className="text-base font-bold text-[#172017] font-primary">
+                  <h3 className="text-base font-bold text-bamboo-text-main font-primary">
                     Aucune commande récente
                   </h3>
                   <p className="text-xs text-slate-500 max-w-sm mx-auto">
@@ -179,7 +179,7 @@ export const AccountPage: React.FC = () => {
                       setFilters({ category: 'all' });
                       navigateTo('shop');
                     }}
-                    className="mt-2 inline-flex items-center gap-1.5 px-5 py-2.5 bg-[#166534] hover:bg-[#16A34A] text-white text-xs font-bold rounded-xl transition-colors cursor-pointer font-primary"
+                    className="mt-2 inline-flex items-center gap-1.5 px-5 py-2.5 bg-bamboo-forest hover:bg-bamboo-accent text-white text-xs font-bold rounded-xl transition-colors cursor-pointer font-primary"
                   >
                     <span>Explorer la boutique</span>
                     <ArrowRight size={14} />

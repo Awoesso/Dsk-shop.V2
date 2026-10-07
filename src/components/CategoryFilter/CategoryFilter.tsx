@@ -89,17 +89,17 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({ isMobileModal = 
   return (
     <div className={`space-y-6 font-secondary ${isMobileModal ? 'p-1' : ''}`}>
       {/* Header with Active Badge and Reset */}
-      <div className="flex items-center justify-between pb-3.5 border-b border-[#DDE8DE]">
+      <div className="flex items-center justify-between pb-3.5 border-b border-surface-variant">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-[#DCFCE7] text-[#166534] flex items-center justify-center border border-[#DCFCE7]">
+          <div className="w-7 h-7 rounded-lg bg-primary-fixed text-on-primary-fixed flex items-center justify-center border border-primary-fixed">
             <SlidersHorizontal size={14} />
           </div>
           <div>
-            <h3 className="text-sm font-bold tracking-tight text-[#172017] font-primary">
+            <h3 className="text-sm font-bold tracking-tight text-on-surface font-primary">
               Filtres
             </h3>
             {activeFilterCount > 0 && (
-              <span className="text-[10px] text-[#166534] font-semibold">
+              <span className="text-[10px] text-primary font-semibold">
                 {activeFilterCount} {activeFilterCount === 1 ? 'actif' : 'actifs'}
               </span>
             )}
@@ -122,7 +122,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({ isMobileModal = 
       {/* Categories Section - Only displays categories with active products (> 0) */}
       {activeCategories.length > 0 && (
         <div>
-          <label className="block text-[11px] font-bold uppercase tracking-wider text-[#647064] mb-2.5 font-primary">
+          <label className="block text-[11px] font-bold uppercase tracking-wider text-on-surface-variant mb-2.5 font-primary">
             Catégories
           </label>
           <div className="space-y-1">
@@ -133,14 +133,14 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({ isMobileModal = 
                 <button
                   key={cat.id}
                   onClick={() => handleCategorySelect(isSelected ? 'all' : cat.id)}
-                  className={`w-full flex items-center justify-between px-3 py-2 text-xs sm:text-sm font-medium rounded-xl transition-all duration-150 font-primary cursor-pointer ${
+                  className={`w-full flex items-center justify-between px-3 py-2 text-xs sm:text-sm font-medium rounded-xl transition-all duration-150 font-primary cursor-pointer min-h-[40px] ${
                     isSelected
-                      ? 'bg-[#166534] text-white font-semibold shadow-xs'
-                      : 'text-[#172017] hover:bg-[#F3FAF4] hover:text-[#166534]'
+                      ? 'bg-primary text-white font-semibold shadow-xs'
+                      : 'text-on-surface hover:bg-surface-container-low hover:text-primary'
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
-                    <span className={isSelected ? 'text-white' : 'text-[#647064]'}>
+                    <span className={isSelected ? 'text-white' : 'text-on-surface-variant'}>
                       {getCategoryIcon(cat.id)}
                     </span>
                     <span>{cat.name}</span>
@@ -149,7 +149,7 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({ isMobileModal = 
                     className={`text-[11px] px-2 py-0.5 rounded-full transition-colors ${
                       isSelected
                         ? 'bg-white/20 text-white font-bold'
-                        : 'bg-slate-100 text-slate-500 font-semibold'
+                        : 'bg-surface-container-low text-on-surface-variant font-semibold'
                     }`}
                   >
                     {count}
@@ -163,8 +163,8 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({ isMobileModal = 
 
       {/* Brand Selection */}
       {brands.length > 0 && (
-        <div className="pt-4 border-t border-[#DDE8DE]">
-          <label className="block text-[11px] font-bold uppercase tracking-wider text-[#647064] mb-2.5 font-primary">
+        <div className="pt-4 border-t border-surface-variant">
+          <label className="block text-[11px] font-bold uppercase tracking-wider text-on-surface-variant mb-2.5 font-primary">
             Marques
           </label>
           <div className="flex flex-wrap gap-1.5 font-primary">
@@ -174,10 +174,10 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({ isMobileModal = 
                 <button
                   key={brand}
                   onClick={() => handleBrandSelect(brand)}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-full border transition-all cursor-pointer ${
+                  className={`px-3 py-1.5 text-xs font-medium rounded-full border transition-all cursor-pointer min-h-[34px] ${
                     isSelected
-                      ? 'border-[#172017] bg-[#172017] text-white font-semibold shadow-2xs'
-                      : 'border-[#DDE8DE] bg-white text-[#172017] hover:border-[#16A34A] hover:bg-[#F3FAF4]'
+                      ? 'border-primary bg-primary text-white font-semibold shadow-xs'
+                      : 'border-surface-variant bg-white text-on-surface hover:border-primary/40 hover:bg-surface-container-low'
                   }`}
                 >
                   {brand}

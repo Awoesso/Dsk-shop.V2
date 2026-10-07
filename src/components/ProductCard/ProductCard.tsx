@@ -58,10 +58,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         onClick={() => openProduct(product)}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        className="group relative bg-white border border-[#DDE8DE] hover:border-[#166534]/50 p-3 sm:p-4 rounded-xl sm:rounded-2xl flex flex-col sm:flex-row gap-3 sm:gap-4 shadow-2xs hover:shadow-xs transition-all duration-200 ease-out hover:-translate-y-[3px] cursor-pointer font-secondary"
+        className="group relative bg-white border border-surface-variant/70 hover:border-primary/50 p-3 sm:p-4 rounded-xl sm:rounded-2xl flex flex-col sm:flex-row gap-3 sm:gap-4 shadow-xs hover:shadow-md transition-all duration-200 ease-out hover:-translate-y-[1px] cursor-pointer font-secondary"
       >
-        {/* Compact Thumbnail Container */}
-        <div className="relative w-28 h-28 sm:w-36 sm:h-36 rounded-lg sm:rounded-xl overflow-hidden shrink-0 flex items-center justify-center p-2 bg-[#F3FAF4] border border-[#DDE8DE]/60">
+        {/* Compact Thumbnail Container with protected icon badge */}
+        <div className="relative w-28 h-28 sm:w-36 sm:h-36 rounded-lg sm:rounded-xl overflow-hidden shrink-0 flex items-center justify-center p-2 bg-surface-container-low border border-surface-variant/40">
           <ProductImage
             src={isHovered && product.images?.[1] ? hoverImage : displayImage}
             alt={product.name}
@@ -69,10 +69,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             className="w-full h-full object-contain p-1 group-hover:scale-[1.02] transition-transform duration-200 ease-out"
           />
 
+          {/* Icon in protected container with border so it remains crisp on any photo */}
           <button
             onClick={handleToggleWishlist}
-            className={`absolute top-1.5 right-1.5 sm:top-2 sm:right-2 p-1.5 rounded-full bg-white/90 backdrop-blur-xs shadow-2xs transition-all duration-200 active:scale-90 flex items-center justify-center border border-[#DDE8DE]/80 cursor-pointer min-w-[32px] min-h-[32px] ${
-              isFavorited ? 'text-rose-500 border-rose-200 bg-white' : 'text-[#647064] hover:text-rose-500'
+            className={`absolute top-2 right-2 p-1.5 rounded-full bg-white/95 backdrop-blur-md shadow-xs transition-all duration-200 active:scale-90 flex items-center justify-center border border-surface-variant/80 cursor-pointer min-w-[32px] min-h-[32px] ${
+              isFavorited ? 'text-rose-500 border-rose-200 bg-white' : 'text-on-surface-variant hover:text-rose-500'
             }`}
             title={isFavorited ? 'Retirer des favoris' : 'Ajouter aux favoris'}
             aria-label="Ajouter aux favoris"
@@ -86,45 +87,45 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <div>
             {/* Category label - subtle, extra small, light uppercase */}
             {categoryLabel && (
-              <span className="text-[9px] font-medium tracking-wider text-[#647064] uppercase block">
+              <span className="text-[9px] font-medium tracking-wider text-on-surface-variant uppercase block">
                 {categoryLabel}
               </span>
             )}
 
-            {/* Product title - refined, light & clean */}
-            <h3 className="text-sm font-normal text-[#172017] group-hover:text-[#166534] transition-colors mt-0.5 line-clamp-1">
+            {/* Product title */}
+            <h3 className="text-sm font-semibold text-on-surface group-hover:text-primary transition-colors mt-0.5 line-clamp-1">
               {product.name}
             </h3>
 
-            {/* Price Tag in FCFA */}
+            {/* Direct Price - No redundant "Prix" label */}
             <div className="flex items-baseline flex-wrap gap-x-2 gap-y-0.5 mt-1.5">
-              <span className="text-base sm:text-lg font-extrabold text-[#172017] whitespace-nowrap font-primary tracking-tight">
+              <span className="text-base sm:text-lg font-extrabold text-primary whitespace-nowrap font-primary tracking-tight">
                 {formatPrice(product.price)}
               </span>
               {product.originalPrice && product.originalPrice > product.price && (
-                <span className="text-[11px] font-normal text-[#647064] line-through whitespace-nowrap opacity-70">
+                <span className="text-[11px] font-normal text-on-surface-variant line-through whitespace-nowrap opacity-70">
                   {formatPrice(product.originalPrice)}
                 </span>
               )}
               {discount && (
-                <span className="text-[9px] font-bold bg-[#DCFCE7] text-[#166534] px-1.5 py-0.5 rounded">
+                <span className="text-[10px] font-bold bg-primary-fixed text-on-primary-fixed px-1.5 py-0.5 rounded border border-primary-fixed/40">
                   -{discount}%
                 </span>
               )}
             </div>
 
-            <p className="text-xs font-normal text-[#647064] line-clamp-1 mt-1 font-secondary">
+            <p className="text-xs font-normal text-on-surface-variant line-clamp-1 mt-1 font-secondary">
               {product.description || (categoryLabel ? `Catégorie: ${categoryLabel}` : '')}
             </p>
           </div>
 
-          <div className="mt-3 pt-2.5 border-t border-[#DDE8DE]/80">
+          <div className="mt-3 pt-2.5 border-t border-surface-variant/50">
             <button
               onClick={handleAddToCart}
-              className={`w-full sm:w-auto py-2 px-4 rounded-xl text-xs font-bold font-primary transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer active:scale-95 shadow-xs ${
+              className={`w-full sm:w-auto py-2 px-4 rounded-xl text-xs font-bold font-primary transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer active:scale-95 shadow-xs min-h-[42px] ${
                 justAdded
-                  ? 'bg-[#15803D] text-white'
-                  : 'bg-[#166534] hover:bg-[#15803D] text-white'
+                  ? 'bg-primary-container text-white'
+                  : 'bg-primary hover:bg-primary-container text-white'
               }`}
               title="Ajouter au panier"
               aria-label="Ajouter au panier"
@@ -155,12 +156,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       onClick={() => openProduct(product)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="group relative bg-white border border-[#DDE8DE] hover:border-[#166534]/50 p-2 sm:p-3 rounded-xl sm:rounded-2xl flex flex-col justify-between shadow-2xs hover:shadow-md transition-all duration-200 ease-out hover:-translate-y-[3px] cursor-pointer font-secondary"
+      className="group relative bg-white border border-surface-variant/70 hover:border-primary/50 p-2 sm:p-3 rounded-xl sm:rounded-2xl flex flex-col justify-between shadow-xs hover:shadow-md transition-all duration-200 ease-out hover:-translate-y-[1px] cursor-pointer font-secondary h-full"
     >
       {/* Top section: Image & Floating controls */}
       <div>
-        {/* Compact Image Container */}
-        <div className="aspect-square rounded-lg sm:rounded-xl p-1.5 sm:p-2 relative flex items-center justify-center overflow-hidden mb-2 bg-[#F8FCF9] border border-[#DDE8DE]/50">
+        {/* Uniform Aspect-Square Image Container with subtle inner border */}
+        <div className="aspect-square rounded-lg sm:rounded-xl p-1.5 sm:p-2 relative flex items-center justify-center overflow-hidden mb-2 bg-surface-container-low border border-surface-variant/40">
           <ProductImage
             src={isHovered && product.images?.[1] ? hoverImage : displayImage}
             alt={product.name}
@@ -168,18 +169,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             className="w-full h-full object-contain p-0.5 sm:p-1 group-hover:scale-[1.02] transition-transform duration-200 ease-out"
           />
 
-          {/* Discount Badge if available */}
+          {/* Clean Discount Badge (Clear & quick to scan, no icon clutter) */}
           {discount ? (
-            <span className="absolute top-1 left-1 sm:top-1.5 sm:left-1.5 text-[8px] sm:text-[10px] font-bold bg-[#DCFCE7] text-[#166534] px-1 sm:px-1.5 py-0.5 rounded sm:rounded-md border border-[#DCFCE7]/60 shadow-2xs">
+            <span className="absolute top-1.5 left-1.5 text-[9px] sm:text-[10px] font-bold bg-primary-fixed text-on-primary-fixed px-1.5 py-0.5 rounded-md border border-primary-fixed/40 shadow-xs z-10">
               -{discount}%
             </span>
           ) : null}
 
-          {/* Floating Wishlist Button */}
+          {/* Floating Wishlist Button inside a protected container with crisp border */}
           <button
             onClick={handleToggleWishlist}
-            className={`absolute top-1 right-1 sm:top-1.5 sm:right-1.5 p-1 sm:p-1.5 rounded-full bg-white/95 backdrop-blur-xs shadow-2xs transition-all duration-200 active:scale-90 flex items-center justify-center z-10 cursor-pointer border border-[#DDE8DE]/80 min-w-[28px] min-h-[28px] ${
-              isFavorited ? 'text-rose-500 border-rose-200 bg-white' : 'text-[#647064] hover:text-rose-500 hover:bg-white'
+            className={`absolute top-1.5 right-1.5 p-1 sm:p-1.5 rounded-full bg-white/95 backdrop-blur-md shadow-xs transition-all duration-200 active:scale-90 flex items-center justify-center z-10 cursor-pointer border border-surface-variant/80 min-w-[30px] min-h-[30px] ${
+              isFavorited ? 'text-rose-500 border-rose-200 bg-white' : 'text-on-surface-variant hover:text-rose-500 hover:bg-white'
             }`}
             title={isFavorited ? 'Retirer des favoris' : 'Ajouter aux favoris'}
             aria-label="Ajouter aux favoris"
@@ -197,7 +198,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 e.stopPropagation();
                 openProduct(product);
               }}
-              className="w-full py-1.5 px-2 bg-white/95 backdrop-blur-xs text-[#172017] hover:text-[#166534] hover:bg-white text-[11px] font-semibold rounded-lg shadow-2xs border border-[#DDE8DE] flex items-center justify-center gap-1 transition-colors cursor-pointer font-primary"
+              className="w-full py-1.5 px-2 bg-white/95 backdrop-blur-md text-on-surface hover:text-primary hover:bg-white text-[11px] font-semibold rounded-lg shadow-xs border border-surface-variant flex items-center justify-center gap-1.5 transition-colors cursor-pointer font-primary"
             >
               <Eye size={12} />
               <span>Aperçu</span>
@@ -207,43 +208,41 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
         {/* Info Section: Category -> Title */}
         <div className="space-y-0.5">
-          {/* Category: extra-small, light, discreet uppercase */}
           {categoryLabel && (
-            <span className="text-[8px] sm:text-[9px] font-normal tracking-wider text-[#647064] uppercase block truncate opacity-80">
+            <span className="text-[8px] sm:text-[9px] font-normal tracking-wider text-on-surface-variant uppercase block truncate opacity-75">
               {categoryLabel}
             </span>
           )}
 
-          {/* Product Name: refined, thinner font weight */}
-          <h3 className="text-xs sm:text-[13px] font-medium text-[#172017] line-clamp-1 group-hover:text-[#166534] transition-colors leading-tight">
+          <h3 className="text-xs sm:text-[13px] font-semibold text-on-surface line-clamp-1 group-hover:text-primary transition-colors leading-tight">
             {product.name}
           </h3>
         </div>
       </div>
 
-      {/* Bottom Section: Price prominently displayed + Direct Full-width "Ajouter au panier" Button */}
-      <div className="mt-1.5 sm:mt-2 pt-1.5 sm:pt-2 border-t border-[#DDE8DE]/70 space-y-1.5 sm:space-y-2">
-        {/* Prominent Price Tag in FCFA */}
+      {/* Bottom Section: Clear direct price & direct purchasing action */}
+      <div className="mt-2 pt-2 border-t border-surface-variant/50 space-y-2">
+        {/* Direct Price Presentation without redundant label */}
         <div className="flex items-baseline justify-between gap-1">
           <div className="flex items-baseline gap-1 sm:gap-1.5 flex-wrap">
-            <span className="text-xs sm:text-base font-extrabold text-[#172017] whitespace-nowrap font-primary tracking-tight">
+            <span className="text-xs sm:text-base font-extrabold text-primary whitespace-nowrap font-primary tracking-tight">
               {formatPrice(product.price)}
             </span>
             {product.originalPrice && product.originalPrice > product.price && (
-              <span className="text-[9px] sm:text-[11px] font-normal text-[#647064] line-through whitespace-nowrap opacity-60">
+              <span className="text-[9px] sm:text-[11px] font-normal text-on-surface-variant line-through whitespace-nowrap opacity-60">
                 {formatPrice(product.originalPrice)}
               </span>
             )}
           </div>
         </div>
 
-        {/* Clear Action Button: "Ajouter au panier" (Green background, white text) */}
+        {/* Clear Action Button: "Ajouter au panier" */}
         <button
           onClick={handleAddToCart}
-          className={`w-full py-2 px-1.5 sm:px-2.5 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-bold font-primary transition-all duration-200 flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer active:scale-95 shadow-xs min-h-[38px] sm:min-h-[42px] ${
+          className={`w-full py-2 px-1.5 sm:px-2.5 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-bold font-primary transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shadow-xs min-h-[42px] ${
             justAdded
-              ? 'bg-[#15803D] text-white'
-              : 'bg-[#166534] hover:bg-[#15803D] text-white'
+              ? 'bg-primary-container text-white'
+              : 'bg-primary hover:bg-primary-container text-white'
           }`}
           title="Ajouter au panier"
           aria-label="Ajouter au panier"

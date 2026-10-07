@@ -43,19 +43,19 @@ export const CheckoutPage: React.FC = () => {
   if (cart.length === 0) {
     return (
       <div className="max-w-xl mx-auto px-4 py-16 sm:py-24 text-center font-secondary">
-        <div className="w-16 h-16 rounded-2xl bg-[#F0FDF4] text-[#166534] flex items-center justify-center mx-auto mb-4 border border-[#DDE8DE]">
+        <div className="w-16 h-16 rounded-2xl bg-bamboo-subtle text-bamboo-forest flex items-center justify-center mx-auto mb-4 border border-bamboo-divider">
           <Package size={32} />
         </div>
-        <h2 className="text-xl sm:text-2xl font-extrabold text-[#172017] font-primary">
+        <h2 className="text-xl sm:text-2xl font-extrabold text-bamboo-text-main font-primary">
           Votre panier est vide
         </h2>
-        <p className="text-xs sm:text-sm text-[#647064] mt-2 font-secondary">
+        <p className="text-xs sm:text-sm text-bamboo-text-muted mt-2 font-secondary">
           Ajoutez des articles à votre panier avant de passer commande.
         </p>
         <button
           id="checkout-empty-browse-btn"
           onClick={() => navigateTo('shop')}
-          className="mt-6 px-6 py-3 bg-[#166534] hover:bg-[#16A34A] text-white rounded-xl text-xs sm:text-sm font-bold font-primary transition-colors shadow-xs cursor-pointer"
+          className="mt-6 px-6 py-3 bg-bamboo-forest hover:bg-bamboo-accent text-white rounded-xl text-xs sm:text-sm font-bold font-primary transition-colors shadow-xs cursor-pointer"
         >
           Découvrir le Catalogue
         </button>
@@ -141,48 +141,48 @@ export const CheckoutPage: React.FC = () => {
       />
 
       {/* Navigation Breadcrumb */}
-      <div className="flex items-center gap-2 sm:gap-3 text-xs 2xl:text-sm font-medium text-[#647064] mb-3 sm:mb-6 font-primary">
+      <div className="flex items-center gap-2 sm:gap-3 text-xs 2xl:text-sm font-medium text-outline mb-3 sm:mb-6 font-primary">
         <button
           id="checkout-back-to-cart-btn"
           onClick={() => navigateTo('cart')}
-          className="hover:text-[#166534] flex items-center gap-1 transition-colors cursor-pointer"
+          className="hover:text-primary flex items-center gap-1 transition-colors cursor-pointer"
         >
           <ArrowLeft size={14} /> Retour au panier
         </button>
         <span>/</span>
-        <span className="text-[#166534] font-bold">Commande Rapide</span>
+        <span className="text-primary font-bold">Commande Rapide</span>
       </div>
 
       {/* Mobile Collapsible Order Summary Accordion (Visible on small screens) */}
-      <div className="lg:hidden bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden mb-4 sm:mb-6">
+      <div className="lg:hidden bg-white rounded-2xl border border-surface-variant shadow-xs overflow-hidden mb-4 sm:mb-6">
         <button
           type="button"
           onClick={() => setShowMobileSummary(!showMobileSummary)}
-          className="w-full p-3.5 sm:p-4 flex items-center justify-between text-left font-primary bg-[#F8FCF9] hover:bg-[#F0FDF4] transition-colors cursor-pointer"
+          className="w-full p-3.5 sm:p-4 flex items-center justify-between text-left font-primary bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer"
           aria-expanded={showMobileSummary}
         >
-          <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-slate-900">
-            <ShoppingBag size={16} className="text-[#166534]" />
+          <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-on-surface">
+            <ShoppingBag size={16} className="text-primary" />
             <span>{showMobileSummary ? 'Masquer le récapitulatif' : 'Voir le récapitulatif'}</span>
-            <span className="text-slate-500 font-normal">({cartItemCount})</span>
+            <span className="text-outline font-normal">({cartItemCount})</span>
             <ChevronDown
               size={14}
-              className={`text-slate-400 transition-transform duration-200 ${
-                showMobileSummary ? 'rotate-180 text-[#166534]' : ''
+              className={`text-outline transition-transform duration-200 ${
+                showMobileSummary ? 'rotate-180 text-primary' : ''
               }`}
             />
           </div>
-          <span className="text-sm sm:text-base font-black text-[#166534]">
+          <span className="text-sm sm:text-base font-black text-primary">
             {formatPrice(cartTotal)}
           </span>
         </button>
 
         {showMobileSummary && (
-          <div className="p-4 border-t border-slate-100 space-y-3 font-secondary animate-in fade-in duration-150">
-            <div className="divide-y divide-slate-100 max-h-56 overflow-y-auto pr-1">
+          <div className="p-4 border-t border-surface-variant space-y-3 font-secondary animate-in fade-in duration-150">
+            <div className="divide-y divide-surface-variant max-h-56 overflow-y-auto pr-1">
               {cart.map((item, idx) => (
                 <div key={idx} className="py-2.5 flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-lg bg-slate-50 border border-slate-100 overflow-hidden shrink-0 flex items-center justify-center p-1">
+                  <div className="w-11 h-11 rounded-lg bg-surface border border-surface-variant overflow-hidden shrink-0 flex items-center justify-center p-1">
                     <ProductImage
                       src={item.product.images?.[0] || item.product.primaryImage || ''}
                       alt={item.product.name}
@@ -191,28 +191,28 @@ export const CheckoutPage: React.FC = () => {
                     />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-bold text-slate-900 truncate font-primary">
+                    <p className="text-xs font-bold text-on-surface truncate font-primary">
                       {item.product.name}
                     </p>
-                    <p className="text-[11px] text-slate-500">
+                    <p className="text-[11px] text-outline">
                       Qté : {item.quantity} {item.selectedVariant ? `• ${item.selectedVariant.name}` : ''}
                     </p>
                   </div>
-                  <span className="text-xs font-bold text-slate-900 font-primary shrink-0">
+                  <span className="text-xs font-bold text-on-surface font-primary shrink-0">
                     {formatPrice((item.product.price + (item.selectedVariant?.priceModifier || 0)) * item.quantity)}
                   </span>
                 </div>
               ))}
             </div>
 
-            <div className="space-y-1.5 text-xs text-slate-600 pt-2 border-t border-slate-100">
+            <div className="space-y-1.5 text-xs text-on-surface-variant pt-2 border-t border-surface-variant">
               <div className="flex justify-between">
                 <span>Sous-total</span>
-                <span className="font-semibold text-slate-900 font-primary">{formatPrice(cartSubtotal)}</span>
+                <span className="font-semibold text-on-surface font-primary">{formatPrice(cartSubtotal)}</span>
               </div>
               <div className="flex justify-between">
                 <span>Livraison</span>
-                <span className="font-semibold text-emerald-700 font-primary">
+                <span className="font-semibold text-primary font-primary">
                   {shippingCost === 0 ? 'OFFERTE' : formatPrice(shippingCost)}
                 </span>
               </div>
@@ -226,18 +226,18 @@ export const CheckoutPage: React.FC = () => {
         <div className="lg:col-span-8 space-y-6 sm:space-y-8">
           <form id="checkout-form" onSubmit={handleSubmitOrder} className="space-y-6 sm:space-y-8">
             {/* Customer Details Box */}
-            <div className="bg-white p-5 sm:p-7 lg:p-9 rounded-2xl sm:rounded-3xl border border-slate-200/80 shadow-xs space-y-5 sm:space-y-6">
-              <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+            <div className="bg-white p-5 sm:p-7 lg:p-9 rounded-2xl sm:rounded-3xl border border-surface-variant shadow-xs space-y-5 sm:space-y-6">
+              <div className="flex items-center justify-between pb-4 border-b border-surface-variant">
                 <div>
-                  <h1 className="text-base sm:text-lg 2xl:text-xl font-extrabold text-slate-900 font-primary">
+                  <h1 className="text-base sm:text-lg 2xl:text-xl font-extrabold text-on-surface font-primary">
                     Coordonnées de Livraison
                   </h1>
-                  <p className="text-xs text-slate-500 font-secondary mt-0.5">
+                  <p className="text-xs text-outline font-secondary mt-0.5">
                     Remplissez ces 3 informations pour recevoir votre colis à Lomé sans créer de compte.
                   </p>
                 </div>
-                <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-100">
-                  <CheckCircle2 size={13} className="text-emerald-600" />
+                <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-primary-fixed text-primary border border-surface-variant">
+                  <CheckCircle2 size={13} className="text-primary" />
                   0 E-mail Requis
                 </span>
               </div>
@@ -247,9 +247,9 @@ export const CheckoutPage: React.FC = () => {
                 <div>
                   <label
                     htmlFor="customer_name"
-                    className="block text-xs sm:text-sm font-bold text-slate-800 mb-1.5 font-primary"
+                    className="block text-xs sm:text-sm font-bold text-on-surface mb-1.5 font-primary"
                   >
-                    1. Nom et Prénom complets <span className="text-emerald-600 font-black">*</span>
+                    1. Nom et Prénom complets <span className="text-primary font-black">*</span>
                   </label>
                   <input
                     id="customer_name"
@@ -259,7 +259,7 @@ export const CheckoutPage: React.FC = () => {
                     value={formData.fullName}
                     onChange={handleInputChange}
                     placeholder="ex. Koffi Mensah"
-                    className="w-full px-4 py-3 bg-slate-50/80 hover:bg-slate-50 border border-slate-200 rounded-xl text-base sm:text-sm font-medium text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 transition-all shadow-2xs"
+                    className="w-full px-4 py-3 bg-surface hover:bg-white border border-surface-variant rounded-xl text-base sm:text-sm font-medium text-on-surface focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-2xs"
                   />
                 </div>
 
@@ -267,9 +267,9 @@ export const CheckoutPage: React.FC = () => {
                 <div>
                   <label
                     htmlFor="customer_phone"
-                    className="block text-xs sm:text-sm font-bold text-slate-800 mb-1.5 font-primary"
+                    className="block text-xs sm:text-sm font-bold text-on-surface mb-1.5 font-primary"
                   >
-                    2. Numéro de Téléphone (T-Money / Moov Flooz / Appel) <span className="text-emerald-600 font-black">*</span>
+                    2. Numéro de Téléphone (T-Money / Moov Flooz / Appel) <span className="text-primary font-black">*</span>
                   </label>
                   <div className="relative">
                     <input
@@ -280,11 +280,11 @@ export const CheckoutPage: React.FC = () => {
                       value={formData.phone}
                       onChange={handleInputChange}
                       placeholder="+228 90 12 34 56 ou 70 12 34 56"
-                      className="w-full pl-10 pr-4 py-3 bg-slate-50/80 hover:bg-slate-50 border border-slate-200 rounded-xl text-base sm:text-sm font-medium text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 transition-all shadow-2xs"
+                      className="w-full pl-10 pr-4 py-3 bg-surface hover:bg-white border border-surface-variant rounded-xl text-base sm:text-sm font-medium text-on-surface focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-2xs"
                     />
-                    <Smartphone size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <Smartphone size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-outline" />
                   </div>
-                  <p className="text-[11px] text-slate-500 mt-1 font-secondary">
+                  <p className="text-[11px] text-outline mt-1 font-secondary">
                     Le livreur vous contactera par appel ou WhatsApp dès son arrivée.
                   </p>
                 </div>
@@ -293,9 +293,9 @@ export const CheckoutPage: React.FC = () => {
                 <div>
                   <label
                     htmlFor="shipping_address"
-                    className="block text-xs sm:text-sm font-bold text-slate-800 mb-1.5 font-primary"
+                    className="block text-xs sm:text-sm font-bold text-on-surface mb-1.5 font-primary"
                   >
-                    3. Quartier / Adresse de livraison à Lomé <span className="text-emerald-600 font-black">*</span>
+                    3. Quartier / Adresse de livraison à Lomé <span className="text-primary font-black">*</span>
                   </label>
                   <input
                     id="shipping_address"
@@ -305,27 +305,27 @@ export const CheckoutPage: React.FC = () => {
                     value={formData.address}
                     onChange={handleInputChange}
                     placeholder="ex. Tokoin Casablanca, face pharmacie ou Bè Klikamé"
-                    className="w-full px-4 py-3 bg-slate-50/80 hover:bg-slate-50 border border-slate-200 rounded-xl text-base sm:text-sm font-medium text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 transition-all shadow-2xs"
+                    className="w-full px-4 py-3 bg-surface hover:bg-white border border-surface-variant rounded-xl text-base sm:text-sm font-medium text-on-surface focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-2xs"
                   />
                 </div>
               </div>
             </div>
 
             {/* Payment Method Notice: Cash on Delivery */}
-            <div className="bg-white p-5 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200/80 shadow-xs flex items-start gap-4">
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100">
+            <div className="bg-white p-5 sm:p-6 rounded-2xl sm:rounded-3xl border border-surface-variant shadow-xs flex items-start gap-4">
+              <div className="w-10 h-10 rounded-xl bg-primary-fixed text-primary flex items-center justify-center shrink-0 border border-surface-variant">
                 <Truck size={20} />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h3 className="text-xs sm:text-sm font-bold text-slate-900 font-primary">
+                  <h3 className="text-xs sm:text-sm font-bold text-on-surface font-primary">
                     Paiement à la Livraison (Cash on Delivery)
                   </h3>
-                  <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                  <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-primary-fixed text-primary">
                     Sécurisé
                   </span>
                 </div>
-                <p className="text-xs text-slate-500 mt-1 font-secondary leading-relaxed">
+                <p className="text-xs text-on-surface-variant mt-1 font-secondary leading-relaxed">
                   Réglez votre commande en toute sérénité en espèces ou par Mobile Money (T-Money / Moov Flooz) directement lors de la réception de votre colis.
                 </p>
               </div>
@@ -336,7 +336,7 @@ export const CheckoutPage: React.FC = () => {
               id="checkout-submit-order-btn"
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-4 px-6 bg-[#166534] hover:bg-[#16A34A] text-white font-bold text-sm sm:text-base rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2.5 disabled:opacity-50 font-primary cursor-pointer min-h-[52px]"
+              className="w-full py-4 px-6 bg-primary hover:bg-primary-container active:scale-[0.99] text-white font-bold text-sm sm:text-base rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2.5 disabled:opacity-50 font-primary cursor-pointer min-h-[52px]"
             >
               <Lock size={16} />
               <span>
@@ -350,21 +350,21 @@ export const CheckoutPage: React.FC = () => {
         </div>
 
         {/* Right Column: Order Items & Pricing Summary */}
-        <div className="lg:col-span-4 bg-white p-5 sm:p-7 rounded-2xl sm:rounded-3xl border border-slate-200/80 shadow-xs space-y-5 lg:sticky lg:top-24 font-secondary">
-          <div className="flex items-center justify-between pb-3 border-b border-slate-100 font-primary">
-            <h2 className="text-sm sm:text-base font-extrabold text-slate-900">
+        <div className="lg:col-span-4 bg-white p-5 sm:p-7 rounded-2xl sm:rounded-3xl border border-surface-variant shadow-xs space-y-5 lg:sticky lg:top-24 font-secondary">
+          <div className="flex items-center justify-between pb-3 border-b border-surface-variant font-primary">
+            <h2 className="text-sm sm:text-base font-extrabold text-on-surface">
               Récapitulatif de Commande
             </h2>
-            <span className="text-xs font-semibold text-slate-500">
+            <span className="text-xs font-semibold text-outline">
               {cartItemCount} {cartItemCount > 1 ? 'articles' : 'article'}
             </span>
           </div>
 
           {/* Item thumbnail list */}
-          <div className="divide-y divide-slate-100 max-h-64 sm:max-h-80 overflow-y-auto pr-1">
+          <div className="divide-y divide-surface-variant max-h-64 sm:max-h-80 overflow-y-auto pr-1">
             {cart.map((item, idx) => (
               <div key={idx} className="py-3 flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 overflow-hidden shrink-0 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-xl bg-surface border border-surface-variant overflow-hidden shrink-0 flex items-center justify-center">
                   <ProductImage
                     src={item.product.images?.[0] || item.product.primaryImage || ''}
                     alt={item.product.name}
@@ -373,14 +373,14 @@ export const CheckoutPage: React.FC = () => {
                   />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-bold text-slate-900 truncate font-primary">
+                  <p className="text-xs font-bold text-on-surface truncate font-primary">
                     {item.product.name}
                   </p>
-                  <p className="text-[11px] text-slate-500">
+                  <p className="text-[11px] text-outline">
                     Qté: {item.quantity} {item.selectedVariant ? `• ${item.selectedVariant.name}` : ''}
                   </p>
                 </div>
-                <span className="text-xs font-bold text-slate-900 font-primary shrink-0">
+                <span className="text-xs font-bold text-on-surface font-primary shrink-0">
                   {formatPrice((item.product.price + (item.selectedVariant?.priceModifier || 0)) * item.quantity)}
                 </span>
               </div>
@@ -388,27 +388,27 @@ export const CheckoutPage: React.FC = () => {
           </div>
 
           {/* Pricing Totals */}
-          <div className="space-y-2.5 text-xs sm:text-sm text-slate-600 pt-3 border-t border-slate-100">
+          <div className="space-y-2.5 text-xs sm:text-sm text-on-surface-variant pt-3 border-t border-surface-variant">
             <div className="flex justify-between">
               <span>Sous-total articles</span>
-              <span className="font-semibold text-slate-900 font-primary">{formatPrice(cartSubtotal)}</span>
+              <span className="font-semibold text-on-surface font-primary">{formatPrice(cartSubtotal)}</span>
             </div>
             <div className="flex justify-between">
               <span>Livraison à Lomé</span>
-              <span className="font-semibold text-emerald-700 font-primary">
+              <span className="font-semibold text-primary font-primary">
                 {shippingCost === 0 ? 'OFFERTE' : formatPrice(shippingCost)}
               </span>
             </div>
-            <div className="flex justify-between text-base font-black text-slate-900 pt-3 border-t border-slate-100 font-primary">
+            <div className="flex justify-between text-base font-black text-on-surface pt-3 border-t border-surface-variant font-primary">
               <span>Total à payer</span>
-              <span className="text-[#166534]">{formatPrice(cartTotal)}</span>
+              <span className="text-primary">{formatPrice(cartTotal)}</span>
             </div>
           </div>
 
           {/* Trust Badge */}
-          <div className="p-3.5 bg-slate-50 rounded-xl text-xs text-slate-500 space-y-1 border border-slate-100">
-            <div className="flex items-center gap-1.5 font-semibold text-slate-800 font-primary">
-              <ShieldCheck size={14} className="text-[#166534] shrink-0" />
+          <div className="p-3.5 bg-surface rounded-xl text-xs text-outline space-y-1 border border-surface-variant">
+            <div className="flex items-center gap-1.5 font-semibold text-on-surface font-primary">
+              <ShieldCheck size={14} className="text-primary shrink-0" />
               <span>Garantie Qualité DSK-Shop</span>
             </div>
             <p className="text-[11px] leading-relaxed">

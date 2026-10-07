@@ -7,10 +7,10 @@ export const HomeSkeleton: React.FC = () => {
     <div className="space-y-8 sm:space-y-14 lg:space-y-18 pb-16 font-secondary animate-pulse">
       {/* Split-Screen Hero Skeleton */}
       <section className="max-w-[1600px] mx-auto px-3 sm:px-6 lg:px-8 pt-2 sm:pt-4">
-        <div className="bg-[#FAFCFA] rounded-2xl sm:rounded-3xl border border-[#DDE8DE] p-6 sm:p-10 lg:p-14 shadow-2xs grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+        <div className="bg-bamboo-card rounded-2xl sm:rounded-3xl border border-bamboo-divider p-6 sm:p-10 lg:p-14 shadow-2xs grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           <div className="lg:col-span-7 space-y-5">
             {/* Pill tag */}
-            <div className="w-36 h-6 rounded-full bg-[#DCFCE7]/80 animate-shimmer" />
+            <div className="w-36 h-6 rounded-full bg-bamboo-tint/80 animate-shimmer" />
             {/* Big Headline */}
             <div className="space-y-3">
               <SkeletonLine height="h-8 sm:h-11" width="w-4/5" />
@@ -24,23 +24,23 @@ export const HomeSkeleton: React.FC = () => {
             {/* Buttons */}
             <div className="flex flex-wrap items-center gap-3 pt-4">
               <SkeletonButton width="w-36 sm:w-44" height="h-12" />
-              <SkeletonButton width="w-36 sm:w-40" height="h-12" className="bg-[#E8F3E9]" />
+              <SkeletonButton width="w-36 sm:w-40" height="h-12" className="bg-bamboo-skeleton-box" />
             </div>
             {/* Guarantees mini row */}
-            <div className="flex items-center gap-6 pt-6 border-t border-[#DDE8DE]">
+            <div className="flex items-center gap-6 pt-6 border-t border-bamboo-divider">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-[#E3EFE4]" />
-                <div className="w-24 h-3 bg-[#E3EFE4] rounded" />
+                <div className="w-8 h-8 rounded-full bg-bamboo-skeleton-line" />
+                <div className="w-24 h-3 bg-bamboo-skeleton-line rounded" />
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-[#E3EFE4]" />
-                <div className="w-24 h-3 bg-[#E3EFE4] rounded" />
+                <div className="w-8 h-8 rounded-full bg-bamboo-skeleton-line" />
+                <div className="w-24 h-3 bg-bamboo-skeleton-line rounded" />
               </div>
             </div>
           </div>
           {/* Hero Right Visual */}
           <div className="lg:col-span-5">
-            <SkeletonBox className="w-full aspect-4/3 sm:aspect-16/10 lg:aspect-square rounded-2xl sm:rounded-3xl border border-[#DDE8DE]" />
+            <SkeletonBox className="w-full aspect-4/3 sm:aspect-16/10 lg:aspect-square rounded-2xl sm:rounded-3xl border border-bamboo-divider" />
           </div>
         </div>
       </section>
@@ -52,14 +52,14 @@ export const HomeSkeleton: React.FC = () => {
             <SkeletonLine height="h-7" width="w-48" />
             <SkeletonLine height="h-3.5" width="w-72" />
           </div>
-          <div className="w-20 h-4 bg-[#E3EFE4] rounded" />
+          <div className="w-20 h-4 bg-bamboo-skeleton-line rounded" />
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
           {[1, 2, 3, 4].map((i) => (
             <SkeletonBox
               key={i}
-              className="h-40 sm:h-56 md:h-64 rounded-xl sm:rounded-2xl border border-[#DDE8DE]"
+              className="h-40 sm:h-56 md:h-64 rounded-xl sm:rounded-2xl border border-bamboo-divider"
             />
           ))}
         </div>
@@ -72,7 +72,7 @@ export const HomeSkeleton: React.FC = () => {
             <SkeletonLine height="h-7" width="w-56" />
             <SkeletonLine height="h-3.5" width="w-80" />
           </div>
-          <div className="w-24 h-4 bg-[#E3EFE4] rounded" />
+          <div className="w-24 h-4 bg-bamboo-skeleton-line rounded" />
         </div>
 
         <ProductGridSkeleton count={8} layout="grid" />

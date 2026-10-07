@@ -12,42 +12,42 @@ export const MobileNavigation: React.FC = () => {
   }
 
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#FAFCFA]/95 backdrop-blur-md border-t border-[#DDE8DE] px-2 pt-1.5 pb-[calc(0.4rem+env(safe-area-inset-bottom,0px))] shadow-lg font-primary">
+    <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface/95 backdrop-blur-md border-t border-surface-variant px-2 pt-1.5 pb-[calc(0.4rem+env(safe-area-inset-bottom,0px))] shadow-lg font-primary">
       <nav className="flex items-center justify-around max-w-md mx-auto">
         {/* Home */}
         <button
           onClick={() => navigateTo('home')}
-          className={`flex flex-col items-center justify-center py-1 px-3 rounded-xl min-h-[46px] min-w-[56px] transition-colors cursor-pointer ${
-            activePage === 'home' ? 'text-[#166534] font-bold' : 'text-[#647064] hover:text-[#172017]'
+          className={`flex flex-col items-center justify-center py-1 px-3 rounded-xl min-h-[48px] min-w-[56px] transition-colors cursor-pointer ${
+            activePage === 'home' ? 'text-primary font-bold' : 'text-on-surface-variant hover:text-on-surface'
           }`}
           aria-label="Accueil"
         >
-          <Home size={19} className={activePage === 'home' ? 'stroke-[2.5] text-[#166534]' : ''} />
+          <Home size={19} className={activePage === 'home' ? 'stroke-[2.5] text-primary' : ''} />
           <span className="text-[10px] mt-1 font-medium">Accueil</span>
         </button>
 
         {/* Shop / Browse */}
         <button
           onClick={() => navigateTo('shop')}
-          className={`flex flex-col items-center justify-center py-1 px-3 rounded-xl min-h-[46px] min-w-[56px] transition-colors cursor-pointer ${
-            activePage === 'shop' ? 'text-[#166534] font-bold' : 'text-[#647064] hover:text-[#172017]'
+          className={`flex flex-col items-center justify-center py-1 px-3 rounded-xl min-h-[48px] min-w-[56px] transition-colors cursor-pointer ${
+            activePage === 'shop' ? 'text-primary font-bold' : 'text-on-surface-variant hover:text-on-surface'
           }`}
           aria-label="Boutique"
         >
-          <Compass size={19} className={activePage === 'shop' ? 'stroke-[2.5] text-[#166534]' : ''} />
+          <Compass size={19} className={activePage === 'shop' ? 'stroke-[2.5] text-primary' : ''} />
           <span className="text-[10px] mt-1 font-medium">Boutique</span>
         </button>
 
         {/* Wishlist */}
         <button
           onClick={() => navigateTo('wishlist')}
-          className={`relative flex flex-col items-center justify-center py-1 px-3 rounded-xl min-h-[46px] min-w-[56px] transition-colors cursor-pointer ${
-            activePage === 'wishlist' ? 'text-[#166534] font-bold' : 'text-[#647064] hover:text-[#172017]'
+          className={`relative flex flex-col items-center justify-center py-1 px-3 rounded-xl min-h-[48px] min-w-[56px] transition-colors cursor-pointer ${
+            activePage === 'wishlist' ? 'text-primary font-bold' : 'text-on-surface-variant hover:text-on-surface'
           }`}
           aria-label="Favoris"
         >
           <div className="relative">
-            <Heart size={19} className={activePage === 'wishlist' ? 'stroke-[2.5] text-[#166534] fill-[#DCFCE7]' : ''} />
+            <Heart size={19} className={activePage === 'wishlist' ? 'stroke-[2.5] text-primary fill-secondary-container' : ''} />
             {wishlist.length > 0 && (
               <span className="absolute -top-1.5 -right-2.5 min-w-[16px] h-4 px-1 flex items-center justify-center text-[9px] font-bold text-white bg-rose-500 rounded-full">
                 {wishlist.length}
@@ -60,15 +60,15 @@ export const MobileNavigation: React.FC = () => {
         {/* Cart */}
         <button
           onClick={() => setIsCartOpen(true)}
-          className={`relative flex flex-col items-center justify-center py-1 px-3 rounded-xl min-h-[46px] min-w-[56px] transition-colors cursor-pointer ${
-            activePage === 'cart' ? 'text-[#166534] font-bold' : 'text-[#647064] hover:text-[#166534]'
+          className={`relative flex flex-col items-center justify-center py-1 px-3 rounded-xl min-h-[48px] min-w-[56px] transition-colors cursor-pointer ${
+            activePage === 'cart' ? 'text-primary font-bold' : 'text-on-surface-variant hover:text-primary'
           }`}
           aria-label="Mon Panier"
         >
           <div className="relative">
-            <ShoppingBag size={19} className={activePage === 'cart' ? 'stroke-[2.5] text-[#166534]' : ''} />
+            <ShoppingBag size={19} className={activePage === 'cart' ? 'stroke-[2.5] text-primary' : ''} />
             {cartItemCount > 0 && (
-              <span className="absolute -top-1.5 -right-2.5 min-w-[16px] h-4 px-1 flex items-center justify-center text-[9px] font-bold text-white bg-[#16A34A] rounded-full">
+              <span className="absolute -top-1.5 -right-2.5 min-w-[16px] h-4 px-1 flex items-center justify-center text-[9px] font-bold text-on-primary-fixed bg-primary-fixed rounded-full">
                 {cartItemCount}
               </span>
             )}

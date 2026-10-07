@@ -5,9 +5,9 @@ export const OrderSuccessSkeleton: React.FC = () => {
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 pb-24 font-secondary animate-pulse">
       <SkeletonCard className="p-6 sm:p-10 space-y-8">
-        <div className="text-center space-y-3 pb-6 border-b border-[#DDE8DE]">
-          <div className="w-16 h-16 rounded-2xl bg-[#DCFCE7] mx-auto" />
-          <div className="w-28 h-4 rounded bg-[#DCFCE7] mx-auto" />
+        <div className="text-center space-y-3 pb-6 border-b border-bamboo-divider">
+          <div className="w-16 h-16 rounded-2xl bg-bamboo-tint mx-auto" />
+          <div className="w-28 h-4 rounded bg-bamboo-tint mx-auto" />
           <SkeletonLine height="h-8" width="w-64 mx-auto" />
           <SkeletonLine height="h-4" width="w-80 mx-auto" />
         </div>
@@ -17,7 +17,7 @@ export const OrderSuccessSkeleton: React.FC = () => {
           <SkeletonBox className="h-24 rounded-2xl" />
         </div>
 
-        <div className="space-y-3 pt-4 border-t border-[#DDE8DE]">
+        <div className="space-y-3 pt-4 border-t border-bamboo-divider">
           <SkeletonLine height="h-4" width="w-32" />
           <div className="space-y-2">
             {[1, 2].map((i) => (
