@@ -4,7 +4,6 @@ import { AnimatePresence, motion } from 'motion/react';
 import { ShopProvider, useShop } from './context/ShopContext';
 import { Header } from './components/Header/Header';
 import { CartDrawer } from './components/Cart/CartDrawer';
-import { ToastContainer } from './components/Toast/Toast';
 import { MobileNavigation } from './components/MobileNavigation/MobileNavigation';
 import { Footer } from './components/Footer/Footer';
 import { InitialLoader } from './components/Common/InitialLoader';
@@ -121,9 +120,6 @@ const AppContent: React.FC = () => {
 
       {/* Slide-over Cart Drawer */}
       <CartDrawer />
-
-      {/* Toast Notification Container */}
-      <ToastContainer />
 
       {/* Mobile Bottom Fixed Bar */}
       <MobileNavigation />

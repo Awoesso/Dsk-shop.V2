@@ -126,11 +126,3 @@ export type ActivePage =
   | 'account';
 
 export * from './orders';
-
-export interface ToastMessage {
-  id: string;
-  message: string;
-  type: 'success' | 'info' | 'warning';
-  actionLabel?: string;
-  onAction?: () => void;
-}

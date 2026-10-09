@@ -26,7 +26,6 @@ export const CheckoutPage: React.FC = () => {
     cartItemCount,
     createOrder,
     navigateTo,
-    showToast,
   } = useShop();
 
   // ONLY 3 required fields: Full Name, Phone, Delivery Address
@@ -73,15 +72,12 @@ export const CheckoutPage: React.FC = () => {
 
     // Strict validation for the 3 required fields
     if (!formData.fullName.trim()) {
-      showToast('Veuillez entrer votre nom complet', 'warning');
       return;
     }
     if (!formData.phone.trim()) {
-      showToast('Veuillez entrer votre numéro de téléphone (T-Money / Moov)', 'warning');
       return;
     }
     if (!formData.address.trim()) {
-      showToast('Veuillez indiquer votre quartier ou adresse de livraison à Lomé', 'warning');
       return;
     }
 
@@ -108,7 +104,6 @@ export const CheckoutPage: React.FC = () => {
       });
 
       if (!result.success && result.error) {
-        showToast(result.error, 'warning');
         setIsSubmitting(false);
         return;
       }
@@ -126,7 +121,6 @@ export const CheckoutPage: React.FC = () => {
         result.orderNumber
       );
     } catch {
-      showToast('Une erreur est survenue lors de la création de la commande.', 'warning');
     } finally {
       setIsSubmitting(false);
     }

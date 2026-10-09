@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
-import { Product, CartItem, ProductVariant, FilterState, ActivePage, Order, ShippingAddress, PaymentMethod, ToastMessage } from '../types';
+import { Product, CartItem, ProductVariant, FilterState, ActivePage, Order, ShippingAddress, PaymentMethod } from '../types';
 import { CATEGORIES } from '../constants/categories';
 import { USD_TO_FCFA_RATE } from '../utils/currency';
 import { ProductsService, mapDbRowToProduct } from '../services/products.service';
@@ -13,7 +13,6 @@ interface ShopContextType {
   filterState: FilterState;
   isCartOpen: boolean;
   lastOrder: Order | null;
-  toasts: ToastMessage[];
   cartSubtotal: number;
   shippingCost: number;
   discountAmount: number;
@@ -52,9 +51,6 @@ interface ShopContextType {
   // Checkout & Orders
   createOrder: (shipping: ShippingAddress, payment: PaymentMethod, customOrderNumber?: string) => Order;
   
-  // Toasts
-  showToast: (message: string, type?: 'success' | 'info' | 'warning', actionLabel?: string, onAction?: () => void) => void;
-  removeToast: (id: string) => void;
 }
 
 const initialFilterState: FilterState = {
@@ -86,25 +82,6 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [filterState, setFilterState] = useState<FilterState>(initialFilterState);
   const [lastOrder, setLastOrder] = useState<Order | null>(null);
-  const [toasts, setToasts] = useState<ToastMessage[]>([]);
-
-  // Toast system
-  const showToast = useCallback((
-    message: string,
-    type: 'success' | 'info' | 'warning' = 'success',
-    actionLabel?: string,
-    onAction?: () => void
-  ) => {
-    const id = Math.random().toString(36).substring(2, 9);
-    setToasts((prev) => [...prev, { id, message, type, actionLabel, onAction }]);
-    setTimeout(() => {
-      setToasts((prev) => prev.filter((t) => t.id !== id));
-    }, 3800);
-  }, []);
-
-  const removeToast = useCallback((id: string) => {
-    setToasts((prev) => prev.filter((t) => t.id !== id));
-  }, []);
 
   // Initial Full-Screen Loader state (only for the very first visit of this browser session)
   const [isInitialLoading, setIsInitialLoading] = useState<boolean>(() => {
@@ -169,13 +146,11 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (event.eventType === 'INSERT') {
         const newProduct = mapDbRowToProduct(event.newRow);
         setProducts((prev) => [newProduct, ...prev.filter((p) => p.id !== newProduct.id)]);
-        showToast(`Nouveau produit disponible : ${newProduct.name}`, 'info');
       } else if (event.eventType === 'UPDATE') {
         const updatedProduct = mapDbRowToProduct(event.newRow);
         setProducts((prev) =>
           prev.map((p) => (p.id === updatedProduct.id ? updatedProduct : p))
         );
-        showToast(`Mise à jour en direct : ${updatedProduct.name}`, 'info');
       } else if (event.eventType === 'DELETE') {
         const deletedId = event.oldRow?.id;
         if (deletedId) {
@@ -189,7 +164,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       isMounted = false;
       unsubscribe();
     };
-  }, [showToast]);
+  }, []);
 
   const triggerLoading = useCallback((duration = 380) => {
     setIsLoading(true);
@@ -203,7 +178,6 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsPageLoading(true);
     setPageLoading('shop');
     setIsLoading(true);
-    showToast('Actualisation du catalogue...', 'info');
 
     try {
       const response = await ProductsService.getProducts({ limit: 50 });
@@ -218,7 +192,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setPageLoading(null);
       setIsLoading(false);
     }, 450);
-  }, [showToast]);
+  }, []);
 
   // Local storage for cart
   const [cart, setCart] = useState<CartItem[]>(() => {
@@ -340,13 +314,9 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
 
     if (reachedLimit) {
-      showToast(`Stock maximum atteint (${maxStock} unités) pour cet article`, 'warning');
-    } else {
-      showToast(`« ${product.name.slice(0, 24)}... » ajouté au panier !`, 'success', 'Voir Panier', () => {
-        setIsCartOpen(true);
-      });
+      return;
     }
-  }, [showToast]);
+  }, []);
 
   const removeFromCart = useCallback((productId: string, variantId?: string) => {
     setCart((prev) =>
@@ -356,8 +326,7 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return !(matchesProduct && matchesVariant);
       })
     );
-    showToast('Article retiré du panier', 'info');
-  }, [showToast]);
+  }, []);
 
   const updateCartQuantity = useCallback((productId: string, quantity: number, variantId?: string) => {
     if (quantity <= 0) {
@@ -380,23 +349,18 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const clearCart = useCallback(() => {
     setCart([]);
-    showToast('Le panier a été vidé', 'info');
-  }, [showToast]);
+  }, []);
 
   // Wishlist
   const toggleWishlist = useCallback((productId: string) => {
     setWishlist((prev) => {
       const exists = prev.includes(productId);
       if (exists) {
-        showToast('Retiré des favoris', 'info');
         return prev.filter((id) => id !== productId);
-      } else {
-        const prod = products.find((p) => p.id === productId);
-        showToast(`« ${prod ? prod.name.slice(0, 20) : 'Article'} » ajouté aux favoris !`, 'success');
-        return [...prev, productId];
       }
+      return [...prev, productId];
     });
-  }, [products, showToast]);
+  }, []);
 
   const isInWishlist = useCallback((productId: string) => {
     return wishlist.includes(productId);
@@ -531,9 +495,8 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setCart([]);
     setActivePage('order-success');
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    showToast(`Commande #${orderNumber} confirmée avec succès !`, 'success');
     return newOrder;
-  }, [cart, cartSubtotal, shippingCost, cartTotal, showToast]);
+  }, [cart, cartSubtotal, shippingCost, cartTotal]);
 
   return (
     <ShopContext.Provider
@@ -546,7 +509,6 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
         filterState,
         isCartOpen,
         lastOrder,
-        toasts,
         cartSubtotal,
         shippingCost,
         discountAmount,
@@ -574,8 +536,6 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
         resetFilters,
         filteredProducts,
         createOrder,
-        showToast,
-        removeToast,
       }}
     >
       {children}

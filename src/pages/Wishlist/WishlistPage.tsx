@@ -5,13 +5,12 @@ import { ProductCard } from '../../components/ProductCard/ProductCard';
 import { SEO } from '../../components/SEO/SEO';
 
 export const WishlistPage: React.FC = () => {
-  const { wishlist, products, addToCart, toggleWishlist, navigateTo, showToast } = useShop();
+  const { wishlist, products, addToCart, toggleWishlist, navigateTo } = useShop();
 
   const favoritedProducts = products.filter((p) => wishlist.includes(p.id));
 
   const handleMoveAllToCart = () => {
     favoritedProducts.forEach((p) => addToCart(p, 1, p.variants?.[0]));
-    showToast(`${favoritedProducts.length} article(s) ajouté(s) à votre panier !`, 'success');
   };
 
   if (favoritedProducts.length === 0) {

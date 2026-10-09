@@ -15,8 +15,6 @@ import { useShop } from '../../context/ShopContext';
 import { SEO } from '../../components/SEO/SEO';
 
 export const ContactPage: React.FC = () => {
-  const { showToast } = useShop();
-
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -29,11 +27,9 @@ export const ContactPage: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
-      showToast('Veuillez remplir tous les champs obligatoires.', 'warning');
       return;
     }
     setIsSubmitted(true);
-    showToast('Votre message a été envoyé avec succès au service client DSK-Shop.', 'success');
   };
 
   const faqs = [

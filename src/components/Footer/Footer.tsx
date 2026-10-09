@@ -5,7 +5,7 @@ import { CATEGORIES } from '../../constants/categories';
 import { getCategoryProductCounts, filterActiveCategories } from '../../utils/categoryUtils';
 
 export const Footer: React.FC = () => {
-  const { navigateTo, setFilters, showToast, products } = useShop();
+  const { navigateTo, setFilters, products } = useShop();
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
@@ -18,11 +18,9 @@ export const Footer: React.FC = () => {
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim() || !email.includes('@')) {
-      showToast('Veuillez entrer une adresse email valide.', 'warning');
       return;
     }
     setSubscribed(true);
-    showToast('Félicitations ! Vous recevrez nos offres exclusives et réductions à Lomé.', 'success');
   };
 
   const handleCategoryNav = (catId: string) => {

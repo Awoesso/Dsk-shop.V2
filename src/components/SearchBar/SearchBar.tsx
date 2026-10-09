@@ -12,30 +12,51 @@ interface SearchBarProps {
 }
 
 export const SearchBar: React.FC<SearchBarProps> = ({
-  placeholder = 'Rechercher un équipement, audio, accessoires...',
+  placeholder = 'Rechercher un produit, une marque...',
   className = '',
   onSearchSubmitted,
 }) => {
   const { products, filterState, setFilters, navigateTo, openProduct } = useShop();
   const [query, setQuery] = useState(filterState.searchQuery || '');
-  const [isOpen, setIsOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  // Sync when filterState changes from outside
   useEffect(() => {
     setQuery(filterState.searchQuery);
   }, [filterState.searchQuery]);
 
-  // Click outside listener
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
+        setIsSearchOpen(false);
       }
     };
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setIsSearchOpen(false);
+    };
+
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEscape);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape);
+    };
   }, []);
+
+  useEffect(() => {
+    if (isSearchOpen) {
+      const previousOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      inputRef.current?.focus();
+
+      return () => {
+        document.body.style.overflow = previousOverflow;
+      };
+    }
+  }, [isSearchOpen]);
 
   const matchingSuggestions = React.useMemo(() => {
     if (!query.trim() || query.length < 2) return [];
@@ -54,13 +75,13 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   const handleSubmit = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setFilters({ searchQuery: query });
-    setIsOpen(false);
+    setIsSearchOpen(false);
     navigateTo('shop', { search: query });
     if (onSearchSubmitted) onSearchSubmitted();
   };
 
   const handleSelectProduct = (product: Product) => {
-    setIsOpen(false);
+    setIsSearchOpen(false);
     openProduct(product);
     if (onSearchSubmitted) onSearchSubmitted();
   };
@@ -70,95 +91,144 @@ export const SearchBar: React.FC<SearchBarProps> = ({
     setFilters({ searchQuery: '' });
   };
 
+  const popularSearches = ['Téléphones', 'Chaussures', 'Vêtements', 'Accessoires'];
+
   return (
-    <div ref={containerRef} className={`relative w-full ${className}`}>
-      <form onSubmit={handleSubmit} className="relative flex items-center">
-        <div className="absolute inset-y-0 left-0 pl-3.5 2xl:pl-4 flex items-center pointer-events-none text-on-surface-variant">
-          <Search size={18} className="2xl:w-5 2xl:h-5" />
-        </div>
-        <input
-          id="dsk-search-input"
-          type="text"
-          value={query}
-          onChange={(e) => {
-            setQuery(e.target.value);
-            setIsOpen(true);
-          }}
-          onFocus={() => {
-            if (query.trim().length >= 2) setIsOpen(true);
-          }}
-          placeholder={placeholder}
-          className="w-full pl-10 2xl:pl-12 pr-10 2xl:pr-12 py-2.5 2xl:py-3.5 bg-surface-container-low hover:bg-white focus:bg-white text-base sm:text-sm 2xl:text-base font-secondary text-on-surface placeholder:text-outline rounded-xl 2xl:rounded-2xl border border-surface-variant focus:border-primary focus:ring-2 focus:ring-surface-tint/20 focus:outline-none transition-all shadow-xs"
-        />
-        {query && (
-          <button
-            type="button"
-            onClick={handleClear}
-            className="absolute inset-y-0 right-0 pr-3 2xl:pr-4 flex items-center text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer min-w-[36px] min-h-[36px] justify-center"
-            title="Effacer la recherche"
+    <div ref={containerRef} className={className}>
+      <button
+        type="button"
+        onClick={() => setIsSearchOpen(true)}
+        className="group flex h-9 w-9 items-center justify-center rounded-lg border border-transparent text-on-surface transition-colors duration-250 hover:bg-surface-container-low hover:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-bamboo-accent/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white cursor-pointer"
+        aria-label="Rechercher un produit"
+        aria-haspopup="dialog"
+        aria-expanded={isSearchOpen}
+      >
+        <Search size={18} className="transition-colors duration-250" />
+      </button>
+
+      {isSearchOpen && (
+        <>
+          <div
+            className="fixed inset-x-0 top-0 z-40 h-[116px] bg-black/15 backdrop-blur-[2px] sm:h-[104px] lg:h-[96px]"
+            aria-hidden="true"
+          />
+          <div
+            className="fixed inset-0 z-50 flex items-start justify-center bg-transparent p-3 sm:p-6 pt-16 sm:pt-24"
+            onClick={() => setIsSearchOpen(false)}
           >
-            <X size={16} className="2xl:w-5 2xl:h-5" />
-          </button>
-        )}
-      </form>
-
-      {/* Instant Dropdown Preview */}
-      {isOpen && query.trim().length >= 2 && (
-        <div className="absolute left-0 right-0 top-full mt-2 bg-white rounded-2xl shadow-xl border border-surface-variant overflow-hidden z-50 divide-y divide-surface-variant animate-in fade-in-50 zoom-in-95 duration-150 max-h-[75vh] overflow-y-auto">
-          {matchingSuggestions.length > 0 ? (
-            <div className="py-2">
-              <div className="px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-primary font-primary">
-                Produits correspondants ({matchingSuggestions.length})
-              </div>
-              {matchingSuggestions.map((prod) => (
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="search-dialog-title"
+              className="w-full max-w-3xl overflow-hidden rounded-2xl border border-surface-variant bg-white shadow-[0_20px_60px_rgba(22,40,30,0.18)] animate-[search-dialog-in_300ms_ease-out]"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <div className="flex items-center gap-2 border-b border-surface-variant px-4 py-3 sm:px-5 sm:py-3.5">
+                <Search size={18} className="shrink-0 text-primary" />
+                <input
+                  ref={inputRef}
+                  id="dsk-search-input"
+                  type="text"
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder={placeholder}
+                  aria-label="Recherche de produits"
+                  className="h-10 w-full bg-transparent text-sm sm:text-base text-on-surface placeholder:text-[#6b746d] focus:outline-none"
+                />
+                {query && (
+                  <button
+                    type="button"
+                    onClick={handleClear}
+                    className="flex h-8 w-8 items-center justify-center rounded-lg text-outline hover:bg-surface-container-low hover:text-on-surface transition-colors duration-200 cursor-pointer"
+                    aria-label="Effacer la recherche"
+                  >
+                    <X size={16} />
+                  </button>
+                )}
                 <button
-                  key={prod.id}
-                  onClick={() => handleSelectProduct(prod)}
-                  className="w-full px-3.5 py-2.5 flex items-center gap-3 hover:bg-surface-container-low text-left transition-colors group cursor-pointer"
+                  type="button"
+                  onClick={() => setIsSearchOpen(false)}
+                  className="flex h-8 w-8 items-center justify-center rounded-lg text-outline hover:bg-surface-container-low hover:text-on-surface transition-colors duration-200 cursor-pointer"
+                  aria-label="Fermer la recherche"
                 >
-                  <ProductImage
-                    src={prod.images?.[0] || prod.primaryImage || ''}
-                    alt={prod.name}
-                    containerClassName="w-10 h-10 2xl:w-12 2xl:h-12 rounded-lg bg-surface-container-low border border-surface-variant flex-shrink-0 overflow-hidden"
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[11px] 2xl:text-xs text-on-surface-variant font-medium uppercase font-secondary">{prod.brand}</p>
-                    <p className="text-sm 2xl:text-base font-semibold text-on-surface truncate group-hover:text-primary font-primary">
-                      {prod.name}
-                    </p>
-                  </div>
-                  <div className="text-right flex-shrink-0">
-                    <span className="text-sm 2xl:text-base font-bold text-primary font-primary">{formatPrice(prod.price)}</span>
-                  </div>
-                </button>
-              ))}
-
-              <div className="p-2 bg-surface-container-low border-t border-surface-variant">
-                <button
-                  onClick={() => handleSubmit()}
-                  className="w-full flex items-center justify-between px-3 py-2 text-xs 2xl:text-sm font-semibold text-primary hover:bg-white rounded-lg transition-colors font-primary cursor-pointer min-h-[38px]"
-                >
-                  <span>Voir tous les résultats pour &laquo; {query} &raquo;</span>
-                  <span className="flex items-center gap-1 text-on-surface-variant font-secondary">
-                    Appuyez sur Entrée <CornerDownLeft size={12} />
-                  </span>
+                  <X size={18} />
                 </button>
               </div>
+
+              <div className="p-4 sm:p-5">
+                <p id="search-dialog-title" className="text-xs font-semibold uppercase tracking-[0.12em] text-on-surface-variant">
+                  Recherches populaires
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {popularSearches.map((term) => (
+                    <button
+                      key={term}
+                      type="button"
+                      onClick={() => {
+                        setQuery(term);
+                        inputRef.current?.focus();
+                      }}
+                      className="rounded-full border border-surface-variant bg-surface-container-low px-3 py-1.5 text-xs font-medium text-on-surface transition-colors duration-200 hover:border-bamboo-accent hover:bg-bamboo-tint hover:text-primary cursor-pointer"
+                    >
+                      {term}
+                    </button>
+                  ))}
+                </div>
+
+                {query.trim().length >= 2 && (
+                  <div className="mt-5 border-t border-surface-variant pt-4">
+                    {matchingSuggestions.length > 0 ? (
+                      <div className="space-y-1">
+                        {matchingSuggestions.map((product) => (
+                          <button
+                            key={product.id}
+                            type="button"
+                            onClick={() => handleSelectProduct(product)}
+                            className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors duration-200 hover:bg-surface-container-low cursor-pointer"
+                          >
+                            <ProductImage
+                              src={product.images?.[0] || product.primaryImage || ''}
+                              alt={product.name}
+                              containerClassName="h-10 w-10 shrink-0 overflow-hidden rounded-lg border border-surface-variant bg-surface-container-low"
+                              className="h-full w-full object-cover"
+                            />
+                            <div className="min-w-0 flex-1">
+                              <p className="truncate text-sm font-semibold text-on-surface">{product.name}</p>
+                              <p className="text-xs text-on-surface-variant">{product.brand}</p>
+                            </div>
+                            <span className="shrink-0 text-sm font-bold text-primary">{formatPrice(product.price)}</span>
+                          </button>
+                        ))}
+
+                        <button
+                          type="button"
+                          onClick={() => handleSubmit()}
+                          className="mt-1 flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-xs font-semibold text-primary transition-colors duration-200 hover:bg-surface-container-low cursor-pointer"
+                        >
+                          <span>Voir tous les résultats</span>
+                          <span className="flex items-center gap-1 text-[11px] text-outline">
+                            Entrée <CornerDownLeft size={11} />
+                          </span>
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="rounded-xl bg-surface-container-low p-4 text-center">
+                        <p className="text-sm font-semibold text-on-surface">Aucun résultat pour « {query} »</p>
+                        <button
+                          type="button"
+                          onClick={() => handleSubmit()}
+                          className="mt-2 inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline cursor-pointer"
+                        >
+                          Rechercher dans tout le catalogue <ArrowRight size={12} />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
-          ) : (
-            <div className="p-6 text-center">
-              <p className="text-sm 2xl:text-base text-on-surface font-semibold font-primary">Aucun résultat direct pour &laquo; {query} &raquo;</p>
-              <p className="text-xs 2xl:text-sm text-on-surface-variant mt-1 font-secondary">Vérifiez l'orthographe ou essayez un terme plus général.</p>
-              <button
-                onClick={() => handleSubmit()}
-                className="mt-3 inline-flex items-center gap-1.5 text-xs 2xl:text-sm font-bold text-primary hover:text-primary-container font-primary cursor-pointer"
-              >
-                Rechercher dans tout le catalogue <ArrowRight size={13} />
-              </button>
-            </div>
-          )}
-        </div>
+          </div>
+        </>
       )}
     </div>
   );

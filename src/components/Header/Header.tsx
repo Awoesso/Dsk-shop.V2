@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
-  ShoppingBag,
+  ShoppingCart,
   Menu,
   X,
   ArrowRight,
@@ -149,19 +149,16 @@ export const Header: React.FC = () => {
             </button>
           </div>
 
-          {/* Desktop Search Bar - Taille modérée & espacée */}
-          <div className="hidden md:flex flex-1 max-w-sm lg:max-w-md mx-2">
-            <SearchBar />
-          </div>
+         
 
           {/* Navigation Items (Desktop) - Espacés avec gap généreux et textes réduits */}
           <nav className="hidden lg:flex items-center gap-2 xl:gap-4 2xl:gap-6 text-xs sm:text-[13px] font-medium font-secondary text-on-surface">
             <button
               onClick={() => navigateTo('home')}
-              className={`px-3 py-1.5 rounded-lg transition-colors font-primary cursor-pointer ${
+              className={`nav-link px-3 py-1.5 rounded-lg transition-colors font-primary cursor-pointer ${
                 activePage === 'home'
-                  ? 'text-primary bg-secondary-container font-semibold'
-                  : 'hover:text-primary hover:bg-surface-container-low'
+                  ? 'text-primary  bg-secondary-container  font-semibold'
+                  : 'text-on-surface'
               }`}
             >
               Accueil
@@ -171,10 +168,10 @@ export const Header: React.FC = () => {
                 setFilters({ category: 'all', searchQuery: '', sortBy: 'featured' });
                 navigateTo('shop');
               }}
-              className={`px-3 py-1.5 rounded-lg transition-colors font-primary cursor-pointer ${
+              className={`nav-link px-3 py-1.5 rounded-lg transition-colors font-primary cursor-pointer ${
                 activePage === 'shop' && filterState.category === 'all' && filterState?.sortBy === 'featured'
                   ? 'text-primary bg-secondary-container font-semibold'
-                  : 'hover:text-primary hover:bg-surface-container-low'
+                  : 'text-on-surface'
               }`}
             >
               Boutique
@@ -185,10 +182,10 @@ export const Header: React.FC = () => {
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setCategoriesDropdownOpen(!categoriesDropdownOpen)}
-                  className={`flex items-center gap-1 px-3 py-1.5 rounded-lg transition-colors font-primary cursor-pointer ${
+                  className={`nav-link flex items-center gap-1 px-3 py-1.5 rounded-lg transition-colors font-primary cursor-pointer ${
                     categoriesDropdownOpen || (activePage === 'shop' && filterState.category !== 'all')
                       ? 'text-primary bg-secondary-container font-semibold'
-                      : 'hover:text-primary hover:bg-surface-container-low'
+                      : 'text-on-surface'
                   }`}
                 >
                   <span>Catégories</span>
@@ -259,10 +256,10 @@ export const Header: React.FC = () => {
                 setFilters({ category: 'all', searchQuery: '', sortBy: 'newest' });
                 navigateTo('shop');
               }}
-              className={`px-3 py-1.5 rounded-lg transition-colors font-primary cursor-pointer ${
+              className={`nav-link px-3 py-1.5 rounded-lg transition-colors font-primary cursor-pointer ${
                 activePage === 'shop' && filterState?.sortBy === 'newest'
                   ? 'text-primary bg-secondary-container font-semibold'
-                  : 'hover:text-primary hover:bg-surface-container-low'
+                  : 'text-on-surface'
               }`}
             >
               Nouveautés
@@ -272,40 +269,56 @@ export const Header: React.FC = () => {
                 setFilters({ category: 'all', searchQuery: '', sortBy: 'featured' });
                 navigateTo('shop');
               }}
-              className={`px-3 py-1.5 rounded-lg transition-colors font-primary cursor-pointer ${
+              className={`nav-link px-3 py-1.5 rounded-lg transition-colors font-primary cursor-pointer ${
                 activePage === 'shop' && filterState?.sortBy === 'featured'
                   ? 'text-primary bg-secondary-container font-semibold'
-                  : 'hover:text-primary hover:bg-surface-container-low'
+                  : 'text-on-surface'
               }`}
             >
               Meilleures Ventes
             </button>
             <button
               onClick={() => navigateTo('contact')}
-              className={`px-3 py-1.5 rounded-lg transition-colors font-primary cursor-pointer ${
+              className={`nav-link px-3 py-1.5 rounded-lg transition-colors font-primary cursor-pointer ${
                 activePage === 'contact'
                   ? 'text-primary bg-secondary-container font-semibold'
-                  : 'hover:text-primary hover:bg-surface-container-low'
+                  : 'text-on-surface'
               }`}
             >
               Contact
             </button>
           </nav>
 
-          {/* Right Action Button - Uniquement le Panier, épuré et espacé */}
+
+          
+ {/* Desktop Search Bar - Taille généreuse et premium */}
+       
+
+
+
+          {/* Right actions: search on desktop, search + menu on mobile */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            {/* Cart Button */}
+            <div className="hidden md:flex flex-1 max-w-xl lg:max-w-2xl mx-2">
+              <SearchBar />
+            </div>
+
+            {/* Mobile Search Bar */}
+            <div className="md:hidden">
+              <SearchBar />
+            </div>
+
+            {/* Desktop Cart Button */}
             <button
               id="header-cart-btn"
               onClick={() => setIsCartOpen(true)}
-              className="relative flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1.5 sm:py-2 bg-primary hover:bg-primary-container text-white rounded-lg sm:rounded-xl transition-all shadow-xs focus:outline-none font-primary cursor-pointer min-h-[38px] sm:min-h-[42px]"
+              className="hidden md:flex relative items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-primary rounded-lg sm:rounded-xl transition-all shadow-xs focus:outline-none font-primary cursor-pointer min-h-[38px] sm:min-h-[42px]"
               title="Mon Panier"
               aria-label="Mon Panier"
             >
               <div className="relative">
-                <ShoppingBag size={15} className="sm:w-4 sm:h-4" />
+                <ShoppingCart size={15} className="sm:w-4 sm:h-4" />
                 {cartItemCount > 0 && (
-                  <span className="absolute -top-1.5 -right-1.5 sm:-top-2 sm:-right-2 w-3.5 h-3.5 sm:w-4 sm:h-4 flex items-center justify-center text-[8px] sm:text-[9px] font-bold text-on-primary-fixed bg-primary-fixed rounded-full ring-1 ring-primary">
+                  <span className="absolute -top-1.5 -right-1.5 sm:-top-2 sm:-right-2 w-3.5 h-3.5 sm:w-4 sm:h-4 flex items-center justify-center text-[8px] sm:text-[9px] font-bold text-on-primary-fixed ring-1 ring-primary bg-primary rounded-full">
                     {cartItemCount}
                   </span>
                 )}
@@ -320,21 +333,23 @@ export const Header: React.FC = () => {
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 min-w-[38px] min-h-[38px] flex items-center justify-center text-on-surface hover:text-primary hover:bg-surface-container-low rounded-lg lg:hidden transition-colors cursor-pointer"
               aria-label="Ouvrir le menu de navigation"
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-navigation-menu"
             >
               {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Search Bar Row */}
-        <div className="md:hidden pb-2 pt-0.5">
-          <SearchBar />
-        </div>
+      
       </div>
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-surface-variant bg-surface shadow-xl animate-in slide-in-from-top-2 duration-200 max-h-[calc(100vh-110px)] overflow-y-auto pb-[calc(1rem+env(safe-area-inset-bottom,0px))]">
+        <div
+          id="mobile-navigation-menu"
+          className="lg:hidden border-t border-surface-variant bg-surface shadow-xl animate-in slide-in-from-top-2 duration-200 max-h-[calc(100vh-110px)] overflow-y-auto pb-[calc(1rem+env(safe-area-inset-bottom,0px))]"
+        >
           <div className="px-4 py-4 space-y-3 font-primary">
             <div className="flex flex-col gap-1">
               <button
@@ -400,18 +415,6 @@ export const Header: React.FC = () => {
                 <span>Contact & Support</span>
                 <ChevronRight size={16} className="text-outline" />
               </button>
-              <button
-                onClick={() => {
-                  navigateTo('account');
-                  setMobileMenuOpen(false);
-                }}
-                className={`flex items-center justify-between p-3 rounded-xl text-left font-semibold text-sm ${
-                  activePage === 'account' ? 'bg-secondary-container text-primary' : 'text-on-surface hover:bg-surface-container-low'
-                }`}
-              >
-                <span>Mon Compte</span>
-                <ChevronRight size={16} className="text-outline" />
-              </button>
             </div>
 
             {activeCategories.length > 0 && (
@@ -450,7 +453,7 @@ export const Header: React.FC = () => {
                 }}
                 className="w-full flex items-center justify-center gap-2 p-2.5 rounded-xl bg-primary hover:bg-primary-container text-white font-semibold text-xs transition-colors cursor-pointer shadow-xs min-h-[44px]"
               >
-                <ShoppingBag size={15} /> Voir mon panier ({cartItemCount}) · {formatPrice(cartSubtotal)}
+                <ShoppingCart size={15} /> Voir mon panier ({cartItemCount}) · {formatPrice(cartSubtotal)}
               </button>
             </div>
           </div>
