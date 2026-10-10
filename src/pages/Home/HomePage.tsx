@@ -143,14 +143,9 @@ export const HomePage: React.FC = () => {
       {/* Catégories Section */}
       {activeCategories.length > 0 && (
         <section className="max-w-[1600px] 2xl:max-w-[1760px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-6 sm:mb-8 gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
-              <h2 className="text-sm sm:text-xl lg:text-3xl font-extrabold text-on-surface font-primary tracking-tight">
-                Explorez nos univers de produits à Lomé
-              </h2>
-              <p className="text-[10px] sm:text-sm text-on-surface-variant mt-1 max-w-2xl leading-relaxed">
-                Articles certifiés et immédiatement disponibles en stock pour livraison sur tout le Grand Lomé.
-              </p>
+             
             </div>
             <button
               onClick={() => handleSeeAll('featured')}

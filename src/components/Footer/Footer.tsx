@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Truck, RotateCcw, ShieldCheck, Headphones, ArrowRight, Check } from 'lucide-react';
+import { ArrowRight, Check } from 'lucide-react';
 import { useShop } from '../../context/ShopContext';
 import { CATEGORIES } from '../../constants/categories';
 import { getCategoryProductCounts, filterActiveCategories } from '../../utils/categoryUtils';
@@ -29,134 +29,147 @@ export const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="bg-bamboo-darkest text-slate-300 pt-12 2xl:pt-16 pb-28 md:pb-12 2xl:pb-16 border-t border-emerald-950/60 font-secondary">
-      {/* Main Footer Links & Newsletter */}
-      <div className="max-w-7xl 2xl:max-w-[1760px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-10 2xl:gap-14">
-          {/* Brand Col: DSK Shop */}
-          <div className="lg:col-span-2 space-y-4">
-            <div className="flex items-center gap-2.5 font-primary">
-              <div className="w-9 h-9 2xl:w-11 2xl:h-11 rounded-xl bg-bamboo-accent text-white flex items-center justify-center font-extrabold tracking-tight">
-                <span>DSK</span>
+    <footer className="bg-neutral-950 text-neutral-400 pt-16 pb-28 md:pb-16 border-t border-neutral-900 font-secondary text-xs sm:text-sm">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* TOP SECTION: BRAND & LINKS */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-12 pb-12 border-b border-neutral-900">
+          
+          {/* BRAND & NEWSLETTER (2 COLS) */}
+          <div className="lg:col-span-2 space-y-5">
+            {/* LOGO */}
+            <div className="flex items-center gap-2 font-primary">
+              <div className="w-7 h-7 rounded-lg bg-white text-neutral-950 flex items-center justify-center font-bold text-xs tracking-tight">
+                DSK
               </div>
-              <span className="text-xl 2xl:text-2xl font-extrabold tracking-tight text-white">
-                DSK <span className="text-emerald-400 font-medium">SHOP</span>
+              <span className="text-base font-semibold tracking-tight text-white">
+                DSK <span className="text-neutral-400 font-normal">SHOP</span>
               </span>
             </div>
-            <p className="text-xs 2xl:text-sm text-slate-400 leading-relaxed max-w-sm 2xl:max-w-md">
-              DSK-Shop · L&apos;essentiel du quotidien livré rapidement à Lomé, Togo. Des produits testés, garantis avec paiement sécurisé.
+
+            <p className="text-neutral-400 text-xs leading-relaxed max-w-sm">
+              L'essentiel du quotidien livré rapidement à Lomé, Togo. Produits vérifiés, garantis et paiement sécurisé.
             </p>
 
-            {/* Newsletter Form */}
+            {/* NEWSLETTER */}
             <div className="pt-2">
-              <p className="text-xs 2xl:text-sm font-bold uppercase tracking-wider text-slate-300 mb-2 font-primary">
+              <p className="text-xs font-medium text-neutral-300 mb-2.5 font-primary">
                 Restez informé des nouveautés
               </p>
+
               {subscribed ? (
-                <div className="flex items-center gap-2 text-xs 2xl:text-sm font-semibold text-emerald-400 bg-emerald-950/60 p-3 rounded-xl border border-emerald-800/40 font-primary">
-                  <Check size={16} /> Inscription confirmée ! Merci pour votre confiance.
+                <div className="flex items-center gap-2 text-xs font-medium text-emerald-400 bg-emerald-950/30 p-2.5 rounded-xl border border-emerald-900/40 font-primary">
+                  <Check size={14} /> Inscription confirmée. Merci !
                 </div>
               ) : (
-                <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-2 max-w-md font-primary">
+                <form onSubmit={handleSubscribe} className="flex gap-2 max-w-sm font-primary">
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Votre adresse email..."
-                    className="flex-1 min-w-0 px-3.5 py-2.5 2xl:py-3 bg-white/5 text-white placeholder:text-slate-500 text-base sm:text-xs 2xl:text-sm rounded-xl border border-white/10 focus:outline-none focus:border-bamboo-accent transition-colors min-h-[44px]"
+                    placeholder="Votre adresse email"
+                    className="flex-1 min-w-0 px-3.5 py-2 bg-neutral-900 text-white placeholder:text-neutral-600 text-xs rounded-xl border border-neutral-800 focus:outline-none focus:border-neutral-700 transition-colors"
                   />
                   <button
                     type="submit"
-                    className="px-4 py-2.5 2xl:px-6 2xl:py-3 bg-bamboo-accent hover:bg-emerald-500 text-white font-bold text-xs 2xl:text-sm rounded-xl transition-colors flex items-center justify-center gap-1 shadow-xs cursor-pointer min-h-[44px]"
+                    className="px-4 py-2 bg-white hover:bg-neutral-200 text-neutral-950 font-medium text-xs rounded-xl transition-all flex items-center justify-center gap-1.5 active:scale-[0.98] cursor-pointer shrink-0"
                   >
-                    <span>S&apos;inscrire</span>
-                    <ArrowRight size={13} className="2xl:w-4 2xl:h-4" />
+                    <span>S'inscrire</span>
+                    <ArrowRight size={13} />
                   </button>
                 </form>
               )}
             </div>
           </div>
 
-          {/* Navigation */}
-          <div>
-            <h4 className="text-xs 2xl:text-sm font-bold uppercase tracking-wider text-white mb-4 font-primary">
+          {/* NAVIGATION */}
+          <div className="space-y-3">
+            <h4 className="text-xs font-semibold text-white tracking-wide font-primary">
               Navigation
             </h4>
-            <ul className="space-y-2.5 text-xs 2xl:text-sm text-slate-400">
+            <ul className="space-y-2.5 text-xs text-neutral-400">
               <li>
                 <button
+                  type="button"
                   onClick={() => navigateTo('home')}
-                  className="hover:text-bamboo-accent transition-colors cursor-pointer text-left"
+                  className="hover:text-white transition-colors cursor-pointer text-left"
                 >
                   Accueil
                 </button>
               </li>
               <li>
                 <button
+                  type="button"
                   onClick={() => {
                     setFilters({ category: 'all', searchQuery: '' });
                     navigateTo('shop');
                   }}
-                  className="hover:text-bamboo-accent transition-colors cursor-pointer text-left"
+                  className="hover:text-white transition-colors cursor-pointer text-left"
                 >
-                  Boutique / Catalogue
+                  Boutique
                 </button>
               </li>
               <li>
                 <button
+                  type="button"
                   onClick={() => navigateTo('account')}
-                  className="hover:text-bamboo-accent transition-colors cursor-pointer text-left"
+                  className="hover:text-white transition-colors cursor-pointer text-left"
                 >
                   Mon Compte
                 </button>
               </li>
               <li>
                 <button
+                  type="button"
                   onClick={() => navigateTo('cart')}
-                  className="hover:text-bamboo-accent transition-colors cursor-pointer text-left"
+                  className="hover:text-white transition-colors cursor-pointer text-left"
                 >
-                  Panier d&apos;achats
+                  Panier
                 </button>
               </li>
               <li>
                 <button
+                  type="button"
                   onClick={() => navigateTo('about')}
-                  className="hover:text-bamboo-accent transition-colors cursor-pointer text-left"
+                  className="hover:text-white transition-colors cursor-pointer text-left"
                 >
-                  À Propos de DSK
+                  À propos
                 </button>
               </li>
             </ul>
           </div>
 
-          {/* Aide & Services (Livraison, Retours, Contact) */}
-          <div>
-            <h4 className="text-xs 2xl:text-sm font-bold uppercase tracking-wider text-white mb-4 font-primary">
+          {/* AIDE & SERVICES */}
+          <div className="space-y-3">
+            <h4 className="text-xs font-semibold text-white tracking-wide font-primary">
               Aide & Services
             </h4>
-            <ul className="space-y-2.5 text-xs 2xl:text-sm text-slate-400">
+            <ul className="space-y-2.5 text-xs text-neutral-400">
               <li>
                 <button
+                  type="button"
                   onClick={() => navigateTo('contact')}
-                  className="hover:text-bamboo-accent transition-colors cursor-pointer text-left"
+                  className="hover:text-white transition-colors cursor-pointer text-left"
                 >
-                  Livraison rapide (24h à Lomé)
+                  Livraison à Lomé
                 </button>
               </li>
               <li>
                 <button
+                  type="button"
                   onClick={() => navigateTo('contact')}
-                  className="hover:text-bamboo-accent transition-colors cursor-pointer text-left"
+                  className="hover:text-white transition-colors cursor-pointer text-left"
                 >
-                  Retours sous 30 jours
+                  Retours & Retractation
                 </button>
               </li>
               <li>
                 <button
+                  type="button"
                   onClick={() => navigateTo('contact')}
-                  className="hover:text-bamboo-accent transition-colors cursor-pointer text-left"
+                  className="hover:text-white transition-colors cursor-pointer text-left"
                 >
-                  Contact & Assistance directe
+                  Support Client
                 </button>
               </li>
               <li>
@@ -164,26 +177,27 @@ export const Footer: React.FC = () => {
                   href="https://wa.me/22890000000"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-emerald-400 transition-colors inline-flex items-center gap-1 text-emerald-400 font-semibold"
+                  className="text-emerald-400 hover:text-emerald-300 transition-colors inline-block font-medium"
                 >
-                  Support WhatsApp (+228)
+                  WhatsApp Support
                 </a>
               </li>
             </ul>
           </div>
 
-          {/* Collections - Only shown if at least 1 active category has products */}
+          {/* COLLECTIONS */}
           {activeCategories.length > 0 && (
-            <div>
-              <h4 className="text-xs 2xl:text-sm font-bold uppercase tracking-wider text-white mb-4 font-primary">
+            <div className="space-y-3">
+              <h4 className="text-xs font-semibold text-white tracking-wide font-primary">
                 Collections
               </h4>
-              <ul className="space-y-2.5 text-xs 2xl:text-sm text-slate-400">
+              <ul className="space-y-2.5 text-xs text-neutral-400">
                 {activeCategories.slice(0, 5).map((cat) => (
                   <li key={cat.id}>
                     <button
+                      type="button"
                       onClick={() => handleCategoryNav(cat.id)}
-                      className="hover:text-bamboo-accent transition-colors cursor-pointer text-left"
+                      className="hover:text-white transition-colors cursor-pointer text-left"
                     >
                       {cat.name}
                     </button>
@@ -192,18 +206,26 @@ export const Footer: React.FC = () => {
               </ul>
             </div>
           )}
+
         </div>
 
-        {/* Bottom Bar / Mentions légales */}
-        <div className="pt-8 2xl:pt-10 mt-8 2xl:mt-10 border-t border-emerald-950/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs 2xl:text-sm text-slate-500">
-          <p>© {new Date().getFullYear()} DSK Shop · Lomé, Togo. Tous droits réservés.</p>
-          <div className="flex flex-wrap items-center gap-4 sm:gap-6">
-            <span className="hover:text-slate-400 cursor-pointer">Mentions Légales</span>
-            <span className="hover:text-slate-400 cursor-pointer">Politique de Confidentialité</span>
-            <span className="hover:text-slate-400 cursor-pointer">Conditions Générales de Vente</span>
-            <span className="hover:text-slate-400 cursor-pointer">Paiement Sécurisé</span>
+        {/* BOTTOM SECTION: LEGAL & COPYRIGHT */}
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-neutral-500">
+          <p>© {new Date().getFullYear()} DSK Shop • Lomé, Togo.</p>
+
+          <div className="flex flex-wrap items-center gap-5 text-neutral-500">
+            <button type="button" className="hover:text-neutral-300 transition-colors cursor-pointer">
+              Mentions Légales
+            </button>
+            <button type="button" className="hover:text-neutral-300 transition-colors cursor-pointer">
+              Confidentialité
+            </button>
+            <button type="button" className="hover:text-neutral-300 transition-colors cursor-pointer">
+              CGV
+            </button>
           </div>
         </div>
+
       </div>
     </footer>
   );
