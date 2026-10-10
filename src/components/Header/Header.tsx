@@ -110,7 +110,7 @@ export const Header: React.FC = () => {
 
           <div className="flex items-center gap-3 sm:gap-4 text-primary-fixed text-[10px] sm:text-[11px] font-secondary">
             <span className="hidden md:flex items-center gap-1.5">
-              <ShieldCheck size={13} className="text-primary-fixed-dim" /> Livraison offerte dès 60 000 FCFA à Lomé
+              <ShieldCheck size={13} className="text-primary-fixed-dim" /> Livraison offerte sur tous les produits à Lomé
             </span>
             <button
               onClick={() => {

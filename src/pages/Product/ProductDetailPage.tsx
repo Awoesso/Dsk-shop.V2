@@ -223,7 +223,7 @@ export const ProductDetailPage: React.FC = () => {
         </div>
 
         {/* Right Column: Buying Controls & Info */}
-        <div className="lg:col-span-5 space-y-4 sm:space-y-6 bg-white p-4 sm:p-6 lg:p-8 rounded-2xl sm:rounded-3xl border border-bamboo-divider shadow-xs">
+        <div className="lg:col-span-5 space-y-4 sm:space-y-6 bg-white p-4 sm:p-6 lg:p-8 rounded-2xl sm:rounded-3xl  shadow-xs">
           <div>
             <div className="flex items-center justify-between font-primary gap-2">
               <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-bamboo-forest">
@@ -391,7 +391,7 @@ export const ProductDetailPage: React.FC = () => {
               <div className="w-6 h-6 rounded-md bg-surface-container-low border border-surface-variant flex items-center justify-center shrink-0">
                 <Truck size={14} className="text-bamboo-forest" />
               </div>
-              <span>Livraison express à Lomé (offerte dès 60 000 FCFA)</span>
+              <span>Livraison express offerte à Lomé sur tous les produits</span>
             </div>
             <div className="flex items-center gap-2.5">
               <div className="w-6 h-6 rounded-md bg-surface-container-low border border-surface-variant flex items-center justify-center shrink-0">

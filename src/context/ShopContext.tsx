@@ -18,9 +18,6 @@ interface ShopContextType {
   discountAmount: number;
   cartTotal: number;
   cartItemCount: number;
-  freeShippingThreshold: number;
-  freeShippingRemaining: number;
-  isFreeShipping: boolean;
   isLoading: boolean;
   setIsLoading: (loading: boolean) => void;
   isInitialLoading: boolean;
@@ -63,9 +60,6 @@ const initialFilterState: FilterState = {
 };
 
 const ShopContext = createContext<ShopContextType | undefined>(undefined);
-
-const FREE_SHIPPING_THRESHOLD = 60000;
-const STANDARD_SHIPPING_FLAT = 2000;
 
 const isSessionAlreadyInitialized = (): boolean => {
   try {
@@ -390,29 +384,15 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return cart.reduce((acc, item) => acc + item.quantity, 0);
   }, [cart]);
 
-  const isFreeShipping = useMemo(() => {
-    return cart.length > 0 && cartSubtotal >= FREE_SHIPPING_THRESHOLD;
-  }, [cart.length, cartSubtotal]);
-
-  const freeShippingRemaining = useMemo(() => {
-    if (cart.length === 0) return FREE_SHIPPING_THRESHOLD;
-    return Math.max(0, FREE_SHIPPING_THRESHOLD - cartSubtotal);
-  }, [cart.length, cartSubtotal]);
-
-  const shippingCost = useMemo(() => {
-    if (cart.length === 0) return 0;
-    return isFreeShipping ? 0 : STANDARD_SHIPPING_FLAT;
-  }, [cart.length, isFreeShipping]);
+  const shippingCost = 0;
 
   const discountAmount = 0;
 
   const cartTotal = useMemo(() => {
     if (cart.length === 0) return 0;
     const subtotalFCFA = Math.round(cartSubtotal * USD_TO_FCFA_RATE);
-    const shippingFCFA = isFreeShipping ? 0 : Math.round(STANDARD_SHIPPING_FLAT * USD_TO_FCFA_RATE);
-    const totalFCFA = subtotalFCFA + shippingFCFA;
-    return totalFCFA / USD_TO_FCFA_RATE;
-  }, [cart.length, cartSubtotal, isFreeShipping]);
+    return subtotalFCFA / USD_TO_FCFA_RATE;
+  }, [cart.length, cartSubtotal]);
 
   // Filtered Products Logic
   const filteredProducts = useMemo(() => {
@@ -514,9 +494,6 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
         discountAmount,
         cartTotal,
         cartItemCount,
-        freeShippingThreshold: FREE_SHIPPING_THRESHOLD,
-        freeShippingRemaining,
-        isFreeShipping,
         isLoading,
         setIsLoading,
         isInitialLoading,
