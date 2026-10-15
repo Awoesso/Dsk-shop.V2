@@ -7,7 +7,7 @@ export const Hero: React.FC = () => {
   const { navigateTo, setFilters } = useShop();
 
   const openCatalog = () => {
-    setFilters({ category: 'all', search: '' });
+    setFilters({ category: 'all', searchQuery: '' });
     navigateTo('shop');
   };
 

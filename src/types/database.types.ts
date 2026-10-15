@@ -9,6 +9,85 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      stores: {
+        Row: {
+          id: string;
+          owner_id: string | null;
+          name: string;
+          slug: string;
+          description: string | null;
+          logo_url: string | null;
+          status: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          owner_id?: string | null;
+          name: string;
+          slug: string;
+          description?: string | null;
+          logo_url?: string | null;
+          status?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          owner_id?: string | null;
+          name?: string;
+          slug?: string;
+          description?: string | null;
+          logo_url?: string | null;
+          status?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      store_settings: {
+        Row: {
+          id: string;
+          store_id: string;
+          primary_color: string | null;
+          secondary_color: string | null;
+          font_family: string | null;
+          banner_url: string | null;
+          currency: string | null;
+          social_links: Json | null;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          store_id: string;
+          primary_color?: string | null;
+          secondary_color?: string | null;
+          font_family?: string | null;
+          banner_url?: string | null;
+          currency?: string | null;
+          social_links?: Json | null;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          store_id?: string;
+          primary_color?: string | null;
+          secondary_color?: string | null;
+          font_family?: string | null;
+          banner_url?: string | null;
+          currency?: string | null;
+          social_links?: Json | null;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "store_settings_store_id_fkey";
+            columns: ["store_id"];
+            referencedRelation: "stores";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
       products: {
         Row: {
           id: string;
@@ -23,6 +102,9 @@ export interface Database {
           status: string | null;
           view_count: number | null;
           sales_count: number | null;
+          store_id: string | null;
+          cover_image_url: string | null;
+          compare_price: number | null;
         };
         Insert: {
           id?: string;
@@ -37,6 +119,9 @@ export interface Database {
           status?: string | null;
           view_count?: number | null;
           sales_count?: number | null;
+          store_id?: string | null;
+          cover_image_url?: string | null;
+          compare_price?: number | null;
         };
         Update: {
           id?: string;
@@ -51,8 +136,18 @@ export interface Database {
           status?: string | null;
           view_count?: number | null;
           sales_count?: number | null;
+          store_id?: string | null;
+          cover_image_url?: string | null;
+          compare_price?: number | null;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "products_store_id_fkey";
+            columns: ["store_id"];
+            referencedRelation: "stores";
+            referencedColumns: ["id"];
+          }
+        ];
       };
       product_images: {
         Row: {
@@ -173,6 +268,7 @@ export interface Database {
           quantity: number;
           unit_price: number;
           selected_variant: string | null;
+          store_id: string | null;
         };
         Insert: {
           id?: string;
@@ -183,6 +279,7 @@ export interface Database {
           quantity: number;
           unit_price: number;
           selected_variant?: string | null;
+          store_id?: string | null;
         };
         Update: {
           id?: string;
@@ -193,6 +290,7 @@ export interface Database {
           quantity?: number;
           unit_price?: number;
           selected_variant?: string | null;
+          store_id?: string | null;
         };
         Relationships: [
           {
@@ -264,6 +362,14 @@ export interface Database {
     };
   };
 }
+
+export type DbStore = Database['public']['Tables']['stores']['Row'];
+export type DbStoreInsert = Database['public']['Tables']['stores']['Insert'];
+export type DbStoreUpdate = Database['public']['Tables']['stores']['Update'];
+
+export type DbStoreSetting = Database['public']['Tables']['store_settings']['Row'];
+export type DbStoreSettingInsert = Database['public']['Tables']['store_settings']['Insert'];
+export type DbStoreSettingUpdate = Database['public']['Tables']['store_settings']['Update'];
 
 export type DbProduct = Database['public']['Tables']['products']['Row'];
 export type DbProductInsert = Database['public']['Tables']['products']['Insert'];

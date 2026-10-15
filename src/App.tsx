@@ -1,141 +1,93 @@
 import React from 'react';
 import { HelmetProvider } from 'react-helmet-async';
-import { AnimatePresence, motion } from 'motion/react';
+import { RouterProvider, useRouter } from './router/RouterContext';
 import { ShopProvider, useShop } from './context/ShopContext';
-import { Header } from './components/Header/Header';
 import { CartDrawer } from './components/Cart/CartDrawer';
-import { MobileNavigation } from './components/MobileNavigation/MobileNavigation';
-import { Footer } from './components/Footer/Footer';
-import { InitialLoader } from './components/Common/InitialLoader';
+import { StoreResolver } from './components/routing/StoreResolver';
 
-// Page-specific Skeleton Loaders for route changes
-import {
-  HomeSkeleton,
-  ShopSkeleton,
-  ProductDetailSkeleton,
-  CartSkeleton,
-  WishlistSkeleton,
-  CheckoutSkeleton,
-  OrderSuccessSkeleton,
-  AboutSkeleton,
-  ContactSkeleton,
-  AccountSkeleton,
-} from './components/Skeleton';
+// Storefront & Multi-tenant Views
+import { HubPage } from './pages/Hub/HubPage';
+import { StoreHomeView } from './pages/Storefront/StoreHomeView';
+import { StoreProductsView } from './pages/Storefront/StoreProductsView';
+import { StoreProductDetailView } from './pages/Storefront/StoreProductDetailView';
+import { StoreCartView } from './pages/Storefront/StoreCartView';
+import { StoreCheckoutView } from './pages/Storefront/StoreCheckoutView';
+import { StoreEditorPage } from './pages/StoreEditor/StoreEditorPage';
+import { TemplateGalleryPage } from './pages/Templates/TemplateGalleryPage';
+import { PlatformNotFoundPage } from './components/routing/PlatformNotFoundPage';
 
-// Pages
-import { HomePage } from './pages/Home/HomePage';
-import { ShopPage } from './pages/Shop/ShopPage';
-import { ProductDetailPage } from './pages/Product/ProductDetailPage';
-import { CartPage } from './pages/Cart/CartPage';
-import { WishlistPage } from './pages/Wishlist/WishlistPage';
-import { CheckoutPage } from './pages/Checkout/CheckoutPage';
-import { OrderSuccessPage } from './pages/Checkout/OrderSuccessPage';
-import { AboutPage } from './pages/About/AboutPage';
-import { ContactPage } from './pages/Contact/ContactPage';
-import { AccountPage } from './pages/Account/AccountPage';
+const RouteDispatcher: React.FC = () => {
+  const { route } = useRouter();
 
-const AppContent: React.FC = () => {
-  const { activePage, selectedProduct, isInitialLoading, isPageLoading } = useShop();
+  switch (route.type) {
+    case 'hub':
+      return <HubPage />;
 
-  // 1. PREMIÈRE OUVERTURE DU SITE: Full-screen centered SpinnerDotted loader
-  if (isInitialLoading) {
-    return <InitialLoader />;
+    case 'templates':
+      return <TemplateGalleryPage />;
+
+    case 'store-home':
+      return (
+        <StoreResolver slug={route.slug!}>
+          <StoreHomeView />
+        </StoreResolver>
+      );
+
+    case 'store-products':
+      return (
+        <StoreResolver slug={route.slug!}>
+          <StoreProductsView />
+        </StoreResolver>
+      );
+
+    case 'store-product-detail':
+      return (
+        <StoreResolver slug={route.slug!}>
+          <StoreProductDetailView productSlug={route.productSlug!} />
+        </StoreResolver>
+      );
+
+    case 'store-cart':
+      return (
+        <StoreResolver slug={route.slug!}>
+          <StoreCartView />
+        </StoreResolver>
+      );
+
+    case 'store-checkout':
+      return (
+        <StoreResolver slug={route.slug!}>
+          <StoreCheckoutView />
+        </StoreResolver>
+      );
+
+    case 'store-editor':
+      return (
+        <StoreResolver slug={route.slug!}>
+          <StoreEditorPage slug={route.slug!} />
+        </StoreResolver>
+      );
+
+    case 'not-found':
+    default:
+      return <PlatformNotFoundPage path={route.path} />;
   }
+};
 
-  // 2. NAVIGATION ENTRE LES AUTRES PAGES: Page-specific Skeleton Loader
-  const renderCurrentPage = () => {
-    if (isPageLoading) {
-      switch (activePage) {
-        case 'home':
-          return <HomeSkeleton />;
-        case 'shop':
-          return <ShopSkeleton />;
-        case 'product':
-          return <ProductDetailSkeleton />;
-        case 'cart':
-          return <CartSkeleton />;
-        case 'wishlist':
-          return <WishlistSkeleton />;
-        case 'checkout':
-          return <CheckoutSkeleton />;
-        case 'order-success':
-          return <OrderSuccessSkeleton />;
-        case 'about':
-          return <AboutSkeleton />;
-        case 'contact':
-          return <ContactSkeleton />;
-        case 'account':
-          return <AccountSkeleton />;
-        default:
-          return <HomeSkeleton />;
-      }
-    }
-
-    switch (activePage) {
-      case 'home':
-        return <HomePage />;
-      case 'shop':
-        return <ShopPage />;
-      case 'product':
-        return <ProductDetailPage />;
-      case 'cart':
-        return <CartPage />;
-      case 'wishlist':
-        return <WishlistPage />;
-      case 'checkout':
-        return <CheckoutPage />;
-      case 'order-success':
-        return <OrderSuccessPage />;
-      case 'about':
-        return <AboutPage />;
-      case 'contact':
-        return <ContactPage />;
-      case 'account':
-        return <AccountPage />;
-      default:
-        return <HomePage />;
-    }
-  };
-
+export const App: React.FC = () => {
   return (
-    <div className="min-h-screen flex flex-col bg-surface-container-lowest text-slate-900 font-sans selection:bg-slate-900 selection:text-white">
-      {/* Sticky Header with Navigation & Quick Actions */}
-      <Header />
-
-      {/* Main Page Content Dynamic View */}
-      <main className="flex-1 flex flex-col">
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
-            key={activePage === 'product' ? `product-${selectedProduct?.id}` : activePage}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.18, ease: 'easeOut' }}
-            className="flex-1 flex flex-col w-full"
-          >
-            {renderCurrentPage()}
-          </motion.div>
-        </AnimatePresence>
-      </main>
-
-      {/* Slide-over Cart Drawer */}
-      <CartDrawer />
-
-      {/* Mobile Bottom Fixed Bar */}
-      <MobileNavigation />
-
-      {/* Global Footer */}
-      <Footer />
-    </div>
+    <HelmetProvider>
+      <RouterProvider>
+        <ShopProvider>
+          <div className="min-h-screen flex flex-col bg-surface-container-lowest text-slate-900 font-sans selection:bg-slate-900 selection:text-white">
+            <RouteDispatcher />
+            {/* Global Slide-over Cart Drawer accessible when needed */}
+            <CartDrawer />
+          </div>
+        </ShopProvider>
+      </RouterProvider>
+    </HelmetProvider>
   );
 };
 
-export default function App() {
-  return (
-    <HelmetProvider>
-      <ShopProvider>
-        <AppContent />
-      </ShopProvider>
-    </HelmetProvider>
-  );
-}
+export default App;

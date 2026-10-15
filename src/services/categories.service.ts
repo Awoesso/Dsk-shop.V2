@@ -14,7 +14,7 @@ export const CategoriesService = {
    * Fetches products to dynamically group and count under the exact 9 standardized categories.
    * Restricts projection strictly to the 'category' column to prevent leaks.
    */
-  async getCategories(): Promise<{ data: Category[]; error: string | null }> {
+  async getCategories(storeId?: string): Promise<{ data: Category[]; error: string | null }> {
     try {
       // Initialize counts strictly for the 9 standardized categories
       const counts: Record<ProductCategory, number> = {
@@ -29,10 +29,16 @@ export const CategoriesService = {
         Other: 0,
       };
 
-      const { data, error } = await supabase
+      let query = supabase
         .from('products')
         .select('category')
         .limit(1000);
+
+      if (storeId) {
+        query = query.eq('store_id', storeId);
+      }
+
+      const { data, error } = await query;
 
       if (!error && data) {
         data.forEach((item) => {

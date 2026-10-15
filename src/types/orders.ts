@@ -8,6 +8,7 @@ export interface OrderItemRecord {
   unit_price: number;
   quantity: number;
   selected_variant?: string | null;
+  store_id?: string | null;
   created_at?: string;
 }
 
@@ -45,6 +46,7 @@ export interface CreateOrderPayload {
     unit_price: number;
     quantity: number;
     selected_variant?: string | null;
+    store_id?: string | null;
   }[];
 }
 

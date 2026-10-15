@@ -5,6 +5,7 @@ import { useShop } from '../../context/ShopContext';
 
 interface ProductCardProps {
   product: Product;
+  layout?: 'grid' | 'list' | string;
 }
 
 type ProductAvailability = Product & {

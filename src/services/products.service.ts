@@ -15,6 +15,8 @@ import { RealtimeChannel } from '@supabase/supabase-js';
 const PRODUCT_QUERY_WITH_IMAGES = '*, product_images(*)';
 
 export interface GetProductsOptions {
+  storeId?: string | null;
+  includeUnassigned?: boolean;
   page?: number;
   limit?: number;
   category?: string;
@@ -55,6 +57,7 @@ function resolveImageUrl(img: any): string {
 /**
  * Transforms a raw Supabase database row with relational product_images
  * into the strongly-typed DSK-Shop Product entity.
+ * Preserves store_id, cover_image_url, and compare_price from the database.
  */
 export function mapDbRowToProduct(row: any): Product {
   const rawImages: any[] = Array.isArray(row.product_images) ? row.product_images : [];
@@ -67,11 +70,9 @@ export function mapDbRowToProduct(row: any): Product {
     .map(resolveImageUrl)
     .filter(Boolean);
 
-  const neutralPlaceholder = '';
-
-  // primaryImage: Use product_images.find(img => img.is_primary)?.url or product_images[0]?.url or a neutral placeholder
+  const coverImg = row.cover_image_url ? resolveImageUrl(row.cover_image_url) : '';
   const primaryImgObj = sortedImages.find((img: any) => img.is_primary) || sortedImages[0];
-  const primaryImage = (primaryImgObj ? resolveImageUrl(primaryImgObj) : '') || images[0] || neutralPlaceholder;
+  const primaryImage = coverImg || (primaryImgObj ? resolveImageUrl(primaryImgObj) : '') || images[0] || '';
 
   if (images.length === 0 && primaryImage) {
     images.push(primaryImage);
@@ -80,13 +81,16 @@ export function mapDbRowToProduct(row: any): Product {
   const isPublished = !row.status || row.status === 'published' || row.status === 'active';
   const name = row.name || 'Produit sans titre';
   const slug = row.slug || sanitizeSlug(name) || row.id;
+  const brand = row.brand || (row.stores && typeof row.stores === 'object' ? row.stores.name : '') || '';
 
   return {
     id: row.id,
+    store_id: row.store_id || null,
     name,
     slug,
-    brand: 'DSK-Shop',
+    brand,
     price: Number(row.price) || 0,
+    compare_price: row.compare_price != null ? Number(row.compare_price) : null,
     category: normalizeCategory(row.category),
     inStock: isPublished,
     stockCount: isPublished ? 10 : 0,
@@ -96,10 +100,11 @@ export function mapDbRowToProduct(row: any): Product {
       Devise: row.currency || 'FCFA',
       Statut: row.status || 'Disponible',
     },
+    cover_image_url: row.cover_image_url || null,
     primaryImage,
     images,
     product_images: rawImages,
-    tags: [row.category || 'Shop'].filter(Boolean),
+    tags: [row.category || 'Boutique'].filter(Boolean),
     isFeatured: (row.view_count || 0) > 10,
     isNew: false,
     isBestSeller: (row.sales_count || 0) > 20,
@@ -123,6 +128,18 @@ export const ProductsService = {
         .from('products')
         .select(PRODUCT_QUERY_WITH_IMAGES, { count: 'exact' })
         .range(from, to);
+
+      // Strict store isolation:
+      // If storeId is provided, strictly filter by that store
+      if (options.storeId) {
+        query = query.eq('store_id', options.storeId);
+      } else if (options.includeUnassigned) {
+        // If explicitly requested, scope to unassigned platform products (store_id IS NULL)
+        query = query.is('store_id', null);
+      } else {
+        // Safe default: scope strictly to unassigned legacy products; never leak other stores
+        query = query.is('store_id', null);
+      }
 
       // Sanitize and apply category filter if specified
       if (options.category && options.category !== 'all') {
@@ -200,32 +217,62 @@ export const ProductsService = {
   },
 
   /**
-   * Fetches a single product by its unique slug or UUID with relational product_images.
+   * Fetches products strictly for a specified store.
+   * Rejects immediately if storeId is missing to prevent any cross-store data leakage.
    */
-  async getProductBySlug(rawSlug: string): Promise<SingleProductResponse> {
+  async getProductsByStore(
+    storeId: string,
+    options: Omit<GetProductsOptions, 'storeId'> = {}
+  ): Promise<ProductsResponse> {
+    if (!storeId || typeof storeId !== 'string') {
+      return {
+        data: [],
+        totalCount: 0,
+        page: 1,
+        limit: options.limit || DEFAULT_QUERY_LIMIT,
+        error: 'Identifiant de boutique requis pour charger ce catalogue.',
+      };
+    }
+    return this.getProducts({ ...options, storeId });
+  },
+
+  /**
+   * Fetches a single product by its unique slug or UUID with relational product_images.
+   * Optionally scopes the lookup to a specific storeId for security.
+   */
+  async getProductBySlug(rawSlug: string, storeId?: string): Promise<SingleProductResponse> {
     const slug = sanitizeSlug(rawSlug);
     if (!slug) {
       return { data: null, error: 'Identifiant de produit invalide.' };
     }
 
     try {
-      // First attempt query by slug
-      let { data, error } = await (supabase as any)
+      let query = (supabase as any)
         .from('products')
         .select(PRODUCT_QUERY_WITH_IMAGES)
-        .eq('slug', slug)
-        .maybeSingle();
+        .eq('slug', slug);
+
+      if (storeId) {
+        query = query.eq('store_id', storeId);
+      }
+
+      let { data, error } = await query.maybeSingle();
 
       // If not found by slug, check if the input is a valid UUID
       const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(slug);
       if (!data && isUuid) {
-        const uuidQuery = await (supabase as any)
+        let uuidQuery = (supabase as any)
           .from('products')
           .select(PRODUCT_QUERY_WITH_IMAGES)
-          .eq('id', slug)
-          .maybeSingle();
-        data = uuidQuery.data;
-        error = uuidQuery.error;
+          .eq('id', slug);
+
+        if (storeId) {
+          uuidQuery = uuidQuery.eq('store_id', storeId);
+        }
+
+        const res = await uuidQuery.maybeSingle();
+        data = res.data;
+        error = res.error;
       }
 
       if (error) {
@@ -245,18 +292,21 @@ export const ProductsService = {
   },
 
   /**
-   * Subscribes to real-time changes on the public products catalog.
+   * Subscribes to real-time changes on the products catalog.
+   * Optionally filtered by storeId so vendors only receive updates for their own store.
    */
   subscribeToProducts(
-    onUpdate: (payload: { eventType: 'INSERT' | 'UPDATE' | 'DELETE'; newRow: any; oldRow: any }) => void
+    onUpdate: (payload: { eventType: 'INSERT' | 'UPDATE' | 'DELETE'; newRow: any; oldRow: any }) => void,
+    storeId?: string
   ): () => void {
-    const channelId = `realtime:products:${Math.random().toString(36).substring(2, 9)}`;
+    const channelId = `realtime:products:${storeId || 'all'}:${Math.random().toString(36).substring(2, 9)}`;
+    const filter = storeId ? `store_id=eq.${storeId}` : undefined;
 
     const channel: RealtimeChannel = supabase
       .channel(channelId)
       .on(
         'postgres_changes',
-        { event: '*', schema: 'public', table: 'products' },
+        { event: '*', schema: 'public', table: 'products', filter },
         async (payload) => {
           if (payload.eventType === 'DELETE') {
             onUpdate({

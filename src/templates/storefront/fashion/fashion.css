@@ -1,0 +1,18 @@
+/* Fashion Template Scoped Styles */
+.fashion-storefront {
+  --fashion-editorial-ratio: 4 / 5;
+  letter-spacing: -0.01em;
+}
+
+.fashion-storefront .fashion-lookbook-card {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+}
+
+.fashion-storefront .fashion-lookbook-card:hover {
+  transform: translateY(-4px);
+}
+
+.fashion-storefront .fashion-quote {
+  font-style: italic;
+  font-family: var(--store-heading-font), 'Playfair Display', Georgia, serif;
+}

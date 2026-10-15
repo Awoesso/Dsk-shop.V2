@@ -266,3 +266,8 @@
   background: var(--bamboo-secondary);
 }
 
+/* Storefront Template Engine Styles */
+@import "./templates/storefront/fashion/fashion.css";
+@import "./templates/storefront/tech/tech.css";
+@import "./templates/storefront/general/general.css";
+

@@ -287,6 +287,17 @@ export const Header: React.FC = () => {
             >
               Contact
             </button>
+            <button
+              onClick={() => navigateTo('templates')}
+              className={`nav-link px-3 py-1.5 rounded-lg transition-colors font-primary cursor-pointer flex items-center gap-1.5 ${
+                activePage === 'templates' || activePage === 'editor' || activePage === 'storefront'
+                  ? 'text-primary bg-secondary-container font-semibold'
+                  : 'text-on-surface hover:text-primary'
+              }`}
+            >
+              <Sparkles size={13} className="text-amber-500" />
+              <span>Templates Nexa</span>
+            </button>
           </nav>
 
 
@@ -413,6 +424,23 @@ export const Header: React.FC = () => {
                 }`}
               >
                 <span>Contact & Support</span>
+                <ChevronRight size={16} className="text-outline" />
+              </button>
+              <button
+                onClick={() => {
+                  navigateTo('templates');
+                  setMobileMenuOpen(false);
+                }}
+                className={`flex items-center justify-between p-3 rounded-xl text-left font-semibold text-sm ${
+                  activePage === 'templates' || activePage === 'editor' || activePage === 'storefront'
+                    ? 'bg-secondary-container text-primary'
+                    : 'text-on-surface hover:bg-surface-container-low'
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <Sparkles size={16} className="text-amber-500" />
+                  <span>Templates Nexa</span>
+                </div>
                 <ChevronRight size={16} className="text-outline" />
               </button>
             </div>

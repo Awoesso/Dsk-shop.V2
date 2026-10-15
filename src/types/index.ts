@@ -54,12 +54,16 @@ export interface Product {
   variants?: ProductVariant[];
   currency?: string;
   status?: string;
+  store_id?: string | null;
+  cover_image_url?: string | null;
+  compare_price?: number | null;
 }
 
 export interface CartItem {
   product: Product;
   quantity: number;
   selectedVariant?: ProductVariant;
+  store_id?: string | null;
 }
 
 export interface Category {
@@ -111,6 +115,7 @@ export interface Order {
   paymentMethod: PaymentMethod;
   status: 'confirmed' | 'processing' | 'shipped' | 'delivered';
   estimatedDelivery: string;
+  store_id?: string | null;
 }
 
 export type ActivePage =
@@ -123,6 +128,10 @@ export type ActivePage =
   | 'wishlist'
   | 'about'
   | 'contact'
-  | 'account';
+  | 'account'
+  | 'templates'
+  | 'editor'
+  | 'storefront';
 
 export * from './orders';
+export * from './storefront';
