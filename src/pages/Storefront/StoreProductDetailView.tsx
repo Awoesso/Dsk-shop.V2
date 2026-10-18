@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useStore } from '../../context/StoreContext';
 import { useRouter } from '../../router/RouterContext';
 import { useShop } from '../../context/ShopContext';
+import { useStoreCart } from '../../hooks/useStoreCart';
 import { StoreHeader } from '../../components/storefront/StoreHeader';
 import { SEO } from '../../components/SEO/SEO';
 import { ProductsService } from '../../services/products.service';
@@ -15,7 +16,8 @@ interface StoreProductDetailViewProps {
 export const StoreProductDetailView: React.FC<StoreProductDetailViewProps> = ({ productSlug }) => {
   const { storefront, identity, slug, storeId } = useStore();
   const { navigate } = useRouter();
-  const { addToCart, toggleWishlist, isInWishlist } = useShop();
+  const { toggleWishlist, isInWishlist } = useShop();
+  const { addToCart } = useStoreCart(storeId);
 
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState<boolean>(true);

@@ -10,7 +10,6 @@ import { Search, SlidersHorizontal, PackageX } from 'lucide-react';
 export const StoreProductsView: React.FC = () => {
   const { storefront, identity, slug } = useStore();
   const { navigate } = useRouter();
-  const { addToCart, toggleWishlist, isInWishlist } = useShop();
 
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');

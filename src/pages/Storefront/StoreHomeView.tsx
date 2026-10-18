@@ -1,16 +1,17 @@
-import React from 'react';
 import { useStore } from '../../context/StoreContext';
 import { useRouter } from '../../router/RouterContext';
 import { useShop } from '../../context/ShopContext';
+import { useStoreCart } from '../../hooks/useStoreCart';
 import { TemplateRenderer } from '../../templates/storefront/renderer/TemplateRenderer';
 import { StoreHeader } from '../../components/storefront/StoreHeader';
 import { SEO } from '../../components/SEO/SEO';
 import { Product } from '../../types';
 
 export const StoreHomeView: React.FC = () => {
-  const { storefront, identity, slug } = useStore();
+  const { storefront, identity, slug, storeId } = useStore();
   const { navigate } = useRouter();
-  const { addToCart, toggleWishlist, isInWishlist } = useShop();
+  const { toggleWishlist, isInWishlist } = useShop();
+  const { addToCart } = useStoreCart(storeId);
 
   if (!storefront) return null;
 

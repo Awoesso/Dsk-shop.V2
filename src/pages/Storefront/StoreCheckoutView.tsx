@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useStore } from '../../context/StoreContext';
 import { useRouter } from '../../router/RouterContext';
-import { useShop } from '../../context/ShopContext';
+import { useStoreCart } from '../../hooks/useStoreCart';
 import { StoreHeader } from '../../components/storefront/StoreHeader';
 import { SEO } from '../../components/SEO/SEO';
 import { ArrowLeft, CheckCircle2, ShieldCheck, Truck, AlertCircle } from 'lucide-react';
@@ -10,7 +10,7 @@ import { OrdersService } from '../../services/orders.service';
 export const StoreCheckoutView: React.FC = () => {
   const { identity, slug, storeId } = useStore();
   const { navigate } = useRouter();
-  const { cart, cartTotal, clearCart } = useShop();
+  const { cart, cartTotal, clearCart } = useStoreCart(storeId);
 
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
@@ -36,6 +36,16 @@ export const StoreCheckoutView: React.FC = () => {
       return;
     }
 
+    // Verify all items in cart belong to this storeId
+    const storeItems = cart.filter(
+      (item) => (item.store_id || item.product.store_id) === storeId
+    );
+
+    if (storeItems.length === 0) {
+      setError('Aucun article de cette boutique trouvé dans le panier.');
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -49,7 +59,7 @@ export const StoreCheckoutView: React.FC = () => {
         currency: identity.currency || 'FCFA',
         payment_method: paymentMethod,
         notes: notes.trim() || null,
-        items: cart.map((item) => ({
+        items: storeItems.map((item) => ({
           product_id: item.product.id,
           product_name: item.product.name,
           quantity: item.quantity,

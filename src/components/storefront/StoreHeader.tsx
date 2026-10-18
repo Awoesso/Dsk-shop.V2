@@ -2,10 +2,12 @@ import React from 'react';
 import { Store, ShoppingBag, Sliders, ArrowLeft, Layers, Compass } from 'lucide-react';
 import { useStore } from '../../context/StoreContext';
 import { useRouter } from '../../router/RouterContext';
+import { useStoreCart } from '../../hooks/useStoreCart';
 
 export const StoreHeader: React.FC = () => {
-  const { identity, slug, storefront } = useStore();
+  const { identity, slug, storefront, storeId } = useStore();
   const { navigate, route } = useRouter();
+  const { cartItemCount } = useStoreCart(storeId);
 
   const isHome = route.type === 'store-home';
   const isProducts = route.type === 'store-products';
@@ -93,8 +95,20 @@ export const StoreHeader: React.FC = () => {
                 : 'text-slate-700 bg-slate-100 hover:bg-slate-200'
             }`}
           >
-            <ShoppingBag size={14} />
+            <div className="relative">
+              <ShoppingBag size={14} />
+              {cartItemCount > 0 && (
+                <span className="absolute -top-1.5 -right-2 px-1 py-0.2 min-w-[13px] text-center text-[9px] font-bold bg-emerald-600 text-white rounded-full">
+                  {cartItemCount}
+                </span>
+              )}
+            </div>
             <span>Panier</span>
+            {cartItemCount > 0 && (
+              <span className={`text-[11px] font-bold ${isCart ? 'text-emerald-300' : 'text-emerald-700'}`}>
+                ({cartItemCount})
+              </span>
+            )}
           </button>
         </nav>
       </div>

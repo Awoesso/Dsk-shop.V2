@@ -94,6 +94,29 @@ export const DEMO_STORES: Record<string, { identity: StoreIdentity; theme: Store
     },
     theme: TECH_DEFAULT_THEME,
   },
+  'tech-horizon': {
+    identity: {
+      id: '00000000-0000-0000-0000-000000000004',
+      name: 'Tech Horizon Lomé',
+      slug: 'tech-horizon',
+      tagline: 'Composants gamer, périphériques pro et stations de travail',
+      description:
+        'Le spécialiste de l’informatique haute performance, stations de travail et accessoires gaming de pointe à Lomé.',
+      logoUrl: '',
+      bannerUrl: '',
+      phone: '+228 92 88 99 00',
+      email: 'contact@tech-horizon.tg',
+      address: 'Boulevard Circulaire, Lomé',
+      city: 'Lomé',
+      country: 'Togo',
+      currency: 'FCFA',
+      socialLinks: {
+        whatsapp: '+22892889900',
+      },
+      isPublished: true,
+    },
+    theme: TECH_DEFAULT_THEME,
+  },
 };
 
 export const StorefrontService = {

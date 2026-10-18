@@ -1,15 +1,14 @@
-import React from 'react';
 import { useStore } from '../../context/StoreContext';
 import { useRouter } from '../../router/RouterContext';
-import { useShop } from '../../context/ShopContext';
+import { useStoreCart } from '../../hooks/useStoreCart';
 import { StoreHeader } from '../../components/storefront/StoreHeader';
 import { SEO } from '../../components/SEO/SEO';
 import { ShoppingBag, ArrowRight, ArrowLeft, Trash2 } from 'lucide-react';
 
 export const StoreCartView: React.FC = () => {
-  const { identity, slug } = useStore();
+  const { identity, slug, storeId } = useStore();
   const { navigate } = useRouter();
-  const { cart, removeFromCart, updateCartQuantity, cartTotal } = useShop();
+  const { cart, removeFromCart, updateCartQuantity, clearCart, cartTotal } = useStoreCart(storeId);
 
   return (
     <div className="w-full min-h-screen bg-slate-50 flex flex-col font-sans">
@@ -21,13 +20,24 @@ export const StoreCartView: React.FC = () => {
       <StoreHeader />
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 py-10 flex-1 w-full space-y-8">
-        <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-emerald-600">
-            Votre panier
-          </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-1">
-            Commande chez {identity.name}
-          </h1>
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div>
+            <span className="text-xs font-bold uppercase tracking-wider text-emerald-600">
+              Votre panier
+            </span>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-1">
+              Commande chez {identity.name}
+            </h1>
+          </div>
+          {cart.length > 0 && (
+            <button
+              onClick={clearCart}
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-rose-600 hover:text-rose-800 transition-colors cursor-pointer self-start sm:self-auto"
+            >
+              <Trash2 size={14} />
+              <span>Vider le panier de cette boutique</span>
+            </button>
+          )}
         </div>
 
         {cart.length === 0 ? (

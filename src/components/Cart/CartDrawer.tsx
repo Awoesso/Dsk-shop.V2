@@ -1,6 +1,7 @@
 import React from 'react';
 import { X, ShoppingBag, ArrowRight, ShieldCheck, Trash2 } from 'lucide-react';
 import { useShop } from '../../context/ShopContext';
+import { useRouter } from '../../router/RouterContext';
 import { CartItem } from './CartItem';
 import { formatPrice } from '../../utils/currency';
 
@@ -17,16 +18,28 @@ export const CartDrawer: React.FC = () => {
     navigateTo,
   } = useShop();
 
+  const { route, navigate } = useRouter();
+
   if (!isCartOpen) return null;
+
+  const isStoreRoute = route.type.startsWith('store-') && Boolean(route.slug);
 
   const handleProceedToCheckout = () => {
     setIsCartOpen(false);
-    navigateTo('checkout');
+    if (isStoreRoute && route.slug) {
+      navigate(`/boutique/${encodeURIComponent(route.slug)}/commande`);
+    } else {
+      navigateTo('checkout');
+    }
   };
 
   const handleViewFullCart = () => {
     setIsCartOpen(false);
-    navigateTo('cart');
+    if (isStoreRoute && route.slug) {
+      navigate(`/boutique/${encodeURIComponent(route.slug)}/panier`);
+    } else {
+      navigateTo('cart');
+    }
   };
 
   return (
@@ -71,6 +84,20 @@ export const CartDrawer: React.FC = () => {
               </button>
             </div>
           </div>
+
+          {isStoreRoute && route.slug && (
+            <div className="bg-emerald-50 border-b border-emerald-100 px-6 py-2.5 flex items-center justify-between text-xs text-emerald-900">
+              <span className="truncate">
+                Boutique active : <strong>{route.slug}</strong>
+              </span>
+              <button
+                onClick={handleViewFullCart}
+                className="font-bold underline ml-2 shrink-0 hover:text-emerald-950 cursor-pointer"
+              >
+                Ouvrir le panier de la boutique
+              </button>
+            </div>
+          )}
 
           {/* Liste des articles */}
           <div className="flex-1 overflow-y-auto px-6 py-2">
