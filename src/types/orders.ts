@@ -14,6 +14,7 @@ export interface OrderItemRecord {
 
 export interface OrderRecord {
   id: string;
+  store_id?: string | null;
   order_number: string;
   customer_name: string;
   customer_phone: string;
@@ -30,6 +31,7 @@ export interface OrderRecord {
 }
 
 export interface CreateOrderPayload {
+  store_id?: string | null;
   customer_name: string;
   customer_phone: string;
   shipping_address: string;

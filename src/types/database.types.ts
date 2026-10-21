@@ -55,6 +55,9 @@ export interface Database {
           banner_url: string | null;
           currency: string | null;
           social_links: Json | null;
+          builder_draft: Json | null;
+          builder_published: Json | null;
+          builder_version: number | null;
           updated_at: string;
         };
         Insert: {
@@ -66,6 +69,9 @@ export interface Database {
           banner_url?: string | null;
           currency?: string | null;
           social_links?: Json | null;
+          builder_draft?: Json | null;
+          builder_published?: Json | null;
+          builder_version?: number | null;
           updated_at?: string;
         };
         Update: {
@@ -77,6 +83,9 @@ export interface Database {
           banner_url?: string | null;
           currency?: string | null;
           social_links?: Json | null;
+          builder_draft?: Json | null;
+          builder_published?: Json | null;
+          builder_version?: number | null;
           updated_at?: string;
         };
         Relationships: [

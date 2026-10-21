@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { Storefront, StoreTheme, TemplateProps, DeepPartial } from '../../../types/storefront';
 import { templateRegistry } from '../registry/templateRegistry';
 import { StoreThemeScope } from '../shared/StoreThemeScope';
+import { StoreVisualRenderer } from './StoreVisualRenderer';
 import { Lock } from 'lucide-react';
 
 interface TemplateRendererProps {
@@ -80,10 +81,6 @@ export const TemplateRenderer: React.FC<TemplateRendererProps> = ({
     };
   }, [storefront.theme, themeOverride]);
 
-  // Lookup template definition securely
-  const templateDef = templateRegistry.getTemplate(effectiveTheme.templateId);
-  const TemplateComponent = templateDef.component;
-
   // Pass current storefront with effective theme
   const currentStorefront: Storefront = useMemo(() => {
     return {
@@ -91,6 +88,28 @@ export const TemplateRenderer: React.FC<TemplateRendererProps> = ({
       theme: effectiveTheme,
     };
   }, [storefront, effectiveTheme]);
+
+  // If a valid published GrapesJS project exists and no temporary themeOverride is active, render the visual layout
+  if (storefront.builderPublished && !themeOverride) {
+    return (
+      <StoreVisualRenderer
+        project={storefront.builderPublished}
+        storefront={currentStorefront}
+        onAddToCart={onAddToCart}
+        onToggleWishlist={onToggleWishlist}
+        isInWishlist={isInWishlist}
+        onSelectProduct={onSelectProduct}
+        onSearch={onSearch}
+        onSelectCategory={onSelectCategory}
+        selectedCategory={selectedCategory}
+        searchQuery={searchQuery}
+      />
+    );
+  }
+
+  // Lookup template definition securely
+  const templateDef = templateRegistry.getTemplate(effectiveTheme.templateId);
+  const TemplateComponent = templateDef.component;
 
   return (
     <StoreThemeScope theme={effectiveTheme}>

@@ -131,28 +131,76 @@ export const OrdersService = {
 
     const orderId = generateClientUuid();
 
+    // Priorité 1 : Exécution via RPC transactionnelle sécurisée create_store_order
+    if (payload.store_id && isUuid(payload.store_id)) {
+      try {
+        const { data: rpcRes, error: rpcErr } = await (supabase as any).rpc('create_store_order', {
+          p_store_id: payload.store_id,
+          p_customer_name: sanitizedName,
+          p_customer_phone: sanitizedPhone,
+          p_shipping_address: sanitizedAddress,
+          p_city: sanitizedCity,
+          p_payment_method: payload.payment_method || 'cash_on_delivery',
+          p_notes: sanitizedNotes,
+          p_items: (payload.items as any[]).map((it) => {
+            const rawId = it.product?.id || it.product_id;
+            return {
+              product_id: isUuid(rawId) ? rawId : null,
+              quantity: Math.max(1, Number(it.quantity) || 1),
+              selected_variant: it.selectedVariant?.name || it.selected_variant || null,
+            };
+          }),
+        });
+
+        if (!rpcErr && rpcRes && rpcRes.success) {
+          return {
+            success: true,
+            orderId: rpcRes.order_id,
+            orderNumber: rpcRes.order_number,
+            error: null,
+            step: null,
+          };
+        }
+      } catch {
+        // Fallback transparent vers le pipeline standard
+      }
+    }
+
     // -------------------------------------------------------------
     // ÉTAPE 2 : INSERTION DE L'EN-TÊTE DANS 'orders'
     // En conformité avec les règles RLS (aucun .select() pour éviter
     // le déclenchement du RETURNING PostgREST et l'erreur RLS 42501)
     // -------------------------------------------------------------
     try {
-      const { error: orderInsertError } = await (supabase
+      const orderHeaderData: Record<string, any> = {
+        id: orderId,
+        order_number: orderNumber,
+        customer_name: sanitizedName,
+        customer_phone: sanitizedPhone,
+        shipping_address: sanitizedAddress,
+        city: sanitizedCity,
+        total_amount: Math.max(0, Math.round(Number(payload.total_amount) || 0)),
+        currency: payload.currency || 'XOF',
+        payment_method: payload.payment_method || 'cash_on_delivery',
+        payment_status: payload.payment_status || 'pending',
+        order_status: payload.order_status || 'pending',
+        notes: sanitizedNotes,
+      };
+
+      if (payload.store_id && isUuid(payload.store_id)) {
+        orderHeaderData.store_id = payload.store_id;
+      }
+
+      let { error: orderInsertError } = await (supabase
         .from('orders')
-        .insert({
-          id: orderId,
-          order_number: orderNumber,
-          customer_name: sanitizedName,
-          customer_phone: sanitizedPhone,
-          shipping_address: sanitizedAddress,
-          city: sanitizedCity,
-          total_amount: Math.max(0, Math.round(Number(payload.total_amount) || 0)),
-          currency: payload.currency || 'XOF',
-          payment_method: payload.payment_method || 'cash_on_delivery',
-          payment_status: payload.payment_status || 'pending',
-          order_status: payload.order_status || 'pending',
-          notes: sanitizedNotes,
-        } as any));
+        .insert(orderHeaderData as any));
+
+      // Si erreur de colonne store_id absente sur la base distante (code PGRST204 / 42703) :
+      if (orderInsertError && (orderInsertError.code === '42703' || orderInsertError.message?.includes('store_id'))) {
+        delete orderHeaderData.store_id;
+        const retryRes = await (supabase.from('orders').insert(orderHeaderData as any));
+        orderInsertError = retryRes.error;
+      }
 
       if (orderInsertError) {
         handleSecureError(orderInsertError, 'OrdersService.createOrder [order_header]');
@@ -197,6 +245,7 @@ export const OrdersService = {
 
       return {
         order_id: orderId,
+        store_id: payload.store_id || item.store_id || null,
         product_id: validProductId,
         product_name: sanitizeText(productName || 'Article'),
         unit_price: Math.max(0, Math.round(unitPrice)),

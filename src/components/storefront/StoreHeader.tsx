@@ -1,5 +1,4 @@
-import React from 'react';
-import { Store, ShoppingBag, Sliders, ArrowLeft, Layers, Compass } from 'lucide-react';
+import { ShoppingBag, Sliders, ArrowLeft } from 'lucide-react';
 import { useStore } from '../../context/StoreContext';
 import { useRouter } from '../../router/RouterContext';
 import { useStoreCart } from '../../hooks/useStoreCart';

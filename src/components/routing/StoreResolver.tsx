@@ -1,5 +1,6 @@
 import React from 'react';
 import { StoreProvider, useStore } from '../../context/StoreContext';
+import { StoreCartProvider } from '../../context/StoreCartContext';
 import { StoreNotFoundPage } from './StoreNotFoundPage';
 import { Lock, AlertTriangle, RefreshCw, ArrowLeft } from 'lucide-react';
 import { useRouter } from '../../router/RouterContext';
@@ -13,8 +14,8 @@ const ResolvedStoreGate: React.FC<{ slug: string; children: React.ReactNode }> =
   slug,
   children,
 }) => {
-  const { isLoading, error, notFound, isUnpublished, store, identity, refreshStore } = useStore();
-  const { navigate } = useRouter();
+  const { isLoading, error, notFound, isUnpublished, store, identity, refreshStore, storeId } = useStore();
+  const { navigate, route } = useRouter();
 
   // 1. Loading state
   if (isLoading) {
@@ -69,8 +70,9 @@ const ResolvedStoreGate: React.FC<{ slug: string; children: React.ReactNode }> =
     );
   }
 
-  // 4. Unpublished Store Screen (draft, suspended, archived)
-  if (isUnpublished) {
+  // 4. Unpublished Store Screen for public visitors (draft, suspended, archived)
+  // The editor routes (/editeur/:slug and /editeur-lab/:slug) are allowed through so the store owner can edit and publish
+  if (isUnpublished && route.type !== 'store-editor' && route.type !== 'grapes-lab') {
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-slate-800 font-sans">
         <div className="max-w-md w-full bg-white rounded-3xl border border-amber-200 p-8 shadow-xl shadow-amber-100 text-center space-y-4">
@@ -103,8 +105,8 @@ const ResolvedStoreGate: React.FC<{ slug: string; children: React.ReactNode }> =
     );
   }
 
-  // 5. Store resolved successfully: Render children
-  return <>{children}</>;
+  // 5. Store resolved successfully: Render children with isolated StoreCartProvider
+  return <StoreCartProvider storeId={storeId}>{children}</StoreCartProvider>;
 };
 
 export const StoreResolver: React.FC<StoreResolverProps> = ({ slug, children }) => {

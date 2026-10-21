@@ -11,7 +11,9 @@
     "lint": "tsc --noEmit",
     "test:engine": "tsx scripts/test-template-engine.ts",
     "test:phase3": "tsx scripts/test-phase3-routing.ts",
-    "test:phase4": "tsx scripts/test-phase4-cart.ts"
+    "test:phase4": "tsx scripts/test-phase4-cart.ts",
+    "test:regression": "tsx scripts/test-cart-regression.ts",
+    "test:grapes": "tsx scripts/test-grapesjs-integration.ts"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
@@ -20,6 +22,7 @@
     "@vitejs/plugin-react": "^5.0.4",
     "dotenv": "^17.2.3",
     "express": "^4.21.2",
+    "grapesjs": "^0.23.8",
     "lucide-react": "^0.546.0",
     "motion": "^12.23.24",
     "react": "^19.0.1",

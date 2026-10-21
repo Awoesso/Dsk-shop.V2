@@ -1,6 +1,5 @@
 import React from 'react';
 import { ArrowLeft, Sparkles, Store } from 'lucide-react';
-import { useShop } from '../../context/ShopContext';
 import { useStorefront } from '../../hooks/useStorefront';
 import { TemplateGallery } from '../../components/store-editor/TemplateGallery';
 import { TemplateId } from '../../types/storefront';

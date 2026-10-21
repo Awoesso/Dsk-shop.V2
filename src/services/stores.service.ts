@@ -1,6 +1,6 @@
 import { supabase } from '../lib/supabase';
 import { DbStore, DbStoreSetting } from '../types/database.types';
-import { StoreIdentity, StoreTheme, Storefront } from '../types/storefront';
+import { StoreIdentity, StoreTheme, Storefront, BuilderProjectData } from '../types/storefront';
 import { templateRegistry } from '../templates/storefront/registry/templateRegistry';
 import { sanitizeSlug, handleSecureError } from '../utils/security';
 
@@ -27,6 +27,8 @@ export interface UpdateSettingsPayload {
   currency?: string | null;
   social_links?: Record<string, any> | null;
   template_id?: string | null;
+  builder_draft?: BuilderProjectData | null;
+  builder_published?: BuilderProjectData | null;
 }
 
 /**
@@ -82,12 +84,24 @@ export function mapDbStoreToStorefront(storeRow: any): Storefront {
     status: storeRow.status || 'active',
   };
 
+  const builderDraft =
+    rawSettings?.builder_draft ||
+    rawSettings?.social_links?.builder_draft ||
+    null;
+
+  const builderPublished =
+    rawSettings?.builder_published ||
+    rawSettings?.social_links?.builder_published ||
+    null;
+
   return {
     identity,
     theme,
     categories: [],
     products: [],
     featuredProducts: [],
+    builderDraft,
+    builderPublished,
   };
 }
 
@@ -228,11 +242,46 @@ export const StoresService = {
         };
       }
 
+      if (updates.builder_draft !== undefined) {
+        payload.builder_draft = updates.builder_draft;
+        payload.social_links = {
+          ...(payload.social_links || {}),
+          builder_draft: updates.builder_draft,
+        };
+      }
+      if (updates.builder_published !== undefined) {
+        payload.builder_published = updates.builder_published;
+        payload.social_links = {
+          ...(payload.social_links || {}),
+          builder_published: updates.builder_published,
+        };
+      }
+
       const { error } = await (supabase as any)
         .from('store_settings')
         .upsert(payload, { onConflict: 'store_id' });
 
       if (error) {
+        // Fallback gracefully without builder_draft column if database migration is pending
+        if (error.message?.includes('builder_draft') || error.message?.includes('builder_published')) {
+          const fallbackPayload: Record<string, any> = {
+            store_id: storeId,
+            updated_at: new Date().toISOString(),
+            social_links: {
+              ...(payload.social_links || {}),
+              builder_draft: updates.builder_draft,
+              builder_published: updates.builder_published,
+            },
+          };
+          if (updates.primary_color !== undefined) fallbackPayload.primary_color = updates.primary_color;
+          if (updates.secondary_color !== undefined) fallbackPayload.secondary_color = updates.secondary_color;
+          if (updates.font_family !== undefined) fallbackPayload.font_family = updates.font_family;
+          const { error: fallbackErr } = await (supabase as any)
+            .from('store_settings')
+            .upsert(fallbackPayload, { onConflict: 'store_id' });
+          if (!fallbackErr) return { success: true, error: null };
+        }
+
         const safe = handleSecureError(error, 'StoresService.updateStoreSettings');
         return { success: false, error: safe.userMessage };
       }
@@ -242,5 +291,44 @@ export const StoresService = {
       const safe = handleSecureError(err, 'StoresService.updateStoreSettings[Unhandled]');
       return { success: false, error: safe.userMessage };
     }
+  },
+
+  /**
+   * Saves the working draft of the GrapesJS visual project for a store.
+   */
+  async saveBuilderDraft(
+    storeId: string,
+    projectData: BuilderProjectData
+  ): Promise<{ success: boolean; error: string | null }> {
+    return this.updateStoreSettings(storeId, {
+      builder_draft: projectData,
+    });
+  },
+
+  /**
+   * Publishes the validated GrapesJS visual project and synchronizes store status to active.
+   */
+  async publishBuilderProject(
+    storeId: string,
+    projectData: BuilderProjectData
+  ): Promise<{ success: boolean; error: string | null }> {
+    const res = await this.updateStoreSettings(storeId, {
+      builder_published: projectData,
+      builder_draft: projectData,
+    });
+
+    if (res.success) {
+      // Ensure the store is marked active
+      try {
+        await (supabase as any)
+          .from('stores')
+          .update({ status: 'active', updated_at: new Date().toISOString() })
+          .eq('id', storeId);
+      } catch {
+        // Non-blocking status sync
+      }
+    }
+
+    return res;
   },
 };

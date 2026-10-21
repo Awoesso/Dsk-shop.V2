@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useStore } from '../../context/StoreContext';
 import { useRouter } from '../../router/RouterContext';
-import { useShop } from '../../context/ShopContext';
+import { useWishlist } from '../../hooks/useWishlist';
 import { useStoreCart } from '../../hooks/useStoreCart';
 import { StoreHeader } from '../../components/storefront/StoreHeader';
 import { SEO } from '../../components/SEO/SEO';
@@ -16,7 +16,7 @@ interface StoreProductDetailViewProps {
 export const StoreProductDetailView: React.FC<StoreProductDetailViewProps> = ({ productSlug }) => {
   const { storefront, identity, slug, storeId } = useStore();
   const { navigate } = useRouter();
-  const { toggleWishlist, isInWishlist } = useShop();
+  const { toggleWishlist, isInWishlist } = useWishlist();
   const { addToCart } = useStoreCart(storeId);
 
   const [product, setProduct] = useState<Product | null>(null);

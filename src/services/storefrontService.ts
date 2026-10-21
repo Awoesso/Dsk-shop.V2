@@ -245,39 +245,24 @@ export const StorefrontService = {
     theme: StoreTheme
   ): Promise<{ success: boolean; error: string | null }> {
     try {
-      // 1. Save to local storage for instant persistence
+      // 1. Save to local storage for instant responsiveness
       try {
         localStorage.setItem(`dsk_theme_${storeId}`, JSON.stringify(theme));
       } catch {
         // ignore
       }
 
-      // 2. Persist to Supabase if table exists
-      try {
-        const { error } = await (supabase as any)
-          .from('storefront_configs')
-          .upsert(
-            {
-              store_id: storeId,
-              template_id: templateId,
-              theme_settings: theme,
-              version: 1,
-              updated_at: new Date().toISOString(),
-            },
-            { onConflict: 'store_id' }
-          );
-
-        if (error) {
-          // If table doesn't exist, log diagnostic and still treat local save as success
-          if (import.meta.env?.DEV) {
-            console.info('[StorefrontService] Supabase storefront_configs not available, saved locally:', error.message);
-          }
-        }
-      } catch {
-        // table not present yet
-      }
-
-      return { success: true, error: null };
+      // 2. Persist to real Supabase store_settings table via StoresService
+      return await StoresService.updateStoreSettings(storeId, {
+        primary_color: theme.colors?.primary,
+        secondary_color: theme.colors?.secondary,
+        font_family: theme.typography?.headingFont,
+        template_id: templateId,
+        social_links: {
+          template_id: templateId,
+          theme,
+        },
+      });
     } catch (err: any) {
       return { success: false, error: err?.message || 'Erreur lors de l’enregistrement de la configuration.' };
     }

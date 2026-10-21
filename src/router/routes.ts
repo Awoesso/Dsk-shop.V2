@@ -20,6 +20,7 @@ export type AppRouteType =
   | 'store-cart'
   | 'store-checkout'
   | 'store-editor'
+  | 'grapes-lab'
   | 'not-found';
 
 export interface RouteMatch {
@@ -56,7 +57,19 @@ export function parseRoute(rawPath: string): RouteMatch {
     return { type: 'templates', path, params: {} };
   }
 
-  // 3. Store Editor : /editeur/:slug
+  // 3a. GrapesJS Isolated Test Route : /editeur-lab/:slug
+  const grapesLabMatch = path.match(/^\/editeur-lab\/([a-zA-Z0-9_-]+)$/);
+  if (grapesLabMatch) {
+    const slug = grapesLabMatch[1];
+    return {
+      type: 'grapes-lab',
+      path,
+      slug,
+      params: { slug },
+    };
+  }
+
+  // 3b. Classic Store Editor : /editeur/:slug
   const editorMatch = path.match(/^\/editeur\/([a-zA-Z0-9_-]+)$/);
   if (editorMatch) {
     const slug = editorMatch[1];

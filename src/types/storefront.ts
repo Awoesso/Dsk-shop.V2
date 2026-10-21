@@ -123,12 +123,25 @@ export interface StoreCategory {
   image?: string;
 }
 
+export interface BuilderProjectData {
+  version?: string;
+  templateId?: string;
+  pages?: any[];
+  styles?: any[];
+  symbols?: any[];
+  html?: string;
+  css?: string;
+  updatedAt?: string;
+}
+
 export interface Storefront {
   identity: StoreIdentity;
   theme: StoreTheme;
   categories: StoreCategory[];
   products: Product[];
   featuredProducts: Product[];
+  builderDraft?: BuilderProjectData | null;
+  builderPublished?: BuilderProjectData | null;
 }
 
 export interface TemplateProps {

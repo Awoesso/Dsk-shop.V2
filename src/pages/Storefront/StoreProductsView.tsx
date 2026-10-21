@@ -1,15 +1,19 @@
 import React, { useState, useMemo } from 'react';
 import { useStore } from '../../context/StoreContext';
 import { useRouter } from '../../router/RouterContext';
-import { useShop } from '../../context/ShopContext';
+import { useStoreCart } from '../../hooks/useStoreCart';
+import { useWishlist } from '../../hooks/useWishlist';
 import { StoreHeader } from '../../components/storefront/StoreHeader';
 import { SEO } from '../../components/SEO/SEO';
-import { ProductCard } from '../../components/ProductCard/ProductCard';
-import { Search, SlidersHorizontal, PackageX } from 'lucide-react';
+import { StoreProductCard } from '../../templates/storefront/shared/StoreProductCard';
+import { StoreThemeScope } from '../../templates/storefront/shared/StoreThemeScope';
+import { Search, PackageX } from 'lucide-react';
 
 export const StoreProductsView: React.FC = () => {
-  const { storefront, identity, slug } = useStore();
+  const { storefront, identity, slug, storeId, theme } = useStore();
   const { navigate } = useRouter();
+  const { addToCart } = useStoreCart(storeId);
+  const { toggleWishlist, isInWishlist } = useWishlist();
 
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -112,23 +116,27 @@ export const StoreProductsView: React.FC = () => {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {filteredProducts.map((product) => (
-              <div
-                key={product.id}
-                onClick={() =>
-                  navigate(
-                    `/boutique/${encodeURIComponent(slug)}/produit/${encodeURIComponent(
-                      product.slug || product.id
-                    )}`
-                  )
-                }
-                className="cursor-pointer"
-              >
-                <ProductCard product={product} />
-              </div>
-            ))}
-          </div>
+          <StoreThemeScope theme={theme}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {filteredProducts.map((product) => (
+                <StoreProductCard
+                  key={product.id}
+                  product={product}
+                  currency={identity.currency || 'FCFA'}
+                  onSelectProduct={(p) =>
+                    navigate(
+                      `/boutique/${encodeURIComponent(slug)}/produit/${encodeURIComponent(
+                        p.slug || p.id
+                      )}`
+                    )
+                  }
+                  onAddToCart={(p, qty) => addToCart(p, qty || 1)}
+                  onToggleWishlist={toggleWishlist}
+                  isWishlisted={isInWishlist(product.id)}
+                />
+              ))}
+            </div>
+          </StoreThemeScope>
         )}
       </main>
     </div>

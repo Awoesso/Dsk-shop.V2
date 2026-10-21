@@ -9,7 +9,6 @@ import {
   ArrowRight,
   ShieldCheck,
   Palette,
-  CheckCircle2,
   Package,
 } from 'lucide-react';
 import { useRouter } from '../../router/RouterContext';
